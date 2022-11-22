@@ -1,0 +1,24 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: Peter Borocz
+
+* Introduction
+  My Emacs setup after decadal bankruptcy filing.
+
+  The configuration depends on Org mode. Specifically [[file:init.el][init.el]] sets up a few initial GUI settings, bootstraps
+  [[https://github.com/jwiegley/use-package][use-package]], and loads [[file:config.org][config.org]], which is where the majority of the configuration magic happens.
+* Notes
+  I've been using ~(require 'xxx)~ since 1990. November, 2022 is my /first/ attempt at using [[https://github.com/jwiegley/use-package][use-package]]
+  over an above simply cutting/pasting other people's usage. There's a LOT to be cleaned up so
+  don't take my usage as idiomatic!
+* GTD
+*** TODO [#1] Fix exec-path-from-shell
+*** TODO [#2] Fix ibuf-ext
+*** TODO [#2] Fix uniquify
+*** TODO [#3] Fix apple-script-mode
+*** TODO [#3] Address ido-vertical-mode and ido-menu
+*** TODO [#2] Optimisation and more idiomatic use-package usage:
+    - [[http://cachestocaches.com/2015/8/getting-started-use-package/][Getting started with use-package]]
+    - [[https://menno.io/posts/use-package/][Better Emacs Config: use-package]]
+    - [[https://ianyepan.github.io/posts/setting-up-use-package/][Quick Tutorial on use-package]]
+    - [[https://github.com/Likhon-baRoy/.emacs.d][Nice examples and nice org-mode configuration]]
+      [[https://www.reddit.com/r/emacs/comments/yzvmov/emacs_a_full_fledge_configuration_of_emacs/][Reddit with some good highlights.]]

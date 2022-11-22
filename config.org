@@ -1,0 +1,1184 @@
+* Personal Information
+#+BEGIN_SRC emacs-lisp
+  (setq
+   user-full-name "Peter Borocz"
+   user-mail-address (getenv "EMAIL_ADDRESS")
+   )
+#+END_SRC
+* Basic Configuration
+#+BEGIN_SRC emacs-lisp
+  (global-font-lock-mode t)
+
+  (setq
+   auto-save-default nil                    ; Stop creating #autosave# files
+   column-number-mode t
+   create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
+   default-directory (concat (getenv "HOME") "/")
+   font-lock-maximum-decoration t
+   ;; inhibit-compacting-font-caches t         ;; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+   inhibit-default-init t
+   inhibit-splash-screen t
+   initial-scratch-message nil              ; Start scratch buffers empty..
+   make-backup-files nil                    ; Stop creating backup~ files
+   ring-bell-function 'ignore
+   search-highlight t
+   sentence-end-double-space nil            ; Period single space ends sentence
+   show-paren-delay 0                       ; We want matching parens show immediately
+   switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+   vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+   visible-bell t
+   )
+
+  ;; Setup defaults across all buffers:
+  (setq-default
+   indent-tabs-mode nil  ; Make sure spaces are used when indenting anything!
+   yank-excluded-properties 't ; Clipboard yank is pasting graphics from micro$ instead of text. Strip all properties
+   frame-title-format '("%b (%m)")
+   )
+
+  ;; We want y or n to be sufficient for yes/no prompts.
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  ;; Don't let Emacs suspend by getting rid of pesky "\C-z" and "\C-x\C-z" annoying minimize
+  (unbind-key "C-z")
+  (unbind-key "M-z")
+
+  (defun display-startup-echo-area-message ()
+    (message "Zen..."))
+#+END_SRC
+** Turn off scroll and tool bars
+#+BEGIN_SRC emacs-lisp
+  (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (functionp 'tool-bar-mode  ) (tool-bar-mode   -1))
+#+END_SRC
+** NOT WORKING: Correct paths
+   Correct paths so they work below and later in the session: https://github.com/purcell/exec-path-from-shell
+#+BEGIN_SRC emacs-lisp
+;;  (when (memq window-system '(mac ns))
+;;    (exec-path-from-shell-initialize))
+#+END_SRC
+** Delete trailing whitespace
+   (without using whitespace-mode!)
+   http://ergoemacs.org/emacs/elisp_compaqct_empty_lines.html
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+** Align regex
+   Align with spaces only
+#+BEGIN_SRC emacs-lisp
+  (defadvice align-regexp (around align-regexp-with-spaces)
+    "Never use tabs for alignment."
+    (let ((indent-tabs-mode nil))
+      ad-do-it))
+  (ad-activate 'align-regexp)
+#+END_SRC
+** UTF-8
+#+BEGIN_SRC emacs-lisp
+  (prefer-coding-system 'utf-8)
+  (when (display-graphic-p)
+    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+#+END_SRC
+* Emacs interaction with local tools
+** aspell: Live Spell Checking
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+#+END_SRC
+* Packages
+** beacon
+#+BEGIN_SRC emacs-lisp
+    (use-package beacon
+      :config
+      (setq beacon-blink-duration 0.8) ;; I think this is the default but have here for example of how to configure.
+  )
+  (beacon-mode 1)
+#+END_SRC
+** company
+   [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
+   #+BEGIN_SRC emacs-lisp
+     (use-package company)
+     (company-mode)
+#+END_SRC
+** dimmer
+#+BEGIN_SRC emacs-lisp
+  (use-package dimmer
+    :init
+    (dimmer-mode)
+    :config
+    (setq dimmer-fraction 0.8)
+    )
+#+END_SRC
+** dired: Enhanced Dired Capability
+*** dired
+    Most of this cribbed from https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :ensure nil
+
+    :bind
+    (("C-x C-d" . dired-jump)
+     ("C-x j"   . dired-jump-other-window)
+     ;; Make "e" act the same in dired as it does in rg/grep, ie. ;; make the buffer editable.
+     (:map dired-mode-map ("e" . dired-toggle-read-only))
+     )
+    :config
+    (progn
+      (setq dired-recursive-copies 'always
+            dired-recursive-deletes 'always
+            dired-dwim-target t
+            dired-hide-details-mode 1
+            delete-by-moving-to-trash t
+            global-auto-revert-non-file-buffers t
+            wdired-allow-to-change-permissions t
+            auto-revert-verbose nil) ;; Auto refresh Dired, but be quiet about it
+      )
+      (define-key dired-mode-map (kbd ".") 'dired-up-directory)
+    )
+
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
+
+  ;;
+  ;; https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
+  ;;
+  (defun mydired-sort ()
+    "Sort dired listings with directories first."
+    (save-excursion
+      (let (buffer-read-only)
+        (forward-line 2) ;; beyond dir. header
+        (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+      (set-buffer-modified-p nil)))
+
+  (defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+    "Sort dired listings with directories first before adding marks."
+    (mydired-sort))
+
+  ;; https://www.wisdomandwonder.com/article/10395/hide-uninteresting-files-in-dired-mode (for the setup)
+  ;; https://stackoverflow.com/a/43632653 (for the regex help and use of the rx package)
+  (setq dired-omit-verbose nil)
+  (add-hook 'dired-mode-hook #'dired-omit-mode)
+
+  ;; We want to *keep* the ".." as this is easier than ^ to go up a dir
+  ;; but we don't want the "." nor the Mac specific .DS_Store metadata file.
+  (setq dired-omit-files
+        (rx (or (seq bol (? ".") "#")
+                (seq bol ".DS_Store" eol)
+                (seq bol "." eol)
+                )))
+#+END_SRC
+*** diredfl: Extra font lock rules for a more colourful dired
+    Most of this cribbed from https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
+#+BEGIN_SRC emacs-lisp
+  (use-package diredfl)
+  (add-hook 'dired-mode-hook 'diredfl-mode)
+  #+END_SRC
+** doom-modeline:  Mode Line (#)
+   [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
+   http://www.emacswiki.org/emacs/DisplayTime
+   http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package doom-modeline
+    :defer t
+    :config
+    (setq display-time-string-forms '((propertize (format-time-string "%F %R" now))))
+;;    :hook (after-init . doom-modeline-init)
+    )
+  (display-time-mode t)
+#+END_SRC
+** editor-config
+#+BEGIN_SRC emacs-lisp
+  (use-package editorconfig
+    :init
+    (editorconfig-mode 1)
+  )
+#+END_SRC
+** eglot
+   - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
+   - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
+   - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
+#+BEGIN_SRC emacs-lisp
+  (use-package eglot)
+  (use-package pyvenv-auto)
+
+  (add-hook 'python-mode-hook 'eglot-ensure)
+
+  (pyvenv-auto-mode t)
+
+  ;; Allows us to use #!/usr/bin/env py with the universal python launcher.
+  (add-to-list 'interpreter-mode-alist '("py" . python-mode))
+#+END_SRC
+** elm-mode
+#+BEGIN_SRC emacs-lisp
+  ;; https://github.com/jcollard/elm-mode
+  (use-package elm-mode
+    :config
+    (setq elm-format-on-save t)
+    :init
+    (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
+    )
+#+END_SRC
+
+** git-timemachine
+ #+BEGIN_SRC emacs-lisp
+   (use-package git-timemachine)
+ #+END_SRC
+*** git-gutter
+ #+BEGIN_SRC emacs-lisp
+   ; Enable git-gutter
+   (use-package git-gutter
+     :init
+     (global-git-gutter-mode +1)
+     )
+ #+END_SRC
+** graphviz/dot-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package graphviz-dot-mode
+    :config
+    (setq graphviz-dot-indent-width 4))
+#+END_SRC
+** gruvbox: Color Theme
+#+BEGIN_SRC emacs-lisp
+  (use-package gruvbox-theme
+    :init
+    (progn
+      (load-theme 'gruvbox-dark-hard t))
+    )
+#+END_SRC
+** hungry-delete
+#+BEGIN_SRC emacs-lisp
+  (use-package hungry-delete
+    :init
+    (global-hungry-delete-mode)
+    )
+#+END_SRC
+** ido
+#+BEGIN_SRC emacs-lisp
+  (use-package ido
+    :init
+    (setq
+     ido-default-buffer-method 'selected-window ;; use current pane for newly switched buffer
+     ido-default-file-method 'selected-window ;; use current pane for newly opened file
+     ido-enable-flex-matching t ;; enable fuzzy matching
+     ido-file-extensions-order '(".org" ".py" ".emacs" ".txt" ".xml" ".el" ".ini" ".cfg")
+     ido-ignore-directories '(".git")
+     ido-vertical-define-keys 'C-n-and-C-p-only
+     ido-virtual-buffers '()
+     recentf-list '()
+     ))
+
+  ;; NOT WORKING:
+  ;;  (autoload 'idomenu "idomenu" nil t)
+
+  ;; NOT WORKING:
+  ;; (ido-vertical-mode 1)
+
+  (ido-mode t)
+#+END_SRC
+** ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package counsel)
+  (use-package ivy
+    :demand
+    :config
+    (setq ivy-use-virtual-buffers t
+          ivy-count-format "%d/%d ")
+
+    :config (ivy-mode)
+    )
+
+    ;; Clear buffer history...
+    ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
+    (setq ido-virtual-buffers '())
+    (setq recentf-list '())
+#+END_SRC
+** ivy-rich
+#+BEGIN_SRC emacs-lisp
+  (use-package all-the-icons-ivy-rich
+    :after ivy
+    :init (all-the-icons-ivy-rich-mode 1))
+
+  (use-package ivy-rich
+    :after ivy
+    :init (ivy-rich-mode 1))
+
+  (defun ivy-rich-switch-buffer-icon (candidate)
+    (with-current-buffer
+        (get-buffer candidate)
+      (let ((icon (all-the-icons-icon-for-mode major-mode)))
+        (if (symbolp icon)
+            (all-the-icons-icon-for-mode 'fundamental-mode)
+          icon))))
+
+  (setq ivy-rich--display-transformers-list
+        '(ivy-switch-buffer
+          (:columns
+           ((ivy-rich-switch-buffer-icon :width 2)
+            (ivy-rich-candidate (:width 30))
+            (ivy-rich-switch-buffer-size (:width 7))
+            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+            (ivy-rich-switch-buffer-project (:width 15 :face success))
+            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+           :predicate
+           (lambda (cand) (get-buffer cand)))))
+
+#+END_SRC
+
+** magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit)
+  (bind-key  (kbd "C-x C-g") 'magit-status)
+
+  ;; full screen magit-status
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+
+  (defun magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer"
+    (interactive)
+    (kill-buffer)
+    (jump-to-register :magit-fullscreen))
+
+  (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+#+END_SRC
+** markdown
+   Specifically, GithubFlavoredMarkdown-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode ("*\\.md\\'" . gfm-mode)
+    :init
+    (setq
+     markdown-command "multimarkdown"
+     markdown-open-command "/usr/local/bin/mark"
+     )
+    )
+
+  ;; Use visual-line-mode in gfm-mode
+  (defun my-gfm-mode-hook ()
+    (visual-line-mode 1))
+  (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
+#+END_SRC
+
+** org
+*** Setup
+#+BEGIN_SRC emacs-lisp
+  (when window-system (global-prettify-symbols-mode t))
+  (visual-line-mode 1)
+
+  ;; -----------------------------------------------------------------------------
+  ;; Packages
+  ;; -----------------------------------------------------------------------------
+  (use-package org
+    :defer nil
+    :init
+    (setq
+     org-M-RET-may-split-line                  nil
+     org-adapt-indentation                     t
+     org-agenda-dim-blocked-tasks              'invisible
+     org-agenda-files                          (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+     org-default-notes-file                    (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+     org-directory                             "~/Repository/00-09 System/01 Org"
+     ;; org-ellipsis                              "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+     org-enforce-todo-checkbox-dependencies    t
+     org-enforce-todo-dependencies             t
+     org-export-backends                       (quote (ascii html icalendar latex md odt))
+     org-id-prefix                             "ID" ;; We don't want simply numbers!
+     org-link-search-must-match-exact-heading  nil
+     org-list-allow-alphabetical               t
+     org-return-follows-link                   t
+     org-src-window-setup                      'current-window ;; https://irreal.org/blog/?p=8824
+     org-startup-folded                        t
+     org-startup-indented                      nil
+     org-use-fast-todo-selection               t
+     org-use-speed-commands                    t
+
+     ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+     org-refile-targets                        '((org-agenda-files :maxlevel . 2))
+
+     org-link-frame-setup '((vm . vm-visit-folder-other-frame)
+                            (vm-imap . vm-visit-imap-folder-other-frame)
+                            (gnus . org-gnus-no-new-news)
+                            (file . find-file)              ;; Used to be find-file-other-window..
+                            (wl . wl-other-frame))
+     ))
+  (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+  (use-package org-bullets
+    :after 'org
+    :init
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    )
+
+  ;; -----------------------------------------------------------------------------
+  ;; Keys.. (FIXME: Make specific to org-mode?)
+  ;; -----------------------------------------------------------------------------
+  (global-set-key (kbd "C-c l")     'org-store-link)
+  (global-set-key (kbd "C-c a")     'org-agenda)
+  (global-set-key (kbd "C-c |")     'org-table-create-or-convert-from-region)
+  (global-set-key (kbd "C-c C->")   'org-do-promote)
+  (global-set-key (kbd "C-c C-<")   'org-do-demote)
+  (global-set-key (kbd "C-<right>") 'org-metaright)
+  (global-set-key (kbd "C-<left>")  'org-metaleft)
+
+  ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
+  ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
+  (add-to-list 'org-file-apps '(directory . emacs))
+
+  ;; -----------------------------------------------------------------------------
+  ;; Babel: setup languages so we can evaluate source-code blocks
+  ;; -----------------------------------------------------------------------------
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (js         . t)
+     (python     . t)
+     (shell      . t)
+     (sqlite     . t)
+     ))
+  (setq org-confirm-babel-evaluate nil)
+
+  ;; -----------------------------------------------------------------------------
+  ;; Prettify Symbols
+  ;; -----------------------------------------------------------------------------
+  (defun pb/load-prettify-symbols ()
+    (interactive)
+    (setq prettify-symbols-alist
+          (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                  '(("#+begin_src" . ?)
+                    ("#+end_src" . ?)
+                    ("#+begin_example" . ?)
+                    ("#+end_example" . ?)
+                    ("#+header:" . ?)
+                    (":properties:" . ?)))))
+  (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
+
+  ;; ---------------------------------------------------------------------------
+  ;; GTD
+  ;; ---------------------------------------------------------------------------
+  ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
+  (setq org-todo-keywords
+        '((sequence
+           "PLANNED(p)"
+           "TODO(t)"
+           "READ(r)"
+           "WORKING(w)"
+           "SPEC(c)"
+           "BLOCKED(b)"
+           "DELEGATED(e)"
+           "IN_QA(q)"
+           "SCHEDULED(s)"
+           "TODELEGATE(g)"
+           "WAITING(a)"
+           "HOLD(h)"
+           "|"
+           "DONE(x)"
+           )))
+
+  ;; Format of DONE items
+  (setq org-fontify-done-headline t)
+  (set-face-attribute 'org-done          nil :foreground "gray36" :strike-through nil)
+  (set-face-attribute 'org-headline-done nil :foreground "gray36" :strike-through nil)
+
+  ;; Capture
+  (define-key global-map (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates
+        '(
+          ("b" "Standard Bookmark"
+           entry (file+olp "/Users/peter/Repository/00-09 System/01 Org/bookmarks.org" "-INBOX-")
+           "*** TODO %(org-cliplink-capture)\n"
+           :prepend t
+           )
+
+          ("B" "Book"
+           entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/books.org" "-INBOX-")
+           "** TODO %c\n  :PROPERTIES:\n  :DATE_ADDED:  %t\n  :END:\n\n"
+           :prepend t
+           )
+
+          ("t" "GTD TODO Entry"
+           entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX")
+           "** TODO %?\n\n"
+           )
+
+          ("p" "Project TODO Entry"
+           entry (file "/Users/peter/Repository/00-09 System/01 Org/projects.org")
+           "** TODO %?\n\n"
+           :prepend t
+           )
+
+          ("j" "Journal"
+           entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org")
+           "*** %?"
+           )
+
+          )
+        )
+
+  ;; -----------------------------------------------------------------------------
+  ;; Attachments
+  ;; -----------------------------------------------------------------------------
+  (setq org-attach-id-dir "/Users/peter/Repository/00-09 System/01 Org/repository-org-attach-style")
+  (setq org-attach-method "mv")
+  (add-hook 'dired-mode-hook
+            (lambda ()
+              (define-key dired-mode-map (kbd "C-c C-x a")
+                (lambda ()
+                  (interactive)
+                  (let ((org-attach-method 'mv))
+                    (call-interactively #'org-attach-dired-to-subtree))))))
+#+END_SRC
+** pdf
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :config
+    (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+    )
+  (pdf-tools-install)
+#+END_SRC
+
+** postgresql
+#+BEGIN_SRC emacs-lisp
+  (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
+  (add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
+  (add-hook 'sql-interactive-mode-hook 'sql-rename-buffer)
+
+  ; Execute this after opening up SQL to get a scratch
+  ; buffer from which to submit sql with C-c C-b
+  (defun pgsql-scratch ()
+    (interactive)
+    (switch-to-buffer "*scratch*")
+    (sql-mode)
+    (sql-set-product "postgres")
+    (sql-set-sqli-buffer)
+    (sql-rename-buffer)
+  )
+
+  (defun upcase-sql-keywords ()
+    (interactive)
+    (save-excursion
+      (dolist (keywords sql-mode-postgres-font-lock-keywords)
+        (goto-char (point-min))
+        (while (re-search-forward (car keywords) nil t)
+          (goto-char (+ 1 (match-beginning 0)))
+          (when (eql font-lock-keyword-face (face-at-point))
+            (backward-char)
+            (upcase-word 1)
+            (forward-char))))))
+
+  ;; (setq sql-connection-alist
+  ;;     '(
+  ;;       (bart
+  ;;       (sql-product 'postgres)
+  ;;       (sql-port 5432)
+  ;;       (sql-server "localhost")
+  ;;       (sql-user "django")
+  ;;       (sql-password "--sorry, getme from environment--")
+  ;;       (sql-database "bart-dw"))
+
+  ;;       (bart-prod
+  ;;       (sql-product 'postgres)
+  ;;       (sql-port 5432)
+  ;;       (sql-server "bartdw-prod.xxxxx.amazonaws.com")
+  ;;       (sql-user "bartdw")
+  ;;       (sql-password "--sorry, getme from environment--")
+  ;;       (sql-database "bartdw"))
+
+  ;;       (udp
+  ;;       (sql-product 'postgres)
+  ;;       (sql-port 5432)
+  ;;       (sql-server "localhost")
+  ;;       (sql-user "django")
+  ;;       (sql-password "--sorry, getme from environment--")
+  ;;       (sql-database "udp"))
+  ;;      )
+  ;; )
+
+  ; Wrappers for quick startup (not used anymore past Energy Solutions)
+  ;; (defun sql-bart-prod ()
+  ;;   (interactive)
+  ;;   (wrapper-sql-connect 'postgres 'bart-prod))
+
+  ;; (defun sql-bart ()
+  ;;   (interactive)
+  ;;   (wrapper-sql-connect 'postgres 'bart))
+
+  ;; (defun sql-udp ()
+  ;;   (interactive)
+  ;;   (wrapper-sql-connect 'postgres 'udp))
+
+  (defun wrapper-sql-connect (product connection)
+    (setq sql-product product)
+    (sql-connect connection))
+#+END_SRC
+** rainbow-delimiters
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters)
+  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                      :foreground 'unspecified
+                      :inherit 'error)
+  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+#+END_SRC
+** rainbow-mode
+   Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
+#+BEGIN_SRC emacs-lisp
+   (use-package rainbow-mode)
+   (add-to-list 'auto-mode-alist '("\\.css$" . rainbow-mode))
+#+END_SRC
+** rg
+#+BEGIN_SRC emacs-lisp
+  (use-package rg)
+
+  (defun rg-autoload-keymap ()
+    (interactive)
+    (if (not (require 'rg nil t))
+        (user-error (format "Cannot load rg"))
+      (let ((key-vec (this-command-keys-vector)))
+        (global-set-key key-vec rg-global-map)
+        (setq unread-command-events
+          (mapcar (lambda (ev) (cons t ev))
+                  (listify-key-sequence key-vec))))))
+
+  (global-set-key (kbd "C-c s") #'rg-autoload-keymap)
+  (with-eval-after-load 'rg
+     ;; Your settings goes here.
+  )
+#+END_SRC
+** shell
+#+BEGIN_SRC emacs-lisp
+  ;-------------------------------------------------------------------------------
+  ; Shell mode setup
+  ;-------------------------------------------------------------------------------
+  (setq explicit-shell-file-name "/usr/local/bin/fish")
+  (setq shell-pushd-regexp "push[d]*")
+  (setq shell-popd-regexp   "pop[d]*")
+
+  ;; Make git work within shell
+  (setenv "PAGER"  "/bin/cat")
+  (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
+#+END_SRC
+** smart-jump
+#+BEGIN_SRC emacs-lisp
+  (use-package smart-jump
+    :config
+    (smart-jump-setup-default-registers))
+#+END_SRC
+** terminals
+   "C-c C-t" to go into "buffer" mode (for copy/paste operations)
+ #+BEGIN_SRC emacs-lisp
+    (use-package vterm
+      :config
+      (setq vterm-shell "/usr/local/bin/fish"))
+
+   (defun pb/vterm-create ()
+     "Create an terminal buffer using libvterm with the requested name"
+     (interactive)  ;; "Prompt\n shell name:")
+     (let ((shell-name (read-string "Shell name?: " nil)))
+       (vterm)
+       (rename-buffer (concat "@" shell-name "@"))))
+#+END_SRC
+
+** text
+#+BEGIN_SRC emacs-lisp
+  (setq text-mode-hook
+        '(lambda ()
+           (auto-fill-mode    0)
+           (setq fill-column 96)
+           (setq tab-width    4)
+           (setq fci-rule-color "#3C3D37")
+           (flyspell-mode)
+           ))
+  (setq default-major-mode 'text-mode)
+#+END_SRC
+** vlf
+#+BEGIN_SRC emacs-lisp
+  (use-package vlf)
+#+END_SRC
+** web-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.dhtml\\'" . web-mode))
+  (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
+
+  ;; For IRIS, we've decided to have HTML indenting match Python:
+  (defun my-web-mode-hook ()
+    "Hooks for Web mode."
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset    2)
+    (setq web-mode-code-indent-offset   2)
+    (setq web-mode-indent-style         2)
+    (setq fill-column                  96)
+    )
+
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+#+END_SRC
+
+** whitespace-mode
+   [[https://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/][Highlight Lines that Exceed a Certain Length Limit | Emacs Redux]]
+#+BEGIN_SRC emacs-lisp
+  (setq whitespace-style '(face lines-tail))
+  (setq whitespace-line-column 96)
+  (custom-set-faces
+    '(whitespace-line ((t (:foreground "red" :background "black"))))
+    )
+  (add-hook 'prog-mode-hook 'whitespace-mode)
+#+END_SRC
+** NOT WORKING ibuf-ext: Swap regular buffer view for IBuffers (Extended)
+#+BEGIN_SRC emacs-lisp
+    ;; (use-package ibuf-ext
+    ;;   :config
+    ;;   (setq
+    ;;    typescript-indent-level 2
+    ;;    Buffer-menu-sort-column 4)
+    ;;   )
+
+  ;;  (add-to-list 'ibuffer-never-show-predicates "^\\%")
+  ;;  (defalias 'list-buffers 'ibuffer)
+#+END_SRC
+** NOT WORKING uniquify: Better Buffer Names
+   Create better unique buffer names for the same file name from different directories.
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package uniquify
+  ;;   :config
+  ;;   (setq uniquify-buffer-name-style 'forward))
+#+END_SRC
+** NOT WORKING zygosphere: Toggle to single buffer and back to all buffers again
+   [[https://github.com/LouisKottmann/zygospore.el/blob/master/README.md]]
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package zygospore)
+  ;; Zygospore (redefine C-x 1 to be a frame-configuration "toggle")
+  ;;  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+#+END_SRC
+** NOT WORKING apple-script (too old of a version?)
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package apples-mode)
+  ;; (add-to-list 'auto-mode-alist '("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
+#+END_SRC
+* Custom Commands
+  These are custom commands I used on regular basis (almost all of which are cribbed from
+  others, credit given as much as possible!)
+** Center window (aka frame) on current monitor
+   [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
+#+BEGIN_SRC emacs-lisp
+  (defun pb/recenter (&optional frame)
+    "Center FRAME on the screen. FRAME can be a frame name, a terminal name, or a frame. If FRAME is omitted or nil, use currently selected frame."
+    (interactive)
+    (unless (eq 'maximised (frame-parameter nil 'fullscreen))
+      (modify-frame-parameters
+       frame '((user-position . t) (top . 0.5) (left . 0.5)))))
+#+END_SRC
+** Change case of text
+   [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
+#+BEGIN_SRC emacs-lisp
+  (defun toggle-letter-case ()
+    "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
+    (interactive)
+    (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
+      (if (region-active-p)
+          (setq p1 (region-beginning) p2 (region-end))
+        (let ((bds (bounds-of-thing-at-point 'word) ) )
+          (setq p1 (car bds) p2 (cdr bds)) ) )
+
+      (when (not (eq last-command this-command))
+        (save-excursion
+          (goto-char p1)
+          (cond
+           ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
+           ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
+           ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
+           ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
+           ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
+           (t (put this-command 'state "all lower") ) ) )
+        )
+
+      (cond
+       ((string= "all lower" (get this-command 'state))
+        (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
+       ((string= "init caps" (get this-command 'state))
+        (upcase-region p1 p2) (put this-command 'state "all caps"))
+       ((string= "all caps" (get this-command 'state))
+        (downcase-region p1 p2) (put this-command 'state "all lower")) )
+      )
+    )
+  (global-set-key (kbd "M-l") 'toggle-letter-case) ;; Overrides existing mapping
+#+END_SRC
+** Ctrl-A behaviour enhancement
+   C-a now goes to logical beginning of line before going to physical beginning of one.
+#+BEGIN_SRC emacs-lisp
+  (defun pb/key-back-to-indentation-or-beginning () (interactive)
+    (if (= (point) (progn (back-to-indentation) (point)))
+        (beginning-of-line)))
+  (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
+#+END_SRC
+** Fill/unfill with M-q
+   http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
+#+BEGIN_SRC emacs-lisp
+  (defun endless/fill-or-unfill ()
+    (interactive)
+    (let ((fill-column
+           (if (eq last-command 'endless/fill-or-unfill)
+               (progn (setq this-command nil)
+                      (point-max))
+             fill-column)))
+      (call-interactively #'fill-paragraph)))
+
+  (global-set-key [remap     fill-paragraph] #'endless/fill-or-unfill)
+  (global-set-key [remap org-fill-paragraph] #'endless/fill-or-unfill)
+#+END_SRC
+** Smarter C-w (backward word)
+   [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
+    #+BEGIN_SRC emacs-lisp
+    ;; Here's a better C-w
+    ;;
+    ;; kill region if active, otherwise kill backward word
+    (defun kill-region-or-backward-word ()
+      (interactive)
+      (if (region-active-p)
+          (kill-region (region-beginning) (region-end))
+        (backward-kill-word 1)))
+
+    (global-set-key (kbd "C-w") (lambda () (interactive) (kill-region-or-backward-word)))
+#+END_SRC
+** Kill this buffer
+   [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
+#+BEGIN_SRC emacs-lisp
+  ;; Kill *this* buffer
+  (defun pb/kill-this-buffer ()
+    "Kill the current buffer."
+    (interactive)
+    (kill-buffer (current-buffer)))
+  (global-set-key (kbd "C-x k") 'pb/kill-this-buffer)
+#+END_SRC
+** Kill a process
+   [[https://xenodium.com/emacs-quick-kill-process/]]
+#+BEGIN_SRC emacs-lisp
+  ;; (require 'dwim-shell-command)
+  ;; (require 'map)
+  ;; (require 'proced)
+  ;; (require 'seq)
+
+  ;; (defun pb/dwim-shell-commands-kill-process ()
+  ;;   "Select and kill process."
+  ;;   (interactive)
+  ;;   (let* ((pid-width 5)
+  ;;          (comm-width 25)
+  ;;          (user-width 10)
+  ;;          (processes (proced-process-attributes))
+  ;;          (candidates
+  ;;           (mapcar (lambda (attributes)
+  ;;                     (let* ((process (cdr attributes))
+  ;;                            (pid (format (format "%%%ds" pid-width) (map-elt process 'pid)))
+  ;;                            (user (format (format "%%-%ds" user-width)
+  ;;                                          (truncate-string-to-width
+  ;;                                           (map-elt process 'user) user-width nil nil t)))
+  ;;                            (comm (format (format "%%-%ds" comm-width)
+  ;;                                          (truncate-string-to-width
+  ;;                                           (map-elt process 'comm) comm-width nil nil t)))
+  ;;                            (args-width (- (window-width) (+ pid-width user-width comm-width 3)))
+  ;;                            (args (map-elt process 'args)))
+  ;;                       (cons (if args
+  ;;                                 (format "%s %s %s %s" pid user comm (truncate-string-to-width args args-width nil nil t))
+  ;;                               (format "%s %s %s" pid user comm))
+  ;;                             process)))
+  ;;                   processes))
+  ;;          (selection (map-elt candidates
+  ;;                              (completing-read "kill process: "
+  ;;                                               (seq-sort
+  ;;                                                (lambda (p1 p2)
+  ;;                                                  (string-lessp (nth 2 (split-string (string-trim (car p1))))
+  ;;                                                                (nth 2 (split-string (string-trim (car p2))))))
+  ;;                                                candidates) nil t)))
+  ;;          (prompt-title (format "%s %s %s"
+  ;;                                (map-elt selection 'pid)
+  ;;                                (map-elt selection 'user)
+  ;;                                (map-elt selection 'comm))))
+  ;;     (when (y-or-n-p (format "Kill? %s" prompt-title))
+  ;;       (dwim-shell-command-on-marked-files
+  ;;        (format "Kill %s" prompt-title)
+  ;;        (format "kill -9 %d" (map-elt selection 'pid))
+  ;;        :utils "kill"
+  ;;        :error-autofocus t
+  ;;        :silent-success t))))
+
+#+END_SRC
+** Line join
+   [[http://whattheemacsd.com/key-bindings.el-03.html]]
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
+#+END_SRC
+** Shortcuts to common org files
+*** TODO 'ocl' Org Cliplink
+ #+BEGIN_SRC emacs-lisp
+ (defun pb/ocl ()
+    (interactive)
+    (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
+ #+END_SRC
+*** DONE 'gtd' Goto GTD file
+ #+BEGIN_SRC emacs-lisp
+ (defun gtd ()
+    (interactive)
+    (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
+ #+END_SRC
+*** DONE 'ref' Goto REFERENCE.org file.
+ #+BEGIN_SRC emacs-lisp
+ (defun ref ()
+    (interactive)
+    (find-file "~/Repository/00-09 System/01 Org/REFERENCE"))
+ #+END_SRC
+*** DONE Better insert date-time
+ #+BEGIN_SRC emacs-lisp
+   (defun pb/insert-date ()
+     "Insert current date and or time.
+
+      Insert date in this format: yyyy-mm-DD.
+      When called with `universal-argument', prompt for a format to use.
+      If there's text selection, delete it first.
+
+      Do not use this function in lisp code. Call `format-time-string' directly.
+
+      Based directly on:
+      URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
+      version 2016-12-18
+      "
+     (interactive)
+     (when (use-region-p) (delete-region (region-beginning) (region-end)))
+     (let (($style
+            (string-to-number
+             (substring
+              (ido-completing-read
+               "Style:"
+               '(
+                 "0 → <2019-04-18 Thu> (default)"
+                 "1 → <2019-04-18 Thu 11:09>"
+                 "2 → 2019-04-18"
+                 "3 → 2016-10-10T19:39:47-07:00"
+                 "4 → 2016-10-10 19:39:58-07:00"
+                 "5 → Monday, October 10, 2016"
+                 "6 → Mon, Oct 10, 2016"
+                 "7 → October 10, 2016"
+                 "8 → Oct 10, 2016"
+                 )) 0 1)
+            )))
+       (insert
+        (cond
+         ((= $style 0)
+          ;; <2019-04-18 Thu>
+          (format-time-string "<%Y-%m-%d %a>")
+          )
+
+         ((= $style 1)
+          ;; <2019-04-18 Thu 13:15>
+          (format-time-string "<%Y-%m-%d %a %H:%m>")
+          )
+
+         ((= $style 2)
+          ;; 2016-10-10
+          (format-time-string "%Y-%m-%d")
+          )
+
+         ((= $style 3)
+          ;; 2016-10-10T19:02:23-07:00
+          (concat
+           (format-time-string "%Y-%m-%dT%T")
+           (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
+          )
+
+         ((= $style 4)
+          ;; 2016-10-10 19:10:09-07:00
+          (concat
+           (format-time-string "%Y-%m-%d %T")
+           (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
+          )
+
+         ((= $style 5)
+          ;; Monday, October 10, 2016
+          (format-time-string "%A, %B %d, %Y")
+          )
+         ((= $style 7)
+          ;; Mon, Oct 10, 2016
+          (format-time-string "%a, %b %d, %Y")
+          )
+
+         ((= $style 8)
+          ;; October 10, 2016
+          (format-time-string "%B %d, %Y")
+          )
+
+         ((= $style 8)
+          ;; Oct 10, 2016
+          (format-time-string "%b %d, %Y")
+          )
+
+         ;; Default if nothing selected: <2019-04-18 Thu>
+         (t
+          (format-time-string "<%Y-%m-%d %a>"))))))
+ #+END_SRC
+** Scroll page without moving cursor
+#+BEGIN_SRC emacs-lisp
+  (global-set-key "\M-n" (lambda () (interactive) (scroll-up 12)))
+  (global-set-key "\M-p" (lambda () (interactive) (scroll-down 12)))
+#+END_SRC
+** Smarter open line
+   [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
+#+BEGIN_SRC emacs-lisp
+  (defun pb/key-smart-open-line ()
+    "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
+    (interactive)
+    (move-end-of-line nil)
+    (newline-and-indent))
+
+  (defun pb/key-smart-open-line-above ()
+    "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
+    (interactive)
+
+    (move-beginning-of-line nil)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (global-set-key (kbd "M-o") 'pb/key-smart-open-line)
+  (global-set-key (kbd "M-O") 'pb/key-smart-open-line-above)
+#+END_SRC
+** Split current frame into evenly balanced "3"
+#+BEGIN_SRC emacs-lisp
+  (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
+#+END_SRC
+** Text/Font scaling interactively
+   [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
+#+BEGIN_SRC emacs-lisp
+  (defun set-font-everywhere (font-spec &optional all-frames)
+    (when (null (assq 'font default-frame-alist))
+      (add-to-list 'default-frame-alist '(font . "")))
+
+    (setcdr (assq 'font default-frame-alist) font-spec)
+
+    (dolist (f (if all-frames (frame-list) (list (selected-frame))))
+      (with-selected-frame f (set-frame-font font-spec t))))
+
+  (defun resize-font(font &optional n)
+    (let* ((ff (split-string font "-"))
+           (size (nth 7 ff))
+           (sizen (string-to-number size))
+           (n (or n 1))
+           (new-size (max 1 (+ n sizen))))
+      (setcar (nthcdr 7 ff) (number-to-string new-size))
+      (cons (mapconcat 'identity ff "-") new-size)))
+
+  (defun cur-font ()
+    (cdr (assq 'font (frame-parameters (selected-frame)))))
+
+  (defvar min-font-size 1)
+  (defun change-font-size (&optional decrease times)
+    (let* ((inc (* (or times 1) (if decrease -1 1)))
+           (old-font (cur-font))
+           (new-font-and-size (resize-font old-font inc))
+           (new-font (car new-font-and-size))
+           (size (cdr new-font-and-size)))
+      (unless (equal old-font new-font)
+        (set-font-everywhere new-font)
+        (message (format "%d %s" size new-font)))))
+  (defun increase-font-size(&optional n) (interactive) (change-font-size nil n))
+  (defun decrease-font-size(&optional n) (interactive) (change-font-size t n))
+
+  (define-key global-map (kbd "C-+") 'increase-font-size)
+  (define-key global-map (kbd "C--") 'decrease-font-size)
+
+#+END_SRC
+** Toggle overwrite/insert mode
+   [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
+#+BEGIN_SRC emacs-lisp
+  (when (eq system-type 'darwin)
+    ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
+    ;; copy ctrl-insert, paste shift-insert on windows keyboard
+    (global-set-key [C-help] #'clipboard-kill-ring-save)
+    (global-set-key [S-help] #'clipboard-yank)
+
+    ;; insert to toggle `overwrite-mode'
+    (global-set-key [help] #'overwrite-mode))
+#+END_SRC
+* Startup
+  We do these after everything else has been setup so we have commands available for key-mappings
+** Base Key Mappings
+#+BEGIN_SRC emacs-lisp
+  ;;
+  ;; Keys
+  ;;
+  (global-set-key (kbd "<f1>")   'goto-line)
+  (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
+  (global-set-key (kbd "<f3>")   'align-regexp)
+  (global-set-key (kbd "<f4>")   'toggle-selective-display)
+
+  ;; Separate this 2 cases:
+  ;; This one only works on selected text BUT doesn't prompt for directory or file type!
+  (global-set-key (kbd "<f5>")   'rg-dwim)
+
+  ;; This one prompts for something to query on but also asks for directory and type as well..
+  (global-set-key (kbd "C-<f5>") 'rg-literal)
+
+  (global-set-key (kbd "<f6>")   'anzu-query-replace)
+
+  ; Keyboard macro shortcuts (based on 1980's Brief editor mappings)
+  (global-set-key (kbd "<f7>")   'kmacro-start-macro)
+  (global-set-key (kbd "<f8>")   'kmacro-end-macro)
+  (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
+
+  ;; <f10> available!
+  ;; <f11> available!
+
+  (global-set-key (kbd "<f12>")  'pb/vterm-create)
+#+END_SRC
+** Files to have open when we start
+#+BEGIN_SRC emacs-lisp
+  (find-file "~/.emacs.d/config.org")
+  (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
+  (find-file "~/Repository/00-09 System/01 Org/projects.org")
+  (find-file "~/Repository/00-09 System/01 Org/journal.org")
+  (find-file "~/Repository/00-09 System/01 Org/gtd.org")
+#+END_SRC
+** Initial window size and default font
+   Which one?
+   - M-x describe-font <cr> <cr>
+   - M-x set-frame-font (Pick from list!)
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (progn
+      (if (> (x-display-pixel-width) 2000)
+          (progn
+            (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+            (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
+            (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
+            )
+
+        (set-frame-font "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+        (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
+        (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
+        )
+      )
+    )
+#+END_SRC
+
+* History
+  |---------+------------+-------------------------------------------------------------------|
+  | Started | 1990.07.13 | Make Systems (on Sunview).                                        |
+  | Updated | 1991.06.07 | Teknekron (X using twm).                                          |
+  | Updated | 1993.12.08 | Teknekron (emacs version 19).                                     |
+  | Updated | 1994.03.26 | Added tcl initialisation logic.                                   |
+  | Updated | 2006.01.08 | First real cleanup since the mid-90's (!).                        |
+  | Updated | 2006.10.02 | Configured into AXA Rosenberg.                                    |
+  | Updated | 2008.01.19 | Update/cleanup, addition of ECB, OrgMode.                         |
+  | Updated | 2011.04.15 | Added multiplatform support for Ubuntu & MacOS.                   |
+  | Updated | 2011.09.05 | Updated OrgMode for another attempt at GTD.                       |
+  | Updated | 2011.09.05 | Final tweaks obo EnergySolutions environment.                     |
+  | Updated | 2012.08.15 | Added support for Ropemacs & Pymacs for python IDE.               |
+  | Updated | 2012.08.28 | Added support for GRIN integration.                               |
+  | Updated | 2013.05.12 | Declaring dotemacs-bankruptcy! Moving to site-start architecture. |
+  | Updated | 2020.06.10 | Test and discard of lsp, rebuilt venv for elpy (~/emacs-venv)     |
+  | Updated | 2021.01.04 | Clean up of emacs folders.                                        |
+  | Updated | 2021.11.28 | Moved to PARA file organisation for all main directories.         |
+  | Updated | 2022.03.15 | Moved to support numbered file repository structure.              |
+  | Updated | 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
+  |---------+------------+-------------------------------------------------------------------|
