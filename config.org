@@ -15,7 +15,7 @@
    create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
    default-directory (concat (getenv "HOME") "/")
    font-lock-maximum-decoration t
-   ;; inhibit-compacting-font-caches t         ;; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+   inhibit-compacting-font-caches t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
    inhibit-default-init t
    inhibit-splash-screen t
    initial-scratch-message nil              ; Start scratch buffers empty..
@@ -25,6 +25,10 @@
    sentence-end-double-space nil            ; Period single space ends sentence
    show-paren-delay 0                       ; We want matching parens show immediately
    switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+   uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
+   uniquify-separator "/"
+   uniquify-after-kill-buffer-p t           ; rename after killing uniquified
+   uniquify-ignore-buffers-re "^\\*"        ; don't muck with special buffers
    vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
    visible-bell t
    )
@@ -43,40 +47,9 @@
   (unbind-key "C-z")
   (unbind-key "M-z")
 
-  (defun display-startup-echo-area-message ()
-    (message "Zen..."))
-#+END_SRC
-** Turn off scroll and tool bars
-#+BEGIN_SRC emacs-lisp
+  ;; Turn off scroll and tool bars
   (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (functionp 'tool-bar-mode  ) (tool-bar-mode   -1))
-#+END_SRC
-** NOT WORKING: Correct paths
-   Correct paths so they work below and later in the session: https://github.com/purcell/exec-path-from-shell
-#+BEGIN_SRC emacs-lisp
-;;  (when (memq window-system '(mac ns))
-;;    (exec-path-from-shell-initialize))
-#+END_SRC
-** Delete trailing whitespace
-   (without using whitespace-mode!)
-   http://ergoemacs.org/emacs/elisp_compaqct_empty_lines.html
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'before-save-hook 'delete-trailing-whitespace)
-#+END_SRC
-** Align regex
-   Align with spaces only
-#+BEGIN_SRC emacs-lisp
-  (defadvice align-regexp (around align-regexp-with-spaces)
-    "Never use tabs for alignment."
-    (let ((indent-tabs-mode nil))
-      ad-do-it))
-  (ad-activate 'align-regexp)
-#+END_SRC
-** UTF-8
-#+BEGIN_SRC emacs-lisp
-  (prefer-coding-system 'utf-8)
-  (when (display-graphic-p)
-    (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 #+END_SRC
 * Emacs interaction with local tools
 ** aspell: Live Spell Checking
@@ -108,71 +81,7 @@
     (setq dimmer-fraction 0.8)
     )
 #+END_SRC
-** dired: Enhanced Dired Capability
-*** dired
-    Most of this cribbed from https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
-#+BEGIN_SRC emacs-lisp
-  (use-package dired
-    :ensure nil
-
-    :bind
-    (("C-x C-d" . dired-jump)
-     ("C-x j"   . dired-jump-other-window)
-     ;; Make "e" act the same in dired as it does in rg/grep, ie. ;; make the buffer editable.
-     (:map dired-mode-map ("e" . dired-toggle-read-only))
-     )
-    :config
-    (progn
-      (setq dired-recursive-copies 'always
-            dired-recursive-deletes 'always
-            dired-dwim-target t
-            dired-hide-details-mode 1
-            delete-by-moving-to-trash t
-            global-auto-revert-non-file-buffers t
-            wdired-allow-to-change-permissions t
-            auto-revert-verbose nil) ;; Auto refresh Dired, but be quiet about it
-      )
-      (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-    )
-
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
-
-  ;;
-  ;; https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
-  ;;
-  (defun mydired-sort ()
-    "Sort dired listings with directories first."
-    (save-excursion
-      (let (buffer-read-only)
-        (forward-line 2) ;; beyond dir. header
-        (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-      (set-buffer-modified-p nil)))
-
-  (defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-    "Sort dired listings with directories first before adding marks."
-    (mydired-sort))
-
-  ;; https://www.wisdomandwonder.com/article/10395/hide-uninteresting-files-in-dired-mode (for the setup)
-  ;; https://stackoverflow.com/a/43632653 (for the regex help and use of the rx package)
-  (setq dired-omit-verbose nil)
-  (add-hook 'dired-mode-hook #'dired-omit-mode)
-
-  ;; We want to *keep* the ".." as this is easier than ^ to go up a dir
-  ;; but we don't want the "." nor the Mac specific .DS_Store metadata file.
-  (setq dired-omit-files
-        (rx (or (seq bol (? ".") "#")
-                (seq bol ".DS_Store" eol)
-                (seq bol "." eol)
-                )))
-#+END_SRC
-*** diredfl: Extra font lock rules for a more colourful dired
-    Most of this cribbed from https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
-#+BEGIN_SRC emacs-lisp
-  (use-package diredfl)
-  (add-hook 'dired-mode-hook 'diredfl-mode)
-  #+END_SRC
+** dired:
 ** doom-modeline:  Mode Line (#)
    [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
    http://www.emacswiki.org/emacs/DisplayTime
@@ -209,8 +118,8 @@
   (add-to-list 'interpreter-mode-alist '("py" . python-mode))
 #+END_SRC
 ** elm-mode
+   https://github.com/jcollard/elm-mode
 #+BEGIN_SRC emacs-lisp
-  ;; https://github.com/jcollard/elm-mode
   (use-package elm-mode
     :config
     (setq elm-format-on-save t)
@@ -218,7 +127,6 @@
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
 #+END_SRC
-
 ** git-timemachine
  #+BEGIN_SRC emacs-lisp
    (use-package git-timemachine)
@@ -237,7 +145,7 @@
     :config
     (setq graphviz-dot-indent-width 4))
 #+END_SRC
-** gruvbox: Color Theme
+** gruvbox
 #+BEGIN_SRC emacs-lisp
   (use-package gruvbox-theme
     :init
@@ -717,47 +625,6 @@
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+END_SRC
 
-** whitespace-mode
-   [[https://emacsredux.com/blog/2013/05/31/highlight-lines-that-exceed-a-certain-length-limit/][Highlight Lines that Exceed a Certain Length Limit | Emacs Redux]]
-#+BEGIN_SRC emacs-lisp
-  (setq whitespace-style '(face lines-tail))
-  (setq whitespace-line-column 96)
-  (custom-set-faces
-    '(whitespace-line ((t (:foreground "red" :background "black"))))
-    )
-  (add-hook 'prog-mode-hook 'whitespace-mode)
-#+END_SRC
-** NOT WORKING ibuf-ext: Swap regular buffer view for IBuffers (Extended)
-#+BEGIN_SRC emacs-lisp
-    ;; (use-package ibuf-ext
-    ;;   :config
-    ;;   (setq
-    ;;    typescript-indent-level 2
-    ;;    Buffer-menu-sort-column 4)
-    ;;   )
-
-  ;;  (add-to-list 'ibuffer-never-show-predicates "^\\%")
-  ;;  (defalias 'list-buffers 'ibuffer)
-#+END_SRC
-** NOT WORKING uniquify: Better Buffer Names
-   Create better unique buffer names for the same file name from different directories.
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package uniquify
-  ;;   :config
-  ;;   (setq uniquify-buffer-name-style 'forward))
-#+END_SRC
-** NOT WORKING zygosphere: Toggle to single buffer and back to all buffers again
-   [[https://github.com/LouisKottmann/zygospore.el/blob/master/README.md]]
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package zygospore)
-  ;; Zygospore (redefine C-x 1 to be a frame-configuration "toggle")
-  ;;  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
-#+END_SRC
-** NOT WORKING apple-script (too old of a version?)
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package apples-mode)
-  ;; (add-to-list 'auto-mode-alist '("\\.\\(applescri\\|sc\\)pt\\'" . apples-mode))
-#+END_SRC
 * Custom Commands
   These are custom commands I used on regular basis (almost all of which are cribbed from
   others, credit given as much as possible!)
@@ -1130,6 +997,10 @@
   ;; <f11> available!
 
   (global-set-key (kbd "<f12>")  'pb/vterm-create)
+
+  ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
+  ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
+  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+END_SRC
 ** Files to have open when we start
 #+BEGIN_SRC emacs-lisp
@@ -1159,6 +1030,9 @@
         )
       )
     )
+
+  (defun display-startup-echo-area-message () (message "Zen..."))
+
 #+END_SRC
 
 * History

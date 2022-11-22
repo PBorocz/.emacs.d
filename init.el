@@ -2,12 +2,8 @@
 (defun pb/_display-startup-time ()
   (message
    "Emacs loaded in %s with %d garbage collections."
-   (format
-    "%.2f seconds"
-    (float-time
-     (time-subtract after-init-time before-init-time)))
+   (format "%.2f seconds" (float-time (time-subtract after-init-time before-init-time)))
    gcs-done))
-
 (add-hook 'emacs-startup-hook #'pb/_display-startup-time)
 
 ;; Start "standard"
@@ -44,16 +40,18 @@
   ;; Cleanup
   (garbage-collect)
   )
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(uniquify ibuf-ext use-package smart-jump gruvbox-theme doom-modeline diminish)))
+   '(use-package smart-jump gruvbox-theme doom-modeline diminish)))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(whitespace-line ((t (:foreground "red" :background "black")))))
+ )
