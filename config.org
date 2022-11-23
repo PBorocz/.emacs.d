@@ -19,7 +19,6 @@
   - [[#hungry-delete][hungry-delete]]
   - [[#ido][ido]]
   - [[#ivy][ivy]]
-  - [[#ivy-rich][ivy-rich]]
   - [[#magit][magit]]
   - [[#markdown][markdown]]
   - [[#org][org]]
@@ -282,9 +281,8 @@
 ** hungry-delete
 #+BEGIN_SRC emacs-lisp
   (use-package hungry-delete
-    :init
-    (global-hungry-delete-mode)
-    )
+      :init
+      (global-hungry-delete-mode))
 #+END_SRC
 ** ido
 #+BEGIN_SRC emacs-lisp
@@ -313,21 +311,13 @@
 #+BEGIN_SRC emacs-lisp
   (use-package counsel)
   (use-package ivy
-    :demand
     :config
-    (setq ivy-use-virtual-buffers t
-          ivy-count-format "%d/%d ")
+    (setq
+     ivy-use-virtual-buffers t
+     ivy-count-format "%d/%d "
+     )
+    :config (ivy-mode))
 
-    :config (ivy-mode)
-    )
-
-    ;; Clear buffer history...
-    ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
-    (setq ido-virtual-buffers '())
-    (setq recentf-list '())
-#+END_SRC
-** ivy-rich
-#+BEGIN_SRC emacs-lisp
   (use-package all-the-icons-ivy-rich
     :after ivy
     :init (all-the-icons-ivy-rich-mode 1))
@@ -336,6 +326,12 @@
     :after ivy
     :init (ivy-rich-mode 1))
 
+  ;; Clear buffer history...
+  ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
+  (setq ido-virtual-buffers '())
+  (setq recentf-list '())
+
+  ;; ???
   (defun ivy-rich-switch-buffer-icon (candidate)
     (with-current-buffer
         (get-buffer candidate)
@@ -358,7 +354,6 @@
            (lambda (cand) (get-buffer cand)))))
 
 #+END_SRC
-
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
@@ -441,7 +436,7 @@
 
   (use-package org-bullets
     :after 'org
-    :init
+    :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
     )
 
@@ -451,9 +446,8 @@
 
   (use-package toc-org
     :after 'org
-    :init
-    (add-hook 'org-mode-hook 'toc-org-mode)
     )
+  (add-hook 'org-mode-hook 'toc-org-mode)
 
   ;; -----------------------------------------------------------------------------
   ;; Keys.. (FIXME: Make specific to org-mode?)
