@@ -81,7 +81,60 @@
     (setq dimmer-fraction 0.8)
     )
 #+END_SRC
-** dired:
+** dired
+   https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :ensure nil
+
+    :bind
+    (("C-x C-d" . dired-jump)
+     ("C-x j"   . dired-jump-other-window)
+     )
+
+    ;; Make "e" act the same in dired as it does in rg/grep, ie.
+    ;; make the buffer editable.
+    :bind (:map dired-mode-map ("e" . dired-toggle-read-only))
+
+    :config
+    (progn
+      (setq dired-recursive-copies 'always
+            dired-recursive-deletes 'always
+            dired-dwim-target t
+            dired-hide-details-mode 1
+            delete-by-moving-to-trash t
+            global-auto-revert-non-file-buffers t
+            wdired-allow-to-change-permissions t
+            auto-revert-verbose nil) ;; Auto refresh Dired, but be quiet about it
+      )
+      (define-key dired-mode-map (kbd ".") 'dired-up-directory)
+    )
+
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
+
+  ;;
+  ;; https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
+  ;;
+  (defun mydired-sort ()
+    "Sort dired listings with directories first."
+    (save-excursion
+      (let (buffer-read-only)
+        (forward-line 2) ;; beyond dir. header
+        (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+      (set-buffer-modified-p nil)))
+
+  (defadvice dired-readin
+    (after dired-after-updating-hook first () activate)
+    "Sort dired listings with directories first before adding marks."
+    (mydired-sort))
+
+  ;;
+  ;; Extra font-lock support for dired display
+  ;; c/o https://github.com/purcell/diredfl
+  ;;
+  (add-hook 'dired-mode-hook 'diredfl-mode)
+#+END_SRC
 ** doom-modeline:  Mode Line (#)
    [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
    http://www.emacswiki.org/emacs/DisplayTime
@@ -626,6 +679,7 @@
 #+END_SRC
 
 * Custom Commands
+  {}
   These are custom commands I used on regular basis (almost all of which are cribbed from
   others, credit given as much as possible!)
 ** Center window (aka frame) on current monitor
