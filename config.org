@@ -1084,6 +1084,7 @@
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+BEGIN_SRC emacs-lisp
+  (setq ns-use-thin-smoothing t)
   (when window-system
     (progn
       (if (> (x-display-pixel-width) 2000)
@@ -1093,17 +1094,13 @@
             (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
             )
 
-        (set-frame-font "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+        (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
         (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
         (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
         )
       )
     )
-
-  (defun display-startup-echo-area-message () (message "Zen..."))
-
 #+END_SRC
-
 * History
   |---------+------------+-------------------------------------------------------------------|
   | Started | 1990.07.13 | Make Systems (on Sunview).                                        |
