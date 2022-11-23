@@ -1,3 +1,60 @@
+* Contents                                                              :TOC:
+- [[#personal-information][Personal Information]]
+- [[#basic-configuration][Basic Configuration]]
+- [[#local-tools][Local Tools]]
+  - [[#aspell][aspell]]
+- [[#packages][Packages]]
+  - [[#anzu][anzu]]
+  - [[#beacon][beacon]]
+  - [[#company][company]]
+  - [[#dimmer][dimmer]]
+  - [[#dired][dired]]
+  - [[#doom-modeline][doom-modeline:]]
+  - [[#editor-config][editor-config]]
+  - [[#eglot][eglot]]
+  - [[#elm-mode][elm-mode]]
+  - [[#git-timemachine][git-timemachine]]
+  - [[#graphvizdot-mode][graphviz/dot-mode]]
+  - [[#gruvbox][gruvbox]]
+  - [[#hungry-delete][hungry-delete]]
+  - [[#ido][ido]]
+  - [[#ivy][ivy]]
+  - [[#ivy-rich][ivy-rich]]
+  - [[#magit][magit]]
+  - [[#markdown][markdown]]
+  - [[#org][org]]
+  - [[#pdf][pdf]]
+  - [[#postgresql][postgresql]]
+  - [[#rainbow-delimiters][rainbow-delimiters]]
+  - [[#rainbow-mode][rainbow-mode]]
+  - [[#rg][rg]]
+  - [[#shell][shell]]
+  - [[#smart-jump][smart-jump]]
+  - [[#terminals][terminals]]
+  - [[#text][text]]
+  - [[#vlf][vlf]]
+  - [[#web-mode][web-mode]]
+- [[#custom-commands][Custom Commands]]
+  - [[#center-window-aka-frame-on-current-monitor][Center window (aka frame) on current monitor]]
+  - [[#change-case-of-text][Change case of text]]
+  - [[#ctrl-a-behaviour-enhancement][Ctrl-A behaviour enhancement]]
+  - [[#fillunfill-with-m-q][Fill/unfill with M-q]]
+  - [[#smarter-c-w-backward-word][Smarter C-w (backward word)]]
+  - [[#kill-this-buffer][Kill this buffer]]
+  - [[#kill-a-process][Kill a process]]
+  - [[#line-join][Line join]]
+  - [[#shortcuts-to-common-org-files][Shortcuts to common org files]]
+  - [[#scroll-page-without-moving-cursor][Scroll page without moving cursor]]
+  - [[#smarter-open-line][Smarter open line]]
+  - [[#split-current-frame-into-evenly-balanced-3][Split current frame into evenly balanced "3"]]
+  - [[#textfont-scaling-interactively][Text/Font scaling interactively]]
+  - [[#toggle-overwriteinsert-mode][Toggle overwrite/insert mode]]
+- [[#startup][Startup]]
+  - [[#base-key-mappings][Base Key Mappings]]
+  - [[#files-to-have-open-when-we-start][Files to have open when we start]]
+  - [[#initial-window-size-and-default-font][Initial window size and default font]]
+- [[#history][History]]
+
 * Personal Information
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -57,8 +114,9 @@
   (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
   (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
 #+END_SRC
-* Emacs interaction with local tools
-** aspell: Live Spell Checking
+* Local Tools
+** aspell
+   Live spell checking
 #+BEGIN_SRC emacs-lisp
   (setq ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
@@ -149,7 +207,7 @@
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
 #+END_SRC
-** doom-modeline:  Mode Line (#)
+** doom-modeline:
    [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
    http://www.emacswiki.org/emacs/DisplayTime
    http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
@@ -158,8 +216,9 @@
     :defer t
     :config
     (setq display-time-string-forms '((propertize (format-time-string "%F %R" now))))
-;;    :hook (after-init . doom-modeline-init)
-    )
+    :init
+    (doom-modeline-mode 1))
+
   (display-time-mode t)
 #+END_SRC
 ** editor-config
@@ -338,7 +397,6 @@
 #+END_SRC
 
 ** org
-*** Setup
 #+BEGIN_SRC emacs-lisp
   (when window-system (global-prettify-symbols-mode t))
   (visual-line-mode 1)
@@ -385,6 +443,16 @@
     :after 'org
     :init
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    )
+
+  (use-package org-cliplink
+    :after 'org
+    )
+
+  (use-package toc-org
+    :after 'org
+    :init
+    (add-hook 'org-mode-hook 'toc-org-mode)
     )
 
   ;; -----------------------------------------------------------------------------
