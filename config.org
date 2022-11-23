@@ -35,9 +35,10 @@
 
   ;; Setup defaults across all buffers:
   (setq-default
-   indent-tabs-mode nil  ; Make sure spaces are used when indenting anything!
-   yank-excluded-properties 't ; Clipboard yank is pasting graphics from micro$ instead of text. Strip all properties
+   abbrev-mode t                ; abbrev-mode everywhere to address common typos..
    frame-title-format '("%b (%m)")
+   indent-tabs-mode nil         ; Make sure spaces are used when indenting anything!
+   yank-excluded-properties 't  ; Clipboard yank is pasting graphics from micro$ instead of text. Strip all properties
    )
 
   ;; We want y or n to be sufficient for yes/no prompts.
@@ -50,6 +51,11 @@
   ;; Turn off scroll and tool bars
   (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (functionp 'tool-bar-mode  ) (tool-bar-mode   -1))
+
+  ;; abbrev-mode for typo corrections
+  ;; tell emacs where to read abbrev's from:
+  (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
+  (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
 #+END_SRC
 * Emacs interaction with local tools
 ** aspell: Live Spell Checking
@@ -58,6 +64,14 @@
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+END_SRC
 * Packages
+** anzu
+   Usage of this package is below in the ~Base Key Mapping~ section
+#+BEGIN_SRC emacs-lisp
+  (use-package anzu
+    :config
+    (global-anzu-mode)
+    )
+#+END_SRC
 ** beacon
 #+BEGIN_SRC emacs-lisp
     (use-package beacon
@@ -1041,6 +1055,7 @@
   (global-set-key (kbd "C-<f5>") 'rg-literal)
 
   (global-set-key (kbd "<f6>")   'anzu-query-replace)
+  (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 
   ; Keyboard macro shortcuts (based on 1980's Brief editor mappings)
   (global-set-key (kbd "<f7>")   'kmacro-start-macro)
