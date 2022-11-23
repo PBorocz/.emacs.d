@@ -414,6 +414,7 @@
      org-enforce-todo-dependencies             t
      org-export-backends                       (quote (ascii html icalendar latex md odt))
      org-id-prefix                             "ID" ;; We don't want simply numbers!
+     org-hide-leading-stars                    t
      org-link-search-must-match-exact-heading  nil
      org-list-allow-alphabetical               t
      org-return-follows-link                   t
