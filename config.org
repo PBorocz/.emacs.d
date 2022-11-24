@@ -1,59 +1,3 @@
-* Contents                                                              :TOC:
-- [[#personal-information][Personal Information]]
-- [[#basic-configuration][Basic Configuration]]
-- [[#local-tools][Local Tools]]
-  - [[#aspell][aspell]]
-- [[#packages][Packages]]
-  - [[#anzu][anzu]]
-  - [[#beacon][beacon]]
-  - [[#company][company]]
-  - [[#dimmer][dimmer]]
-  - [[#dired][dired]]
-  - [[#doom-modeline][doom-modeline:]]
-  - [[#editor-config][editor-config]]
-  - [[#eglot][eglot]]
-  - [[#elm-mode][elm-mode]]
-  - [[#git-timemachine][git-timemachine]]
-  - [[#graphvizdot-mode][graphviz/dot-mode]]
-  - [[#gruvbox][gruvbox]]
-  - [[#hungry-delete][hungry-delete]]
-  - [[#ido][ido]]
-  - [[#ivy][ivy]]
-  - [[#magit][magit]]
-  - [[#markdown][markdown]]
-  - [[#org][org]]
-  - [[#pdf][pdf]]
-  - [[#postgresql][postgresql]]
-  - [[#rainbow-delimiters][rainbow-delimiters]]
-  - [[#rainbow-mode][rainbow-mode]]
-  - [[#rg][rg]]
-  - [[#shell][shell]]
-  - [[#smart-jump][smart-jump]]
-  - [[#terminals][terminals]]
-  - [[#text][text]]
-  - [[#vlf][vlf]]
-  - [[#web-mode][web-mode]]
-- [[#custom-commands][Custom Commands]]
-  - [[#center-window-aka-frame-on-current-monitor][Center window (aka frame) on current monitor]]
-  - [[#change-case-of-text][Change case of text]]
-  - [[#ctrl-a-behaviour-enhancement][Ctrl-A behaviour enhancement]]
-  - [[#fillunfill-with-m-q][Fill/unfill with M-q]]
-  - [[#smarter-c-w-backward-word][Smarter C-w (backward word)]]
-  - [[#kill-this-buffer][Kill this buffer]]
-  - [[#kill-a-process][Kill a process]]
-  - [[#line-join][Line join]]
-  - [[#shortcuts-to-common-org-files][Shortcuts to common org files]]
-  - [[#scroll-page-without-moving-cursor][Scroll page without moving cursor]]
-  - [[#smarter-open-line][Smarter open line]]
-  - [[#split-current-frame-into-evenly-balanced-3][Split current frame into evenly balanced "3"]]
-  - [[#textfont-scaling-interactively][Text/Font scaling interactively]]
-  - [[#toggle-overwriteinsert-mode][Toggle overwrite/insert mode]]
-- [[#startup][Startup]]
-  - [[#base-key-mappings][Base Key Mappings]]
-  - [[#files-to-have-open-when-we-start][Files to have open when we start]]
-  - [[#initial-window-size-and-default-font][Initial window size and default font]]
-- [[#history][History]]
-
 * Personal Information
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -446,11 +390,6 @@
   (use-package org-cliplink
     :after 'org
     )
-
-  (use-package toc-org
-    :after 'org
-    )
-  (add-hook 'org-mode-hook 'toc-org-mode)
 
   ;; -----------------------------------------------------------------------------
   ;; Keys.. (FIXME: Make specific to org-mode?)
