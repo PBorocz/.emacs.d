@@ -1084,6 +1084,7 @@
       ("counries" "countries" nil :count 0)
       ("countains" "contains" nil :count 0)
       ("countires" "countries" nil :count 0)
+      ("countrie" "country" nil :count 0)
       ("countrie's" "countries, countries', country's" nil :count 0)
       ("coururier" "courier, couturier" nil :count 0)
       ("coverted" "converted, covered, coveted" nil :count 0)

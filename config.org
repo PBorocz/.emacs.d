@@ -89,6 +89,8 @@
    visible-bell t
    )
 
+  (defalias 'list-buffers 'ibuffer) ; make ibuffer default
+
   ;; Setup defaults across all buffers:
   (setq-default
    abbrev-mode t                ; abbrev-mode everywhere to address common typos..
