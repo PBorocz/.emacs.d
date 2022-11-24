@@ -1,5 +1,6 @@
 #+TITLE: Emacs Configuration
 #+AUTHOR: Peter Borocz
+#+OPTION: todo:t
 
 * Introduction
   My Emacs setup after decadal bankruptcy filing.
@@ -7,9 +8,13 @@
   The configuration depends on Org mode. Specifically [[file:init.el][init.el]] sets up a few initial GUI settings, bootstraps
   [[https://github.com/jwiegley/use-package][use-package]], and loads [[file:config.org][config.org]], which is where the majority of the configuration magic happens.
 * Notes
-  I've been using ~(require 'xxx)~ since 1990. November, 2022 is my /first/ attempt at using [[https://github.com/jwiegley/use-package][use-package]]
-  over an above simply cutting/pasting other people's usage. There's a LOT to be cleaned up so
-  don't take my usage as idiomatic!
+  I've been happily using ~(require 'xxx)~ since 1990. However, startup times have continued to
+  ramp up (albeit only once per day at most).
+
+  Thus, this repo reflects my /first/ attempt at actually cleaning up and using [[https://github.com/jwiegley/use-package][use-package]] over
+  an above simply cutting/pasting other people's usage.
+
+  There's a LOT to be cleaned up and learned so don't take my usage as idiomatic!
 * GTD
 *** TODO [#3] Address ido-vertical-mode and ido-menu
 *** TODO [#2] Optimisation and more idiomatic use-package usage:
