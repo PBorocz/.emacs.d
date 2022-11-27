@@ -695,9 +695,32 @@
 
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+END_SRC
+** yasnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config
+    (yas-global-mode t)
+    ;; Bind `SPC' to `yas-expand' when snippet expansion available (it
+    ;; will still call `self-insert-command' otherwise).
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+    )
 
+  (add-hook 'python-mode-hook
+            (lambda ()
+              (setq yas-buffer-local-condition
+                    '(if (python-syntax-comment-or-string-p)
+                         '(require-snippet-condition . force-in-comment)
+                       t))))
+
+  ;; https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings
+  (defun yas-no-expand-in-comment/string ()
+    (setq yas-buffer-local-condition
+          '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
+               '(require-snippet-condition . force-in-comment)
+             t)))
+  (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+#+END_SRC
 * Custom Commands
-  {}
   These are custom commands I used on regular basis (almost all of which are cribbed from
   others, credit given as much as possible!)
 ** Center window (aka frame) on current monitor
