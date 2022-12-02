@@ -1072,26 +1072,23 @@
   (global-set-key (kbd "<f1>")   'goto-line)
   (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
   (global-set-key (kbd "<f3>")   'align-regexp)
-  (global-set-key (kbd "<f4>")   'toggle-selective-display)
+  ;; <f4> available!
 
-  ;; Separate this 2 cases:
+  ;; Separate these into 2 cases:
   ;; This one only works on selected text BUT doesn't prompt for directory or file type!
   (global-set-key (kbd "<f5>")   'rg-dwim)
-
-  ;; This one prompts for something to query on but also asks for directory and type as well..
+  ;; While this one prompts for something to query on but also asks for directory and type as well..
   (global-set-key (kbd "C-<f5>") 'rg-literal)
 
   (global-set-key (kbd "<f6>")   'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 
-  ; Keyboard macro shortcuts (based on 1980's Brief editor mappings)
+  ; Keyboard macro shortcuts (based on 1980's Brief editor mappings! ;-)
   (global-set-key (kbd "<f7>")   'kmacro-start-macro)
   (global-set-key (kbd "<f8>")   'kmacro-end-macro)
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
-
   ;; <f10> available!
   ;; <f11> available!
-
   (global-set-key (kbd "<f12>")  'pb/vterm-create)
 
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
