@@ -300,6 +300,10 @@
            (lambda (cand) (get-buffer cand)))))
 
 #+END_SRC
+** justfile
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\justfile?\\'" . makefile-mode))
+#+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
@@ -336,7 +340,6 @@
     (visual-line-mode 1))
   (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
 #+END_SRC
-
 ** org
 #+BEGIN_SRC emacs-lisp
   (when window-system (global-prettify-symbols-mode t))
@@ -359,6 +362,7 @@
      org-enforce-todo-checkbox-dependencies    t
      org-enforce-todo-dependencies             t
      org-export-backends                       (quote (ascii html icalendar latex md odt))
+     org-hide-emphasis-markers                 t
      org-id-prefix                             "ID" ;; We don't want simply numbers!
      org-hide-leading-stars                    t
      org-link-search-must-match-exact-heading  nil
@@ -380,6 +384,10 @@
                             (wl . wl-other-frame))
      ))
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
   (use-package org-bullets
     :after 'org
@@ -1113,12 +1121,14 @@
     (progn
       (if (> (x-display-pixel-width) 2000)
           (progn
-            (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+            ;; (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+            (set-frame-font   "-*-Red Hat Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
             (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
             (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
             )
 
-        (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+        ;; (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+        (set-frame-font   "-*-Red Hat Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
         (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
         (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
         )
