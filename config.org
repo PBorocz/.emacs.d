@@ -302,7 +302,10 @@
 #+END_SRC
 ** justfile
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\justfile?\\'" . makefile-mode))
+  (use-package just-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
+    )
 #+END_SRC
 ** magit
 #+BEGIN_SRC emacs-lisp
