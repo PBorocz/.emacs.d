@@ -655,12 +655,12 @@
     :config
     (smart-jump-setup-default-registers))
 #+END_SRC
-** terminals
+** vterminals
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+BEGIN_SRC emacs-lisp
-    (use-package vterm
-      :config
-      (setq vterm-shell "/usr/local/bin/fish"))
+   (use-package vterm
+     :config
+     (setq vterm-shell "/usr/local/bin/fish"))
 
    (defun pb/vterm-create ()
      "Create an terminal buffer using libvterm with the requested name"
@@ -668,6 +668,10 @@
      (let ((shell-name (read-string "Shell name?: " nil)))
        (vterm)
        (rename-buffer (concat "@" shell-name "@"))))
+
+   (add-hook 'vterm-mode-hook (lambda ()
+                                (setq buffer-face-mode-face '(:family "Source Code Pro"))
+                                (buffer-face-mode)))
 #+END_SRC
 
 ** text
