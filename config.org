@@ -37,9 +37,9 @@
 
   ;; Setup defaults across all buffers:
   (setq-default
-   abbrev-mode t                ; abbrev-mode everywhere to address common typos..
    frame-title-format '("%b (%m)")
    indent-tabs-mode nil         ; Make sure spaces are used when indenting anything!
+   truncate-lines t             ; Start out with NO line truncation.
    yank-excluded-properties 't  ; Clipboard yank is pasting graphics from micro$ instead of text. Strip all properties
    )
 
@@ -54,10 +54,10 @@
   (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
   (if (functionp 'tool-bar-mode  ) (tool-bar-mode   -1))
 
-  ;; abbrev-mode for typo corrections
-  ;; tell emacs where to read abbrev's from:
+  ;; abbrev-mode for typo corrections *AND* code shortcuts (/instead/ of yasnippets)
   (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
   (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
+  (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
 #+END_SRC
 * Local Tools
 ** aspell
@@ -88,6 +88,14 @@
    #+BEGIN_SRC emacs-lisp
      (use-package company)
      (company-mode)
+#+END_SRC
+** csv
+#+BEGIN_SRC emacs-lisp
+ (use-package csv-mode
+   :init
+   (add-to-list 'auto-mode-alist '("\\*.csv\\'" . csv-mode))
+   (add-to-list 'auto-mode-alist '("\\*.tsv\\'" . csv-mode))
+ )
 #+END_SRC
 ** dimmer
 #+BEGIN_SRC emacs-lisp
@@ -655,7 +663,7 @@
     :config
     (smart-jump-setup-default-registers))
 #+END_SRC
-** vterminals
+** vterm
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+BEGIN_SRC emacs-lisp
    (use-package vterm
@@ -669,6 +677,8 @@
        (vterm)
        (rename-buffer (concat "@" shell-name "@"))))
 
+   ;; RedHatMono doesn't seem to have the righ symbols for my fish-shell
+   ;; prompt line, thus, go back to SCP (which we know does ;-))
    (add-hook 'vterm-mode-hook (lambda ()
                                 (setq buffer-face-mode-face '(:family "Source Code Pro"))
                                 (buffer-face-mode)))
