@@ -23,7 +23,6 @@
    ring-bell-function 'ignore
    search-highlight t
    sentence-end-double-space nil            ; Period single space ends sentence
-   show-paren-delay 0                       ; We want matching parens show immediately
    switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
    uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
    uniquify-separator "/"
@@ -50,10 +49,6 @@
   (unbind-key "C-z")
   (unbind-key "M-z")
 
-  ;; Turn off scroll and tool bars
-  (if (functionp 'scroll-bar-mode) (scroll-bar-mode -1))
-  (if (functionp 'tool-bar-mode  ) (tool-bar-mode   -1))
-
   ;; abbrev-mode for typo corrections *AND* code shortcuts (/instead/ of yasnippets)
   (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
   (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
@@ -67,6 +62,42 @@
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+END_SRC
 * Packages
+** --built-ins--
+   Handle configuration of built-in packages (hence, ~:ensure nil~)
+#+BEGIN_SRC emacs-lisp
+  (use-package tool-bar
+    :ensure nil
+    :config
+    (tool-bar-mode -1))
+
+  (use-package scroll-bar
+    :ensure nil
+    :config
+    (scroll-bar-mode -1))
+
+  (use-package menu-bar
+    :unless (eq system-type 'darwin)
+    :ensure nil
+    :config
+    (menu-bar-mode -1))
+
+  (use-package paren
+    :ensure nil
+    :init
+    (setq show-paren-delay 0)  ; We want matching parens show immediately
+    :config
+    (show-paren-mode t))
+
+  (use-package time
+    :ensure nil
+    :init
+    (setq display-time-day-and-date t
+          display-time-24hr-format t
+          display-time-use-mail-icon t
+          display-time-interval 10)
+    :config
+    (display-time))
+#+END_SRC
 ** anzu
    Usage of this package is below in the ~Base Key Mapping~ section
 #+BEGIN_SRC emacs-lisp
@@ -86,8 +117,17 @@
 ** company
    [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
    #+BEGIN_SRC emacs-lisp
-     (use-package company)
-     (company-mode)
+     (use-package company
+       :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
+       :demand t
+       :init
+       (setq company-idle-delay 0.1
+             company-minimum-prefix-length 1)
+       :bind (:map company-active-map
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous))
+       :config
+       (global-company-mode))
 #+END_SRC
 ** csv
 #+BEGIN_SRC emacs-lisp
@@ -166,13 +206,11 @@
    http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
-    :defer t
-    :config
-    (setq display-time-string-forms '((propertize (format-time-string "%F %R" now))))
     :init
+    (setq doom-modeline-vcs-max-length 20
+          display-time-string-forms '((propertize (format-time-string "%F %R" now))))
+    :config
     (doom-modeline-mode 1))
-
-  (display-time-mode t)
 #+END_SRC
 ** editor-config
 #+BEGIN_SRC emacs-lisp
@@ -251,15 +289,10 @@
      ido-vertical-define-keys 'C-n-and-C-p-only
      ido-virtual-buffers '()
      recentf-list '()
-     ))
-
-  ;; NOT WORKING:
-  ;;  (autoload 'idomenu "idomenu" nil t)
-
-  ;; NOT WORKING:
-  ;; (ido-vertical-mode 1)
-
-  (ido-mode t)
+     )
+    :config
+    (ido-mode t)
+    )
 #+END_SRC
 ** ivy
 #+BEGIN_SRC emacs-lisp
@@ -613,17 +646,25 @@
 #+END_SRC
 ** rainbow-delimiters
 #+BEGIN_SRC emacs-lisp
-  (use-package rainbow-delimiters)
-  (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-                      :foreground 'unspecified
-                      :inherit 'error)
-  (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-#+END_SRC
+  (use-package rainbow-delimiters
+    :config
+    (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                        :foreground 'unspecified
+                        :inherit 'error)
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+  (use-package prog-mode
+    :ensure nil
+    :hook ((prog-mode . rainbow-delimiters-mode)))
+ #+END_SRC
 ** rainbow-mode
    Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
 #+BEGIN_SRC emacs-lisp
-   (use-package rainbow-mode)
-   (add-to-list 'auto-mode-alist '("\\.css$" . rainbow-mode))
+  (use-package rainbow-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.css$" . rainbow-mode))
+    (add-to-list 'auto-mode-alist '("\\.html$" . rainbow-mode))
+    )
 #+END_SRC
 ** rg
 #+BEGIN_SRC emacs-lisp
@@ -721,29 +762,27 @@
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+END_SRC
 ** yasnippet
+   While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
+   consider worthwhile, thus, keep use of yasnippets for now.
 #+BEGIN_SRC emacs-lisp
-  (use-package yasnippet
-    :config
-    (yas-global-mode t)
-    ;; Bind `SPC' to `yas-expand' when snippet expansion available (it
-    ;; will still call `self-insert-command' otherwise).
-    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
-    )
-
-  (add-hook 'python-mode-hook
-            (lambda ()
-              (setq yas-buffer-local-condition
-                    '(if (python-syntax-comment-or-string-p)
-                         '(require-snippet-condition . force-in-comment)
-                       t))))
-
-  ;; https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings
+  ;; Don't do snippet expansion within comments/docstrings for py:
+  ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
   (defun yas-no-expand-in-comment/string ()
     (setq yas-buffer-local-condition
           '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
                '(require-snippet-condition . force-in-comment)
              t)))
-  (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+
+  (use-package yasnippet
+    :config
+
+    ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
+    (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+
+    ;; Use the method above to keep snippets only when we're writing actual code.
+    (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+
+    (yas-global-mode t))
 #+END_SRC
 * Custom Commands
   These are custom commands I used on regular basis (almost all of which are cribbed from
@@ -1153,23 +1192,23 @@
     )
 #+END_SRC
 * History
-  |---------+------------+-------------------------------------------------------------------|
-  | Started | 1990.07.13 | Make Systems (on Sunview).                                        |
-  | Updated | 1991.06.07 | Teknekron (X using twm).                                          |
-  | Updated | 1993.12.08 | Teknekron (emacs version 19).                                     |
-  | Updated | 1994.03.26 | Added tcl initialisation logic.                                   |
-  | Updated | 2006.01.08 | First real cleanup since the mid-90's (!).                        |
-  | Updated | 2006.10.02 | Configured into AXA Rosenberg.                                    |
-  | Updated | 2008.01.19 | Update/cleanup, addition of ECB, OrgMode.                         |
-  | Updated | 2011.04.15 | Added multiplatform support for Ubuntu & MacOS.                   |
-  | Updated | 2011.09.05 | Updated OrgMode for another attempt at GTD.                       |
-  | Updated | 2011.09.05 | Final tweaks obo EnergySolutions environment.                     |
-  | Updated | 2012.08.15 | Added support for Ropemacs & Pymacs for python IDE.               |
-  | Updated | 2012.08.28 | Added support for GRIN integration.                               |
-  | Updated | 2013.05.12 | Declaring dotemacs-bankruptcy! Moving to site-start architecture. |
-  | Updated | 2020.06.10 | Test and discard of lsp, rebuilt venv for elpy (~/emacs-venv)     |
-  | Updated | 2021.01.04 | Clean up of emacs folders.                                        |
-  | Updated | 2021.11.28 | Moved to PARA file organisation for all main directories.         |
-  | Updated | 2022.03.15 | Moved to support numbered file repository structure.              |
-  | Updated | 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
-  |---------+------------+-------------------------------------------------------------------|
+  |------------+-------------------------------------------------------------------|
+  | 1990.07.13 | Make Systems (on Sunview).                                        |
+  | 1991.06.07 | Teknekron (X using twm).                                          |
+  | 1993.12.08 | Teknekron (emacs version 19).                                     |
+  | 1994.03.26 | Added tcl initialisation logic.                                   |
+  | 2006.01.08 | First real cleanup since the mid-90's (!).                        |
+  | 2006.10.02 | Configured into AXA Rosenberg.                                    |
+  | 2008.01.19 | Update/cleanup, addition of ECB, OrgMode.                         |
+  | 2011.04.15 | Added multiplatform support for Ubuntu & MacOS.                   |
+  | 2011.09.05 | Updated OrgMode for another attempt at GTD.                       |
+  | 2011.09.05 | Final tweaks obo EnergySolutions environment.                     |
+  | 2012.08.15 | Added support for Ropemacs & Pymacs for python IDE.               |
+  | 2012.08.28 | Added support for GRIN integration.                               |
+  | 2013.05.12 | Declaring dotemacs-bankruptcy! Moving to site-start architecture. |
+  | 2020.06.10 | Test and discard of lsp, rebuilt venv for elpy (~/emacs-venv)     |
+  | 2021.01.04 | Clean up of emacs folders.                                        |
+  | 2021.11.28 | Moved to PARA file organisation for all main directories.         |
+  | 2022.03.15 | Moved to support numbered file repository structure.              |
+  | 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
+  |------------+-------------------------------------------------------------------|
