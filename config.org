@@ -269,6 +269,11 @@
     (progn
       (load-theme 'gruvbox-dark-hard t))
     )
+
+  ;; org-level-4 is the most common level in my projects file for GTD entries,
+  ;; however, I don't want the "red", swap 4 and 5:
+  (set-face-attribute 'org-level-4 nil :foreground "#b8bb26") ;; gruvbox-neutral_green
+  (set-face-attribute 'org-level-5 nil :foreground "#fb4934") ;; gruvbox-neutral_red
 #+END_SRC
 ** hungry-delete
 #+BEGIN_SRC emacs-lisp
@@ -417,6 +422,7 @@
      org-startup-indented                      nil
      org-use-fast-todo-selection               t
      org-use-speed-commands                    t
+     ;; org-ellipsis "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
 
      ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
      org-refile-targets                        '((org-agenda-files :maxlevel . 2))
@@ -478,12 +484,19 @@
     (interactive)
     (setq prettify-symbols-alist
           (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                  '(("#+begin_src" . ?)
-                    ("#+end_src" . ?)
+                  '(("#+begin_src"     . ?)
+                    ("#+end_src"       . ?)
+
                     ("#+begin_example" . ?)
-                    ("#+end_example" . ?)
-                    ("#+header:" . ?)
-                    (":properties:" . ?)))))
+                    ("#+end_example"   . ?)
+
+                    ("#+header:"       . ?)
+
+                    (":properties:"    . ?)
+                    (":end:"           . ?🛑)
+                    )
+                  )
+          )
   (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
 
   ;; ---------------------------------------------------------------------------
@@ -492,16 +505,11 @@
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords
         '((sequence
+           "IDEA(i)"
            "PLANNED(p)"
            "TODO(t)"
-           "READ(r)"
            "WORKING(w)"
-           "SPEC(c)"
-           "BLOCKED(b)"
-           "DELEGATED(e)"
-           "IN_QA(q)"
            "SCHEDULED(s)"
-           "TODELEGATE(g)"
            "WAITING(a)"
            "HOLD(h)"
            "|"
@@ -517,36 +525,10 @@
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
         '(
-          ("b" "Standard Bookmark"
-           entry (file+olp "/Users/peter/Repository/00-09 System/01 Org/bookmarks.org" "-INBOX-")
-           "*** TODO %(org-cliplink-capture)\n"
-           :prepend t
-           )
-
-          ("B" "Book"
-           entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/books.org" "-INBOX-")
-           "** TODO %c\n  :PROPERTIES:\n  :DATE_ADDED:  %t\n  :END:\n\n"
-           :prepend t
-           )
-
-          ("t" "GTD TODO Entry"
-           entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX")
-           "** TODO %?\n\n"
-           )
-
-          ("p" "Project TODO Entry"
-           entry (file "/Users/peter/Repository/00-09 System/01 Org/projects.org")
-           "** TODO %?\n\n"
-           :prepend t
-           )
-
-          ("j" "Journal"
-           entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org")
-           "*** %?"
-           )
-
-          )
-        )
+          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+          ))
 
   ;; -----------------------------------------------------------------------------
   ;; Attachments
