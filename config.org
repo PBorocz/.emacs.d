@@ -694,14 +694,15 @@
      :config
      (setq vterm-shell "/usr/local/bin/fish"))
 
-   (defun pb/vterm-create ()
+   (defun pb/vterm ()
      "Create an terminal buffer using libvterm with the requested name"
-     (interactive)  ;; "Prompt\n shell name:")
-     (let ((shell-name (read-string "Shell name?: " nil)))
-       (vterm)
-       (rename-buffer (concat "@" shell-name "@"))))
+     (interactive)
+     (let ((shell-name (read-string "Name?: " nil)))
+       ;; Having my shells start with something easy makes buffer list management nicer
+       (vterm (concat "@" shell-name)))
+     )
 
-   ;; RedHatMono doesn't seem to have the righ symbols for my fish-shell
+   ;; RedHatMono doesn't seem to have the right symbols for my fish-shell
    ;; prompt line, thus, go back to SCP (which we know does ;-))
    (add-hook 'vterm-mode-hook (lambda ()
                                 (setq buffer-face-mode-face '(:family "Source Code Pro"))
@@ -1136,7 +1137,7 @@
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
   ;; <f10> available!
   ;; <f11> available!
-  (global-set-key (kbd "<f12>")  'pb/vterm-create)
+  (global-set-key (kbd "<f12>")  'pb/vterm)
 
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
