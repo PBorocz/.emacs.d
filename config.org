@@ -695,23 +695,16 @@
  #+BEGIN_SRC emacs-lisp
    (use-package vterm
      :config
-     (setq vterm-shell "/usr/local/bin/fish"))
+     (setq vterm-shell "/usr/local/bin/fish")
 
-   (defun pb/vterm ()
-     "Create an terminal buffer using libvterm with the requested name"
-     (interactive)
-     (let ((shell-name (read-string "Name?: " nil)))
-       ;; Having my shells start with something easy makes buffer list management nicer
-       (vterm (concat "@" shell-name)))
+     :init
+     ;; RedHatMono doesn't seem to have the right symbols for my fish-shell
+     ;; prompt line, thus, go back to SCP (which we know does ;-))
+     (add-hook 'vterm-mode-hook (lambda ()
+                                  (setq buffer-face-mode-face '(:family "Source Code Pro"))
+                                  (buffer-face-mode)))
      )
-
-   ;; RedHatMono doesn't seem to have the right symbols for my fish-shell
-   ;; prompt line, thus, go back to SCP (which we know does ;-))
-   (add-hook 'vterm-mode-hook (lambda ()
-                                (setq buffer-face-mode-face '(:family "Source Code Pro"))
-                                (buffer-face-mode)))
 #+END_SRC
-
 ** text
 #+BEGIN_SRC emacs-lisp
   (setq text-mode-hook
@@ -782,6 +775,17 @@
     (unless (eq 'maximised (frame-parameter nil 'fullscreen))
       (modify-frame-parameters
        frame '((user-position . t) (top . 0.5) (left . 0.5)))))
+#+END_SRC
+** Create a new vterm from the current buffer location:
+   [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
+#+BEGIN_SRC emacs-lisp
+  (defun pb/vterm ()
+    "Create an terminal buffer from the current dired location"
+    (interactive)
+    (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
+      (vterm (concat shell-name "@"))
+      )
+    )
 #+END_SRC
 ** Change case of text
    [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
