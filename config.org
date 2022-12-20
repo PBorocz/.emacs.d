@@ -267,7 +267,7 @@
   (use-package gruvbox-theme
     :init
     (progn
-      (load-theme 'gruvbox-dark-hard t))
+      (load-theme 'gruvbox-dark-medium t))
     )
 
   ;; org-level-4 is the most common level in my projects file for GTD entries,
@@ -719,7 +719,6 @@
            (auto-fill-mode    0)
            (setq fill-column 96)
            (setq tab-width    4)
-           (setq fci-rule-color "#3C3D37")
            (flyspell-mode)
            ))
   (setq default-major-mode 'text-mode)
