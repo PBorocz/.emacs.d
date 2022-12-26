@@ -26,8 +26,8 @@
    switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
    uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
    uniquify-separator "/"
-   uniquify-after-kill-buffer-p t           ; rename after killing uniquified
-   uniquify-ignore-buffers-re "^\\*"        ; don't muck with special buffers
+   uniquify-after-kill-buffer-p t           ; Rename after killing uniquified
+   uniquify-ignore-buffers-re "^\\*"        ; Don't muck with special buffers
    vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
    visible-bell t
    )
@@ -283,22 +283,22 @@
 #+END_SRC
 ** ido
 #+BEGIN_SRC emacs-lisp
-  (use-package ido
-    :demand t
-    :init
-    (setq
-     ido-default-buffer-method 'selected-window ;; use current pane for newly switched buffer
-     ido-default-file-method 'selected-window ;; use current pane for newly opened file
-     ido-enable-flex-matching t ;; enable fuzzy matching
-     ido-file-extensions-order '(".org" ".py" ".emacs" ".txt" ".xml" ".el" ".ini" ".cfg")
-     ido-ignore-directories '(".git")
-     ido-vertical-define-keys 'C-n-and-C-p-only
-     ido-virtual-buffers '()
-     recentf-list '()
-     )
-    :config
-    (ido-mode t)
-    )
+  ;; (use-package ido
+  ;;   :demand t
+  ;;   :init
+  ;;   (setq
+  ;;    ido-default-buffer-method 'selected-window ;; use current pane for newly switched buffer
+  ;;    ido-default-file-method 'selected-window ;; use current pane for newly opened file
+  ;;    ido-enable-flex-matching t ;; enable fuzzy matching
+  ;;    ido-file-extensions-order '(".org" ".py" ".emacs" ".txt" ".xml" ".el" ".ini" ".cfg")
+  ;;    ido-ignore-directories '(".git")
+  ;;    ido-vertical-define-keys 'C-n-and-C-p-only
+  ;;    ido-virtual-buffers '()
+  ;;    recentf-list '()
+  ;;    )
+  ;;   :config
+  ;;   (ido-mode t)
+  ;;   )
 #+END_SRC
 ** ivy
 #+BEGIN_SRC emacs-lisp
@@ -321,7 +321,7 @@
 
   ;; Clear buffer history...
   ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
-  (setq ido-virtual-buffers '())
+  ;; (setq ido-virtual-buffers '())
   (setq recentf-list '())
 
   ;; ???
@@ -372,7 +372,10 @@
     :demand t
     :bind
     ("C-x C-g" . magit-status)
-    ("q" . magit-quit-session)
+
+    :config
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+
     )
 #+END_SRC
 ** markdown
@@ -716,6 +719,58 @@
            ))
   (setq default-major-mode 'text-mode)
 #+END_SRC
+** vertico
+#+BEGIN_SRC emacs-lisp
+  ;; Enable vertico
+  (use-package vertico
+    :init
+    (vertico-mode)
+
+    ;; Different scroll margin
+    ;; (setq vertico-scroll-margin 0)
+
+    ;; Show more candidates
+    ;; (setq vertico-count 20)
+
+    ;; Grow and shrink the Vertico minibuffer
+    ;; (setq vertico-resize t)
+
+    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    ;; (setq vertico-cycle t)
+    )
+
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  ;; A few more useful configurations...
+  (use-package emacs
+    :init
+    ;; Add prompt indicator to `completing-read-multiple'.
+    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+    (defun crm-indicator (args)
+      (cons (format "[CRM%s] %s"
+                    (replace-regexp-in-string
+                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                     crm-separator)
+                    (car args))
+            (cdr args)))
+    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+    ;; Do not allow the cursor in the minibuffer prompt
+    (setq minibuffer-prompt-properties
+          '(read-only t cursor-intangible t face minibuffer-prompt))
+    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+    ;; Vertico commands are hidden in normal buffers.
+    ;; (setq read-extended-command-predicate
+    ;;       #'command-completion-default-include-p)
+
+    ;; Enable recursive minibuffers
+    (setq enable-recursive-minibuffers t))
+#+END_SRC
 ** vlf
 #+BEGIN_SRC emacs-lisp
   (use-package vlf)
@@ -848,9 +903,7 @@
 ** Smarter C-w (backward word)
    [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
     #+BEGIN_SRC emacs-lisp
-    ;; Here's a better C-w
-    ;;
-    ;; kill region if active, otherwise kill backward word
+    ;; Here's a better C-w (kill region if active, otherwise kill backward word)
     (defun kill-region-or-backward-word ()
       (interactive)
       (if (region-active-p)
@@ -868,58 +921,6 @@
     (interactive)
     (kill-buffer (current-buffer)))
   (global-set-key (kbd "C-x k") 'pb/kill-this-buffer)
-#+END_SRC
-** Kill a process
-   [[https://xenodium.com/emacs-quick-kill-process/]]
-#+BEGIN_SRC emacs-lisp
-  ;; (require 'dwim-shell-command)
-  ;; (require 'map)
-  ;; (require 'proced)
-  ;; (require 'seq)
-
-  ;; (defun pb/dwim-shell-commands-kill-process ()
-  ;;   "Select and kill process."
-  ;;   (interactive)
-  ;;   (let* ((pid-width 5)
-  ;;          (comm-width 25)
-  ;;          (user-width 10)
-  ;;          (processes (proced-process-attributes))
-  ;;          (candidates
-  ;;           (mapcar (lambda (attributes)
-  ;;                     (let* ((process (cdr attributes))
-  ;;                            (pid (format (format "%%%ds" pid-width) (map-elt process 'pid)))
-  ;;                            (user (format (format "%%-%ds" user-width)
-  ;;                                          (truncate-string-to-width
-  ;;                                           (map-elt process 'user) user-width nil nil t)))
-  ;;                            (comm (format (format "%%-%ds" comm-width)
-  ;;                                          (truncate-string-to-width
-  ;;                                           (map-elt process 'comm) comm-width nil nil t)))
-  ;;                            (args-width (- (window-width) (+ pid-width user-width comm-width 3)))
-  ;;                            (args (map-elt process 'args)))
-  ;;                       (cons (if args
-  ;;                                 (format "%s %s %s %s" pid user comm (truncate-string-to-width args args-width nil nil t))
-  ;;                               (format "%s %s %s" pid user comm))
-  ;;                             process)))
-  ;;                   processes))
-  ;;          (selection (map-elt candidates
-  ;;                              (completing-read "kill process: "
-  ;;                                               (seq-sort
-  ;;                                                (lambda (p1 p2)
-  ;;                                                  (string-lessp (nth 2 (split-string (string-trim (car p1))))
-  ;;                                                                (nth 2 (split-string (string-trim (car p2))))))
-  ;;                                                candidates) nil t)))
-  ;;          (prompt-title (format "%s %s %s"
-  ;;                                (map-elt selection 'pid)
-  ;;                                (map-elt selection 'user)
-  ;;                                (map-elt selection 'comm))))
-  ;;     (when (y-or-n-p (format "Kill? %s" prompt-title))
-  ;;       (dwim-shell-command-on-marked-files
-  ;;        (format "Kill %s" prompt-title)
-  ;;        (format "kill -9 %d" (map-elt selection 'pid))
-  ;;        :utils "kill"
-  ;;        :error-autofocus t
-  ;;        :silent-success t))))
-
 #+END_SRC
 ** Line join
    [[http://whattheemacsd.com/key-bindings.el-03.html]]
@@ -1104,7 +1105,7 @@
   (define-key global-map (kbd "C--") 'decrease-font-size)
 
 #+END_SRC
-** Toggle overwrite/insert mode
+** Use Insert key to toggle overwrite/insert
    [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
 #+BEGIN_SRC emacs-lisp
   (when (eq system-type 'darwin)
