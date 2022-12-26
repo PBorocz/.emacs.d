@@ -16,6 +16,13 @@
   ;; (config.el), it's too late].
   (setq vc-follow-symlinks t)
 
+  ;; Emacs by default caps the number of bytes read from a subprocess
+  ;; in a single chunk to 4KB. However, modern machines can take on a
+  ;; lot more. I'll set it to 1MB which is equal to the limit defined
+  ;; in /proc/sys/fs/pipe-max-size/.
+  ;; ht: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
+  (setq read-process-output-max (* 1024 1024))
+
   ;; Set up repositories
   (require 'package)
   (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))

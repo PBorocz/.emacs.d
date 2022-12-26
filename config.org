@@ -32,7 +32,7 @@
    visible-bell t
    )
 
-  (defalias 'list-buffers 'ibuffer) ; make ibuffer default
+  (defalias 'list-buffers 'ibuffer)         ; make ibuffer default for buffer management
 
   ;; Setup defaults across all buffers:
   (setq-default
@@ -129,6 +129,12 @@
        :config
        (global-company-mode))
 #+END_SRC
+** css
+#+BEGIN_SRC emacs-lisp
+  (use-package css-mode
+    :custom
+    (css-indent-offset 2))
+#+END_SRC
 ** csv
 #+BEGIN_SRC emacs-lisp
  (use-package csv-mode
@@ -224,12 +230,29 @@
    - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
    - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
 #+BEGIN_SRC emacs-lisp
-  (use-package eglot)
-  (use-package pyvenv-auto)
+  ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
+  (use-package eglot
+      :commands (eglot eglot-ensure)
+      :hook ((python-mode . eglot-ensure))
+      :bind (:map eglot-mode-map
+                  ("C-c e a" . eglot-code-actions)
+                  ("C-c e r" . eglot-rename)
+                  ("C-c e f" . eglot-format)
+                  ("C-c x r" . xref-find-references)
+                  ("C-c x f" . xref-find-definitions)
+                  ("C-c x a" . xref-find-apropos)
+                  ("C-c f n" . flymake-goto-next-error)
+                  ("C-c f p" . flymake-goto-prev-error)
+                  ("C-c f d" . flymake-show-project-diagnostics))
+      :custom
+      (eglot-autoshutdown t)
+      (eglot-menu-string "LSP")
+      (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+      )
 
-  (add-hook 'python-mode-hook 'eglot-ensure)
-
-  (pyvenv-auto-mode t)
+  (use-package pyvenv-auto
+    :custom
+    (pyvenv-auto-mode t))
 
   ;; Allows us to use #!/usr/bin/env py with the universal python launcher.
   (add-to-list 'interpreter-mode-alist '("py" . python-mode))
@@ -377,6 +400,8 @@
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
 
     )
+
+  (use-package ibuffer-git)
 #+END_SRC
 ** markdown
    Specifically, GithubFlavoredMarkdown-mode
@@ -405,40 +430,49 @@
   ;; -----------------------------------------------------------------------------
   (use-package org
     :defer nil
+    :bind (:map org-mode-map
+                ("C-M-<return>" . org-insert-subheading)
+                ("C-c l"        . org-store-link)
+                ("C-c a"        . org-agenda)
+                ("C-c |"        . org-table-create-or-convert-from-region)
+                ("C-c C->"      . org-do-promote)
+                ("C-c C-<"      . org-do-demote)
+                ("C-<right>"    . org-metaright)
+                ("C-<left>"     . org-metaleft)
+                )
     :init
-    (setq
-     org-M-RET-may-split-line                  nil
-     org-adapt-indentation                     t
-     org-agenda-dim-blocked-tasks              'invisible
-     org-agenda-files                          (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-     org-default-notes-file                    (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-     org-directory                             "~/Repository/00-09 System/01 Org"
-     ;; org-ellipsis                              "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-     org-enforce-todo-checkbox-dependencies    t
-     org-enforce-todo-dependencies             t
-     org-export-backends                       (quote (ascii html icalendar latex md odt))
-     org-hide-emphasis-markers                 t
-     org-id-prefix                             "ID" ;; We don't want simply numbers!
-     org-hide-leading-stars                    t
-     org-link-search-must-match-exact-heading  nil
-     org-list-allow-alphabetical               t
-     org-return-follows-link                   t
-     org-src-window-setup                      'current-window ;; https://irreal.org/blog/?p=8824
-     org-startup-folded                        t
-     org-startup-indented                      nil
-     org-use-fast-todo-selection               t
-     org-use-speed-commands                    t
-     ;; org-ellipsis "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+    (setq org-M-RET-may-split-line                  nil
+          org-adapt-indentation                     t
+          org-agenda-dim-blocked-tasks              'invisible
+          org-agenda-files                          (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+          org-default-notes-file                    (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+          org-directory                             "~/Repository/00-09 System/01 Org"
+          org-ellipsis                              "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+          org-enforce-todo-checkbox-dependencies    t
+          org-enforce-todo-dependencies             t
+          org-export-backends                       (quote (ascii html icalendar latex md odt))
+          org-hide-emphasis-markers                 t
+          org-id-prefix                             "ID" ;; We don't want simply numbers!
+          org-hide-leading-stars                    t
+          org-link-search-must-match-exact-heading  nil
+          org-list-allow-alphabetical               t
+          org-return-follows-link                   t
+          org-src-window-setup                      'current-window ;; https://irreal.org/blog/?p=8824
+          org-startup-folded                        t
+          org-startup-indented                      nil
+          org-use-fast-todo-selection               t
+          org-use-speed-commands                    nil
 
-     ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-     org-refile-targets                        '((org-agenda-files :maxlevel . 2))
+          ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+          org-refile-targets                        '((org-agenda-files :maxlevel . 2))
 
-     org-link-frame-setup '((vm . vm-visit-folder-other-frame)
-                            (vm-imap . vm-visit-imap-folder-other-frame)
-                            (gnus . org-gnus-no-new-news)
-                            (file . find-file)              ;; Used to be find-file-other-window..
-                            (wl . wl-other-frame))
-     ))
+          org-link-frame-setup '((vm . vm-visit-folder-other-frame)
+                                 (vm-imap . vm-visit-imap-folder-other-frame)
+                                 (gnus . org-gnus-no-new-news)
+                                 (file . find-file)              ;; Used to be find-file-other-window..
+                                 (wl . wl-other-frame))
+          ))
+
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
   (font-lock-add-keywords 'org-mode
@@ -458,13 +492,13 @@
   ;; -----------------------------------------------------------------------------
   ;; Keys.. (FIXME: Make specific to org-mode?)
   ;; -----------------------------------------------------------------------------
-  (global-set-key (kbd "C-c l")     'org-store-link)
-  (global-set-key (kbd "C-c a")     'org-agenda)
-  (global-set-key (kbd "C-c |")     'org-table-create-or-convert-from-region)
-  (global-set-key (kbd "C-c C->")   'org-do-promote)
-  (global-set-key (kbd "C-c C-<")   'org-do-demote)
-  (global-set-key (kbd "C-<right>") 'org-metaright)
-  (global-set-key (kbd "C-<left>")  'org-metaleft)
+  ;; (global-set-key (kbd "C-c l")     'org-store-link)
+  ;; (global-set-key (kbd "C-c a")     'org-agenda)
+  ;; (global-set-key (kbd "C-c |")     'org-table-create-or-convert-from-region)
+  ;; (global-set-key (kbd "C-c C->")   'org-do-promote)
+  ;; (global-set-key (kbd "C-c C-<")   'org-do-demote)
+  ;; (global-set-key (kbd "C-<right>") 'org-metaright)
+  ;; (global-set-key (kbd "C-<left>")  'org-metaleft)
 
   ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
   ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
@@ -674,6 +708,13 @@
      ;; Your settings goes here.
   )
 #+END_SRC
+** savehist
+#+BEGIN_SRC emacs-lisp
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+#+END_SRC
 ** shell
 #+BEGIN_SRC emacs-lisp
   ;-------------------------------------------------------------------------------
@@ -693,6 +734,48 @@
     :config
     (smart-jump-setup-default-registers))
 #+END_SRC
+** text
+#+BEGIN_SRC emacs-lisp
+  (setq text-mode-hook
+        '(lambda ()
+           (auto-fill-mode    0)
+           (setq fill-column 96)
+           (setq tab-width    4)
+           (flyspell-mode)
+           ))
+  (setq default-major-mode 'text-mode)
+#+END_SRC
+** vertico
+#+BEGIN_SRC emacs-lisp
+    (use-package vertico
+      :ensure t
+      :init
+      (vertico-mode)
+      :custom
+      (vertico-cycle t)
+      (vertico-count 10)
+      )
+      ;; Different scroll margin
+      ;; (setq vertico-scroll-margin 0)
+
+      ;; Show more candidates
+      ;; (setq vertico-count 20)
+
+      ;; Grow and shrink the Vertico minibuffer
+      ;; (setq vertico-resize t)
+
+      ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+      ;; (setq vertico-cycle t)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
+#+END_SRC
 ** vterm
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+BEGIN_SRC emacs-lisp
@@ -707,69 +790,6 @@
                                   (setq buffer-face-mode-face '(:family "Source Code Pro"))
                                   (buffer-face-mode)))
      )
-#+END_SRC
-** text
-#+BEGIN_SRC emacs-lisp
-  (setq text-mode-hook
-        '(lambda ()
-           (auto-fill-mode    0)
-           (setq fill-column 96)
-           (setq tab-width    4)
-           (flyspell-mode)
-           ))
-  (setq default-major-mode 'text-mode)
-#+END_SRC
-** vertico
-#+BEGIN_SRC emacs-lisp
-  ;; Enable vertico
-  (use-package vertico
-    :init
-    (vertico-mode)
-
-    ;; Different scroll margin
-    ;; (setq vertico-scroll-margin 0)
-
-    ;; Show more candidates
-    ;; (setq vertico-count 20)
-
-    ;; Grow and shrink the Vertico minibuffer
-    ;; (setq vertico-resize t)
-
-    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-    ;; (setq vertico-cycle t)
-    )
-
-  ;; Persist history over Emacs restarts. Vertico sorts by history position.
-  (use-package savehist
-    :init
-    (savehist-mode))
-
-  ;; A few more useful configurations...
-  (use-package emacs
-    :init
-    ;; Add prompt indicator to `completing-read-multiple'.
-    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-    (defun crm-indicator (args)
-      (cons (format "[CRM%s] %s"
-                    (replace-regexp-in-string
-                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                     crm-separator)
-                    (car args))
-            (cdr args)))
-    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
-
-    ;; Do not allow the cursor in the minibuffer prompt
-    (setq minibuffer-prompt-properties
-          '(read-only t cursor-intangible t face minibuffer-prompt))
-    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-    ;; Vertico commands are hidden in normal buffers.
-    ;; (setq read-extended-command-predicate
-    ;;       #'command-completion-default-include-p)
-
-    ;; Enable recursive minibuffers
-    (setq enable-recursive-minibuffers t))
 #+END_SRC
 ** vlf
 #+BEGIN_SRC emacs-lisp
