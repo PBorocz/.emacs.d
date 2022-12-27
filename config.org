@@ -694,7 +694,7 @@
     (add-to-list 'auto-mode-alist '("\\.html$" . rainbow-mode))
     )
 #+END_SRC
-** rg
+** ripgrep
 #+BEGIN_SRC emacs-lisp
   (use-package rg)
 
@@ -709,8 +709,10 @@
                   (listify-key-sequence key-vec))))))
 
   (global-set-key (kbd "C-c s") #'rg-autoload-keymap)
+
   (with-eval-after-load 'rg
-     ;; Your settings goes here.
+    (advice-add 'rg-run :after
+                #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
   )
 #+END_SRC
 ** savehist
