@@ -820,6 +820,15 @@
 
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+END_SRC
+** yaml-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.yml\\'"   . yaml-mode))
+  (add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode))
+
+  (add-hook 'yaml-mode-hook '(lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+#+END_SRC
 ** yasnippet
    While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
    consider worthwhile, thus, keep use of yasnippets for now.
