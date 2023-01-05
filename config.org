@@ -62,8 +62,8 @@
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+END_SRC
 * Packages
-** --built-ins--
-   Handle configuration of built-in packages (hence, ~:ensure nil~)
+** ~"built-ins"~
+   Handle configuration of built-in "packages" (hence, ~:ensure nil~)
 #+BEGIN_SRC emacs-lisp
   (use-package tool-bar
     :ensure nil
@@ -84,17 +84,17 @@
   (use-package paren
     :ensure nil
     :init
-    (setq show-paren-delay 0)  ; We want matching parens show immediately
+    (setq show-paren-delay 0)  ; We want matching parens to show immediately
     :config
     (show-paren-mode t))
 
   (use-package time
     :ensure nil
     :init
-    (setq display-time-day-and-date t
-          display-time-24hr-format t
+    (setq display-time-day-and-date  t
+          display-time-24hr-format   t
           display-time-use-mail-icon t
-          display-time-interval 10)
+          display-time-interval      10)
     :config
     (display-time))
 #+END_SRC
@@ -139,8 +139,8 @@
 #+BEGIN_SRC emacs-lisp
  (use-package csv-mode
    :init
-   (add-to-list 'auto-mode-alist '("\\*.csv\\'" . csv-mode))
-   (add-to-list 'auto-mode-alist '("\\*.tsv\\'" . csv-mode))
+   (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
+   (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
  )
 #+END_SRC
 ** dimmer
@@ -176,7 +176,7 @@
             delete-by-moving-to-trash           t
             dired-dwim-target                   t
             dired-hide-details-mode             nil
-            dired-listing-switches              "-la --no-user"
+            dired-listing-switches              "-la"
             dired-recursive-copies              'always
             dired-recursive-deletes             'always
             global-auto-revert-non-file-buffers t
@@ -273,6 +273,19 @@
     )
 #+END_SRC
 ** git-timemachine
+   Since we don't use it very often, here's how to use:
+   |---+-------------------------------------------------------------------------|
+   | p | Visit previous historic version                                         |
+   | n | Visit next historic version                                             |
+   | q | Exit the time machine.                                                  |
+   | b | Run magit-blame on the currently visited revision (if magit available). |
+   |---+-------------------------------------------------------------------------|
+   | w | Copy the abbreviated hash of the current historic version               |
+   | W | Copy the full hash of the current historic version                      |
+   | g | Goto nth revision                                                       |
+   | t | Goto revision by selected commit message                                |
+   | c | Show current commit using magit (if magit available).                   |
+   |---+-------------------------------------------------------------------------|
  #+BEGIN_SRC emacs-lisp
    (use-package git-timemachine)
  #+END_SRC
@@ -289,19 +302,6 @@
   (use-package graphviz-dot-mode
     :config
     (setq graphviz-dot-indent-width 4))
-#+END_SRC
-** gruvbox
-#+BEGIN_SRC emacs-lisp
-  (use-package gruvbox-theme
-    :init
-    (progn
-      (load-theme 'gruvbox-dark-medium t))
-    )
-
-  ;; org-level-4 is the most common level in my projects file for GTD entries,
-  ;; however, I don't want the "red", swap 4 and 5:
-  (set-face-attribute 'org-level-4 nil :foreground "#b8bb26") ;; gruvbox-neutral_green
-  (set-face-attribute 'org-level-5 nil :foreground "#fb4934") ;; gruvbox-neutral_red
 #+END_SRC
 ** hungry-delete
 #+BEGIN_SRC emacs-lisp
@@ -330,49 +330,49 @@
 #+END_SRC
 ** ivy
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel)
-  (use-package ivy
-    :config
-    (setq
-     ivy-use-virtual-buffers t
-     ivy-count-format "%d/%d "
-     )
-    :config (ivy-mode))
+  ;; (use-package counsel)
+  ;; (use-package ivy
+  ;;   :config
+  ;;   (setq
+  ;;    ivy-use-virtual-buffers t
+  ;;    ivy-count-format "%d/%d "
+  ;;    )
+  ;;   :config (ivy-mode))
 
-  (use-package all-the-icons-ivy-rich
-    :after ivy
-    :init (all-the-icons-ivy-rich-mode 1))
+  ;; (use-package all-the-icons-ivy-rich
+  ;;   :after ivy
+  ;;   :init (all-the-icons-ivy-rich-mode 1))
 
-  (use-package ivy-rich
-    :after ivy
-    :init (ivy-rich-mode 1))
+  ;; (use-package ivy-rich
+  ;;   :after ivy
+  ;;   :init (ivy-rich-mode 1))
 
-  ;; Clear buffer history...
-  ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
-  ;; (setq ido-virtual-buffers '())
-  (setq recentf-list '())
+  ;; ;; Clear buffer history...
+  ;; ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
+  ;; ;; (setq ido-virtual-buffers '())
+  ;; (setq recentf-list '())
 
-  ;; ???
-  (defun ivy-rich-switch-buffer-icon (candidate)
-    (with-current-buffer
-        (get-buffer candidate)
-      (let ((icon (all-the-icons-icon-for-mode major-mode)))
-        (if (symbolp icon)
-            (all-the-icons-icon-for-mode 'fundamental-mode)
-          icon))))
+  ;; ;; ???
+  ;; (defun ivy-rich-switch-buffer-icon (candidate)
+  ;;   (with-current-buffer
+  ;;       (get-buffer candidate)
+  ;;     (let ((icon (all-the-icons-icon-for-mode major-mode)))
+  ;;       (if (symbolp icon)
+  ;;           (all-the-icons-icon-for-mode 'fundamental-mode)
+  ;;         icon))))
 
-  (setq ivy-rich--display-transformers-list
-        '(ivy-switch-buffer
-          (:columns
-           ((ivy-rich-switch-buffer-icon :width 2)
-            (ivy-rich-candidate (:width 30))
-            (ivy-rich-switch-buffer-size (:width 7))
-            (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-            (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-            (ivy-rich-switch-buffer-project (:width 15 :face success))
-            (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
-           :predicate
-           (lambda (cand) (get-buffer cand)))))
+  ;; (setq ivy-rich--display-transformers-list
+  ;;       '(ivy-switch-buffer
+  ;;         (:columns
+  ;;          ((ivy-rich-switch-buffer-icon :width 2)
+  ;;           (ivy-rich-candidate (:width 30))
+  ;;           (ivy-rich-switch-buffer-size (:width 7))
+  ;;           (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+  ;;           (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+  ;;           (ivy-rich-switch-buffer-project (:width 15 :face success))
+  ;;           (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
+  ;;          :predicate
+  ;;          (lambda (cand) (get-buffer cand)))))
 
 #+END_SRC
 ** justfile
@@ -424,6 +424,11 @@
   (defun my-gfm-mode-hook ()
     (visual-line-mode 1))
   (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
+#+END_SRC
+** monokai
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+  (load-theme 'monokai :no-confirm)
 #+END_SRC
 ** org
 #+BEGIN_SRC emacs-lisp
@@ -713,7 +718,6 @@
   (with-eval-after-load 'rg
     (advice-add 'rg-run :after
                 #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
-  )
 #+END_SRC
 ** savehist
 #+BEGIN_SRC emacs-lisp
@@ -724,9 +728,6 @@
 #+END_SRC
 ** shell
 #+BEGIN_SRC emacs-lisp
-  ;-------------------------------------------------------------------------------
-  ; Shell mode setup
-  ;-------------------------------------------------------------------------------
   (setq explicit-shell-file-name "/usr/local/bin/fish")
   (setq shell-pushd-regexp "push[d]*")
   (setq shell-popd-regexp   "pop[d]*")
@@ -806,9 +807,9 @@
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode)
 
-  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.dhtml\\'" . web-mode))
-  (setq web-mode-engines-alist '(("django" . "\\.html\\'")))
+  (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.dhtml$" . web-mode))
+  (setq web-mode-engines-alist '(("django" . "\\.html$")))
 
   ;; For IRIS, we've decided to have HTML indenting match Python:
   (defun my-web-mode-hook ()
@@ -824,12 +825,12 @@
 #+END_SRC
 ** yaml-mode
 #+BEGIN_SRC emacs-lisp
-  (use-package yaml-mode)
+  ;; (use-package yaml-mode)
 
-  (add-to-list 'auto-mode-alist '("\\.yml\\'"   . yaml-mode))
-  (add-to-list 'auto-mode-alist '("\\.yaml?\\'" . yaml-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.yml$"  . yaml-mode))
+  ;; (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
-  (add-hook 'yaml-mode-hook '(lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+  ;; (add-hook 'yaml-mode-hook '(lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
 #+END_SRC
 ** yasnippet
    While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
@@ -868,7 +869,6 @@
        frame '((user-position . t) (top . 0.5) (left . 0.5)))))
 #+END_SRC
 ** Create a new vterm from the current buffer location:
-   [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
 #+BEGIN_SRC emacs-lisp
   (defun pb/vterm ()
     "Create an terminal buffer from the current dired location"

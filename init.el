@@ -45,6 +45,10 @@
     :config
     (load custom-file 'noerror))
 
+  ;; If necessary for debugging config issues..
+  ;; (setq debug-on-error 1)
+  ;; (setq debug-on-quit t)
+
   ;; Tangle and get our configuration from our config.org file:
   (require 'org)
   (org-babel-load-file (expand-file-name (concat user-emacs-directory "config.org")))
