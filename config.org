@@ -275,6 +275,10 @@
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
 #+END_SRC
+** fish-shell-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package fish-mode)
+#+END_SRC
 ** git-timemachine
    Since we don't use it very often, here's how to use:
    |---+-------------------------------------------------------------------------|

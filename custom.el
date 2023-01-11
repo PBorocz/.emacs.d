@@ -16,5 +16,4 @@
  '(org-level-1 ((t (:inherit default :extend nil :height 1.1))))
  '(org-level-2 ((t (:inherit default :extend nil :height 1.1))))
  '(org-level-3 ((t (:inherit default :extend nil :height 1.0))))
- '(org-level-4 ((t (:inherit default :extend nil :height 1.0))))
- )
+ '(org-level-4 ((t (:inherit default :extend nil :height 1.0)))))
