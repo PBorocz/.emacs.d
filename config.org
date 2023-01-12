@@ -933,37 +933,38 @@
    [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
 #+BEGIN_SRC emacs-lisp
   ;; Kill *this* buffer
-  (defun pb/kill-this-buffer ()
+  (defun pb/-kill-this-buffer- ()
     "Kill the current buffer."
     (interactive)
     (kill-buffer (current-buffer)))
-  (global-set-key (kbd "C-x k") 'pb/kill-this-buffer)
+
+  (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
 #+END_SRC
 ** Line join
    [[http://whattheemacsd.com/key-bindings.el-03.html]]
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
 #+END_SRC
-** Shortcuts to common org files
-*** TODO 'ocl' Org Cliplink
+** Open most common org files
+*** 'prj' Goto Projects org file
  #+BEGIN_SRC emacs-lisp
- (defun pb/ocl ()
+   (defun pb/prj ()
+      (interactive)
+      (find-file "~/Repository/00-09 System/01 Org/projects.org"))
+ #+END_SRC
+*** 'gtd' Goto GTD file
+ #+BEGIN_SRC emacs-lisp
+ (defun pb/gtd ()
     (interactive)
     (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
  #+END_SRC
-*** DONE 'gtd' Goto GTD file
+*** 'ref' Goto REFERENCE.org file.
  #+BEGIN_SRC emacs-lisp
- (defun gtd ()
-    (interactive)
-    (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
- #+END_SRC
-*** DONE 'ref' Goto REFERENCE.org file.
- #+BEGIN_SRC emacs-lisp
- (defun ref ()
+ (defun pb/ref ()
     (interactive)
     (find-file "~/Repository/00-09 System/01 Org/REFERENCE"))
  #+END_SRC
-*** DONE Better insert date-time
+*** Better insert date-time
  #+BEGIN_SRC emacs-lisp
    (defun pb/insert-date ()
      "Insert current date and or time.
@@ -1171,9 +1172,9 @@
 #+BEGIN_SRC emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
-  (find-file "~/Repository/00-09 System/01 Org/projects.org")
   (find-file "~/Repository/00-09 System/01 Org/journal.org")
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
+  (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+END_SRC
 ** Initial window size and default font
    Which one?
