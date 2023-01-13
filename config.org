@@ -706,9 +706,8 @@
    Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
 #+BEGIN_SRC emacs-lisp
   (use-package rainbow-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\.css$" . rainbow-mode))
-    (add-to-list 'auto-mode-alist '("\\.html$" . rainbow-mode))
+    :demand t
+    :hook (prog-mode)
     )
 #+END_SRC
 ** ripgrep
