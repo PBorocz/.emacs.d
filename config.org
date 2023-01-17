@@ -7,11 +7,8 @@
 #+END_SRC
 * Basic Configuration
 #+BEGIN_SRC emacs-lisp
-  (global-font-lock-mode t)
-
   (setq
    auto-save-default nil                    ; Stop creating #autosave# files
-   column-number-mode t
    create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
    default-directory (concat (getenv "HOME") "/")
    font-lock-maximum-decoration t
@@ -32,8 +29,8 @@
    visible-bell t
    )
 
-  (fido-mode t)
-  (fido-vertical-mode t)
+  ;; (fido-mode t)
+  ;; (fido-vertical-mode t)
 
   (defalias 'list-buffers 'ibuffer)         ; make ibuffer default for buffer management
 
@@ -65,25 +62,8 @@
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+END_SRC
 * Packages
-** ~"built-ins"~
-   Handle configuration of built-in "packages" (hence, ~:ensure nil~)
+** /"built-ins"/
 #+BEGIN_SRC emacs-lisp
-  (use-package tool-bar
-    :ensure nil
-    :config
-    (tool-bar-mode -1))
-
-  (use-package scroll-bar
-    :ensure nil
-    :config
-    (scroll-bar-mode -1))
-
-  (use-package menu-bar
-    :unless (eq system-type 'darwin)
-    :ensure nil
-    :config
-    (menu-bar-mode -1))
-
   (use-package paren
     :ensure nil
     :init
@@ -111,9 +91,9 @@
 #+END_SRC
 ** beacon
 #+BEGIN_SRC emacs-lisp
-    (use-package beacon
-      :config
-      (setq beacon-blink-duration 0.8) ;; I think this is the default but have here for example of how to configure.
+  (use-package beacon
+    :config
+    (setq beacon-blink-duration 0.8) ;; I think this is the default but have here for example of how to configure.
   )
   (beacon-mode 1)
 #+END_SRC
@@ -254,16 +234,13 @@
                   ("C-c f d" . flymake-show-project-diagnostics))
       :custom
       (eglot-autoshutdown t)
-      (eglot-menu-string "LSP")
+      (eglot-menu-string "eglot")
       (eglot-ignored-server-capabilities '(:documentHighlightProvider))
       )
 
   (use-package pyvenv-auto
     :custom
     (pyvenv-auto-mode t))
-
-  ;; Allows us to use #!/usr/bin/env py with the universal python launcher.
-  (add-to-list 'interpreter-mode-alist '("py" . python-mode))
 #+END_SRC
 ** elm-mode
    https://github.com/jcollard/elm-mode
@@ -279,30 +256,13 @@
 #+BEGIN_SRC emacs-lisp
   (use-package fish-mode)
 #+END_SRC
-** git-timemachine
-   Since we don't use it very often, here's how to use:
-   |---+-------------------------------------------------------------------------|
-   | p | Visit previous historic version                                         |
-   | n | Visit next historic version                                             |
-   | q | Exit the time machine.                                                  |
-   | b | Run magit-blame on the currently visited revision (if magit available). |
-   |---+-------------------------------------------------------------------------|
-   | w | Copy the abbreviated hash of the current historic version               |
-   | W | Copy the full hash of the current historic version                      |
-   | g | Goto nth revision                                                       |
-   | t | Goto revision by selected commit message                                |
-   | c | Show current commit using magit (if magit available).                   |
-   |---+-------------------------------------------------------------------------|
+** git
  #+BEGIN_SRC emacs-lisp
    (use-package git-timemachine)
- #+END_SRC
-*** git-gutter
- #+BEGIN_SRC emacs-lisp
-   ; Enable git-gutter
+
    (use-package git-gutter
      :init
-     (global-git-gutter-mode +1)
-     )
+     (global-git-gutter-mode +1))
  #+END_SRC
 ** graphviz/dot-mode
 #+BEGIN_SRC emacs-lisp
@@ -332,8 +292,12 @@
   ;;    recentf-list '()
   ;;    )
   ;;   :config
-  ;;   (ido-mode t)
-  ;;   )
+  ;;   (ido-mode t))
+
+  ;; (use-package ido-vertical-mode
+  ;;   :demand t
+  ;;   :config
+  ;;   (ido-vertical-mode 1))
 #+END_SRC
 ** ivy
 #+BEGIN_SRC emacs-lisp
@@ -405,6 +369,7 @@
 
   (use-package magit
     :demand t
+
     :bind
     ("C-x C-g" . magit-status)
 
@@ -432,16 +397,6 @@
     (visual-line-mode 1))
   (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
 #+END_SRC
-** monokai
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'monokai :no-confirm)
-
-  ;; Reduce the font-size differences of org-mode headlines.
-  (setq monokai-height-plus-4 1.2
-        monokai-height-plus-3 1.1
-        monokai-height-plus-2 1.0)
-#+END_SRC
 ** org
 #+BEGIN_SRC emacs-lisp
   (when window-system (global-prettify-symbols-mode t))
@@ -457,8 +412,8 @@
                 ("C-c l"        . org-store-link)
                 ("C-c a"        . org-agenda)
                 ("C-c |"        . org-table-create-or-convert-from-region)
-                ("C-c C->"      . org-do-promote)
-                ("C-c C-<"      . org-do-demote)
+                ("C-c C-<"      . org-do-promote)
+                ("C-c C->"      . org-do-demote)
                 ("C-<right>"    . org-metaright)
                 ("C-<left>"     . org-metaleft)
                 )
@@ -711,24 +666,27 @@
     )
 #+END_SRC
 ** ripgrep
+   - Use wgrep-save-all-buffers to save once changes have been committed after
+     editing rg results buffer.
 #+BEGIN_SRC emacs-lisp
-  (use-package rg)
+  (use-package rg
+    :config
+    (rg-enable-menu))
 
-  (defun rg-autoload-keymap ()
-    (interactive)
-    (if (not (require 'rg nil t))
-        (user-error (format "Cannot load rg"))
-      (let ((key-vec (this-command-keys-vector)))
-        (global-set-key key-vec rg-global-map)
-        (setq unread-command-events
-          (mapcar (lambda (ev) (cons t ev))
-                  (listify-key-sequence key-vec))))))
-
-  (global-set-key (kbd "C-c s") #'rg-autoload-keymap)
-
-  (with-eval-after-load 'rg
-    (advice-add 'rg-run :after
-                #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
+    ;; <2023-01-14 Sat> Why is the following in here? Let's try without....
+    ;; (defun rg-autoload-keymap ()
+    ;;   (interactive)
+    ;;   (if (not (require 'rg nil t))
+    ;;       (user-error (format "Cannot load rg"))
+    ;;     (let ((key-vec (this-command-keys-vector)))
+    ;;       (global-set-key key-vec rg-global-map)
+    ;;       (setq unread-command-events
+    ;;         (mapcar (lambda (ev) (cons t ev))
+    ;;                 (listify-key-sequence key-vec))))))
+    ;; (global-set-key (kbd "C-c s") #'rg-autoload-keymap)
+    ;; (with-eval-after-load 'rg
+    ;;   (advice-add 'rg-run :after
+    ;;               #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
 #+END_SRC
 ** savehist
 #+BEGIN_SRC emacs-lisp
@@ -763,6 +721,48 @@
            (flyspell-mode)
            ))
   (setq default-major-mode 'text-mode)
+#+END_SRC
+** vertico
+#+BEGIN_SRC emacs-lisp
+  (use-package vertico
+    :ensure t
+    :init
+    (vertico-mode)
+    :custom
+    (vertico-cycle t)
+    (vertico-count 10)
+    )
+
+  ;; Different scroll margin
+  (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  ;; (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
+
+  ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
 #+END_SRC
 ** vterm
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
@@ -1138,36 +1138,33 @@
   We do these after everything else has been setup so we have commands available for key-mappings
 ** Base Key Mappings
 #+BEGIN_SRC emacs-lisp
-  ;;
-  ;; Keys
-  ;;
   (global-set-key (kbd "<f1>")   'goto-line)
   (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
   (global-set-key (kbd "<f3>")   'align-regexp)
-  ;; <f4> available!
+  ;; <f4> still available!
 
   ;; Separate these into 2 cases:
   ;; This one only works on selected text BUT doesn't prompt for directory or file type!
-  (global-set-key (kbd "<f5>")   'rg-dwim)
+  (global-set-key (kbd   "<f5>") 'rg-dwim)
   ;; While this one prompts for something to query on but also asks for directory and type as well..
   (global-set-key (kbd "C-<f5>") 'rg-literal)
 
-  (global-set-key (kbd "<f6>")   'anzu-query-replace)
+  (global-set-key (kbd   "<f6>") 'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 
-  ; Keyboard macro shortcuts (based on 1980's Brief editor mappings! ;-)
+  ; Keyboard macro shortcuts (based on mid-80's Brief editor mappings ;-)
   (global-set-key (kbd "<f7>")   'kmacro-start-macro)
   (global-set-key (kbd "<f8>")   'kmacro-end-macro)
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
-  ;; <f10> available!
-  ;; <f11> available!
+  ;; <f10> still available!
+  ;; <f11> still available!
   (global-set-key (kbd "<f12>")  'pb/vterm)
 
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+END_SRC
-** Files to have open when we start
+** Files to have open when we start (and in specified buffer order)
 #+BEGIN_SRC emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
@@ -1185,16 +1182,17 @@
     (progn
       (if (> (x-display-pixel-width) 2000)
           (progn
-            ;; (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-            (set-frame-font   "-*-Red Hat Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+            ;; (set-frame-font "-*-Red Hat Mono-normal-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+            (set-frame-font "-*-Source Code Pro-normal-normal-normal-*-24-*-*-*-m-0-fontset-auto2")
             (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
             (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
             )
-
-        ;; (set-frame-font   "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-        (set-frame-font   "-*-Red Hat Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-        (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-        (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
+        (progn
+          ;; (set-frame-font "-*-Red Hat Mono-normal-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+          (set-frame-font "-*-Source Code Pro-normal-normal-normal-*-16-*-*-*-m-0-fontset-auto2")
+          (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
+          (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
+          )
         )
       )
     )
