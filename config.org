@@ -1079,7 +1079,7 @@
 #+END_SRC
 ** Split current frame into evenly balanced "3"
 #+BEGIN_SRC emacs-lisp
-  (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
+  (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
 #+END_SRC
 ** Text/Font scaling interactively
    [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
