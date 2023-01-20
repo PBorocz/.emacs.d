@@ -34,7 +34,7 @@
   :config
   (load custom-file 'noerror))
 
-;; If necessary for debugging config issues..
+;; If necessary for debugging config issues in our tangled file.
 ;; (setq debug-on-error 1)
 ;; (setq debug-on-quit t)
 

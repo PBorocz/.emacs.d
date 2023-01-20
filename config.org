@@ -194,7 +194,7 @@
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
 #+END_SRC
-** doom-modeline:
+** doom-modeline
    [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
    http://www.emacswiki.org/emacs/DisplayTime
    http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
@@ -770,13 +770,6 @@
    (use-package vterm
      :config
      (setq vterm-shell "/usr/local/bin/fish")
-
-     :init
-     ;; RedHatMono doesn't seem to have the right symbols for my fish-shell
-     ;; prompt line, thus, go back to SCP (which we know does ;-))
-     (add-hook 'vterm-mode-hook (lambda ()
-                                  (setq buffer-face-mode-face '(:family "Source Code Pro"))
-                                  (buffer-face-mode)))
      )
 #+END_SRC
 ** vlf
