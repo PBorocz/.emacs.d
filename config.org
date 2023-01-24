@@ -36,7 +36,8 @@
 
   ;; Setup defaults across all buffers:
   (setq-default
-   frame-title-format '("%b (%m)")
+   fill-column 128
+   frame-title-format '("%f [%m]")
    indent-tabs-mode nil         ; Make sure spaces are used when indenting anything!
    truncate-lines t             ; Start out with NO line truncation.
    yank-excluded-properties 't  ; Clipboard yank is pasting graphics from micro$ instead of text. Strip all properties
@@ -716,7 +717,6 @@
   (setq text-mode-hook
         '(lambda ()
            (auto-fill-mode    0)
-           (setq fill-column 96)
            (setq tab-width    4)
            (flyspell-mode)
            ))
@@ -791,7 +791,6 @@
     (setq web-mode-css-indent-offset    2)
     (setq web-mode-code-indent-offset   2)
     (setq web-mode-indent-style         2)
-    (setq fill-column                  96)
     )
 
   (add-hook 'web-mode-hook 'my-web-mode-hook)
