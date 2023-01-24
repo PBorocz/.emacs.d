@@ -1,12 +1,12 @@
 * Personal Information
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq
    user-full-name "Peter Borocz"
    user-mail-address (getenv "EMAIL_ADDRESS")
    )
-#+END_SRC
+#+end_src
 * Basic Configuration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq
    auto-save-default nil                    ; Stop creating #autosave# files
    create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
@@ -54,17 +54,17 @@
   (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
   (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
   (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
-#+END_SRC
+#+end_src
 * Local Tools
 ** aspell
    Live spell checking
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
-#+END_SRC
+#+end_src
 * Packages
 ** /"built-ins"/
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package paren
     :ensure nil
     :init
@@ -81,26 +81,26 @@
           display-time-interval      10)
     :config
     (display-time))
-#+END_SRC
+#+end_src
 ** anzu
    Usage of this package is below in the ~Base Key Mapping~ section
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package anzu
     :config
     (global-anzu-mode)
     )
-#+END_SRC
+#+end_src
 ** beacon
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package beacon
     :config
     (setq beacon-blink-duration 0.8) ;; I think this is the default but have here for example of how to configure.
   )
   (beacon-mode 1)
-#+END_SRC
+#+end_src
 ** company
    [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
-   #+BEGIN_SRC emacs-lisp
+   #+begin_src emacs-lisp
      (use-package company
        :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
        :demand t
@@ -112,33 +112,33 @@
               ("C-p" . company-select-previous))
        :config
        (global-company-mode))
-#+END_SRC
+#+end_src
 ** css
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package css-mode
     :custom
     (css-indent-offset 2))
-#+END_SRC
+#+end_src
 ** csv
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
  (use-package csv-mode
    :init
    (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
    (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
  )
-#+END_SRC
+#+end_src
 ** dimmer
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package dimmer
     :init
     (dimmer-mode)
     :config
     (setq dimmer-fraction 0.8)
     )
-#+END_SRC
+#+end_src
 ** dired
    https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package dired
     :ensure nil
 
@@ -194,31 +194,31 @@
   ;; c/o https://github.com/purcell/diredfl
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
-#+END_SRC
+#+end_src
 ** doom-modeline
    [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
    http://www.emacswiki.org/emacs/DisplayTime
    http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package doom-modeline
     :init
     (setq doom-modeline-vcs-max-length 20
           display-time-string-forms '((propertize (format-time-string "%F %R" now))))
     :config
     (doom-modeline-mode 1))
-#+END_SRC
+#+end_src
 ** editor-config
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package editorconfig
     :init
     (editorconfig-mode 1)
   )
-#+END_SRC
+#+end_src
 ** eglot
    - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
    - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
    - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
       :commands (eglot eglot-ensure)
@@ -242,43 +242,43 @@
   (use-package pyvenv-auto
     :custom
     (pyvenv-auto-mode t))
-#+END_SRC
+#+end_src
 ** elm-mode
    https://github.com/jcollard/elm-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package elm-mode
     :config
     (setq elm-format-on-save t)
     :init
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
-#+END_SRC
+#+end_src
 ** fish-shell-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package fish-mode)
-#+END_SRC
+#+end_src
 ** git
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
    (use-package git-timemachine)
 
    (use-package git-gutter
      :init
      (global-git-gutter-mode +1))
- #+END_SRC
+ #+end_src
 ** graphviz/dot-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package graphviz-dot-mode
     :config
     (setq graphviz-dot-indent-width 4))
-#+END_SRC
+#+end_src
 ** hungry-delete
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package hungry-delete
       :init
       (global-hungry-delete-mode))
-#+END_SRC
+#+end_src
 ** ido
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; (use-package ido
   ;;   :demand t
   ;;   :init
@@ -299,9 +299,9 @@
   ;;   :demand t
   ;;   :config
   ;;   (ido-vertical-mode 1))
-#+END_SRC
+#+end_src
 ** ivy
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; (use-package counsel)
   ;; (use-package ivy
   ;;   :config
@@ -346,16 +346,16 @@
   ;;          :predicate
   ;;          (lambda (cand) (get-buffer cand)))))
 
-#+END_SRC
+#+end_src
 ** justfile
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package just-mode
     :config
     (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
     )
-#+END_SRC
+#+end_src
 ** magit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
     (window-configuration-to-register :magit-fullscreen)
@@ -380,10 +380,10 @@
     )
 
   (use-package ibuffer-git)
-#+END_SRC
+#+end_src
 ** markdown
    Specifically, GithubFlavoredMarkdown-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package markdown-mode
     :mode ("*\\.md\\'" . gfm-mode)
     :init
@@ -397,9 +397,9 @@
   (defun my-gfm-mode-hook ()
     (visual-line-mode 1))
   (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
-#+END_SRC
+#+end_src
 ** org
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when window-system (global-prettify-symbols-mode t))
   (visual-line-mode 1)
 
@@ -419,27 +419,29 @@
                 ("C-<left>"     . org-metaleft)
                 )
     :init
-    (setq org-M-RET-may-split-line                  nil
-          org-adapt-indentation                     t
-          org-agenda-dim-blocked-tasks              'invisible
-          org-agenda-files                          (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-          org-default-notes-file                    (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-          org-directory                             "~/Repository/00-09 System/01 Org"
-          org-ellipsis                              "⤵"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-          org-enforce-todo-checkbox-dependencies    t
-          org-enforce-todo-dependencies             t
-          org-export-backends                       (quote (ascii html icalendar latex md odt))
-          org-hide-emphasis-markers                 t
-          org-id-prefix                             "ID" ;; We don't want simply numbers!
-          org-hide-leading-stars                    t
-          org-link-search-must-match-exact-heading  nil
-          org-list-allow-alphabetical               t
-          org-return-follows-link                   t
-          org-src-window-setup                      'current-window ;; https://irreal.org/blog/?p=8824
-          org-startup-folded                        t
-          org-startup-indented                      nil
-          org-use-fast-todo-selection               t
-          org-use-speed-commands                    nil
+    (setq org-M-RET-may-split-line                 nil
+          org-adapt-indentation                    t
+          org-agenda-dim-blocked-tasks             'invisible
+          org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+          org-catch-invisible-edits                'show-and-error
+          org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+          org-directory                            "~/Repository/00-09 System/01 Org"
+          org-ellipsis                             "▼"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+          org-enforce-todo-checkbox-dependencies   t
+          org-enforce-todo-dependencies            t
+          org-export-backends                      (quote (ascii html icalendar latex md odt))
+          org-hide-emphasis-markers                nil  ;; We want to see 'em for now (can always turn on buffer-specifically)
+          org-id-prefix                            "ID" ;; We don't want simply numbers!
+          org-hide-leading-stars                   t
+          org-link-search-must-match-exact-heading nil
+          org-list-allow-alphabetical              t
+          org-return-follows-link                  t
+          org-src-fontify-natively                 t
+          org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
+          org-startup-folded                       t
+          org-startup-indented                     nil
+          org-use-fast-todo-selection              t
+          org-use-speed-commands                   nil
 
           ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
           org-refile-targets                        '((org-agenda-files :maxlevel . 2))
@@ -561,18 +563,18 @@
                   (interactive)
                   (let ((org-attach-method 'mv))
                     (call-interactively #'org-attach-dired-to-subtree))))))
-#+END_SRC
+#+end_src
 ** pdf
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package pdf-tools
     :config
     (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
     )
   (pdf-tools-install)
-#+END_SRC
+#+end_src
 
 ** postgresql
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
   (add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
   (add-hook 'sql-interactive-mode-hook 'sql-rename-buffer)
@@ -644,9 +646,9 @@
   (defun wrapper-sql-connect (product connection)
     (setq sql-product product)
     (sql-connect connection))
-#+END_SRC
+#+end_src
 ** rainbow-delimiters
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :config
     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
@@ -657,19 +659,19 @@
   (use-package prog-mode
     :ensure nil
     :hook ((prog-mode . rainbow-delimiters-mode)))
- #+END_SRC
+ #+end_src
 ** rainbow-mode
    Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package rainbow-mode
     :demand t
     :hook (prog-mode)
     )
-#+END_SRC
+#+end_src
 ** ripgrep
    - Use wgrep-save-all-buffers to save once changes have been committed after
      editing rg results buffer.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package rg
     :config
     (rg-enable-menu))
@@ -688,16 +690,16 @@
     ;; (with-eval-after-load 'rg
     ;;   (advice-add 'rg-run :after
     ;;               #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
-#+END_SRC
+#+end_src
 ** savehist
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Persist history over Emacs restarts. Vertico sorts by history position.
   (use-package savehist
     :init
     (savehist-mode))
-#+END_SRC
+#+end_src
 ** shell
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq explicit-shell-file-name "/usr/local/bin/fish")
   (setq shell-pushd-regexp "push[d]*")
   (setq shell-popd-regexp   "pop[d]*")
@@ -705,15 +707,15 @@
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
-#+END_SRC
+#+end_src
 ** smart-jump
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package smart-jump
     :config
     (smart-jump-setup-default-registers))
-#+END_SRC
+#+end_src
 ** text
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq text-mode-hook
         '(lambda ()
            (auto-fill-mode    0)
@@ -721,9 +723,9 @@
            (flyspell-mode)
            ))
   (setq default-major-mode 'text-mode)
-#+END_SRC
+#+end_src
 ** vertico
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package vertico
     :ensure t
     :init
@@ -763,21 +765,21 @@
     (setq completion-styles '(orderless basic)
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
-#+END_SRC
+#+end_src
 ** vterm
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
    (use-package vterm
      :config
      (setq vterm-shell "/usr/local/bin/fish")
      )
-#+END_SRC
+#+end_src
 ** vlf
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package vlf)
-#+END_SRC
+#+end_src
 ** web-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (use-package web-mode)
 
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
@@ -794,20 +796,20 @@
     )
 
   (add-hook 'web-mode-hook 'my-web-mode-hook)
-#+END_SRC
+#+end_src
 ** yaml-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; (use-package yaml-mode)
 
   ;; (add-to-list 'auto-mode-alist '("\\.yml$"  . yaml-mode))
   ;; (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
 
   ;; (add-hook 'yaml-mode-hook '(lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
-#+END_SRC
+#+end_src
 ** yasnippet
    While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
    consider worthwhile, thus, keep use of yasnippets for now.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Don't do snippet expansion within comments/docstrings for py:
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
   (defun yas-no-expand-in-comment/string ()
@@ -826,22 +828,21 @@
     (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
 
     (yas-global-mode t))
-#+END_SRC
+#+end_src
 * Custom Commands
-  These are custom commands I used on regular basis (almost all of which are cribbed from
-  others, credit given as much as possible!)
+  These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!)
 ** Center window (aka frame) on current monitor
    [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun pb/recenter (&optional frame)
     "Center FRAME on the screen. FRAME can be a frame name, a terminal name, or a frame. If FRAME is omitted or nil, use currently selected frame."
     (interactive)
     (unless (eq 'maximised (frame-parameter nil 'fullscreen))
       (modify-frame-parameters
        frame '((user-position . t) (top . 0.5) (left . 0.5)))))
-#+END_SRC
+#+end_src
 ** Create a new vterm from the current buffer location:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun pb/vterm ()
     "Create an terminal buffer from the current dired location"
     (interactive)
@@ -849,10 +850,10 @@
       (vterm (concat shell-name "@"))
       )
     )
-#+END_SRC
+#+end_src
 ** Change case of text
    [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun toggle-letter-case ()
     "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
     (interactive)
@@ -884,18 +885,18 @@
       )
     )
   (global-set-key (kbd "M-l") 'toggle-letter-case) ;; Overrides existing mapping
-#+END_SRC
+#+end_src
 ** Ctrl-A behaviour enhancement
    C-a now goes to logical beginning of line before going to physical beginning of one.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun pb/key-back-to-indentation-or-beginning () (interactive)
     (if (= (point) (progn (back-to-indentation) (point)))
         (beginning-of-line)))
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
-#+END_SRC
+#+end_src
 ** Fill/unfill with M-q
    http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun endless/fill-or-unfill ()
     (interactive)
     (let ((fill-column
@@ -907,10 +908,10 @@
 
   (global-set-key [remap     fill-paragraph] #'endless/fill-or-unfill)
   (global-set-key [remap org-fill-paragraph] #'endless/fill-or-unfill)
-#+END_SRC
+#+end_src
 ** Smarter C-w (backward word)
    [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
-    #+BEGIN_SRC emacs-lisp
+    #+begin_src emacs-lisp
     ;; Here's a better C-w (kill region if active, otherwise kill backward word)
     (defun kill-region-or-backward-word ()
       (interactive)
@@ -919,10 +920,10 @@
         (backward-kill-word 1)))
 
     (global-set-key (kbd "C-w") (lambda () (interactive) (kill-region-or-backward-word)))
-#+END_SRC
+#+end_src
 ** Kill this buffer
    [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   ;; Kill *this* buffer
   (defun pb/-kill-this-buffer- ()
     "Kill the current buffer."
@@ -930,33 +931,33 @@
     (kill-buffer (current-buffer)))
 
   (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
-#+END_SRC
+#+end_src
 ** Line join
    [[http://whattheemacsd.com/key-bindings.el-03.html]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
-#+END_SRC
+#+end_src
 ** Open most common org files
 *** 'prj' Goto Projects org file
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
    (defun pb/prj ()
       (interactive)
       (find-file "~/Repository/00-09 System/01 Org/projects.org"))
- #+END_SRC
+ #+end_src
 *** 'gtd' Goto GTD file
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
  (defun pb/gtd ()
     (interactive)
     (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
- #+END_SRC
+ #+end_src
 *** 'ref' Goto REFERENCE.org file.
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
  (defun pb/ref ()
     (interactive)
     (find-file "~/Repository/00-09 System/01 Org/REFERENCE"))
- #+END_SRC
+ #+end_src
 *** Better insert date-time
- #+BEGIN_SRC emacs-lisp
+ #+begin_src emacs-lisp
    (defun pb/insert-date ()
      "Insert current date and or time.
 
@@ -1042,15 +1043,15 @@
          ;; Default if nothing selected: <2019-04-18 Thu>
          (t
           (format-time-string "<%Y-%m-%d %a>"))))))
- #+END_SRC
+ #+end_src
 ** Scroll page without moving cursor
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key "\M-n" (lambda () (interactive) (scroll-up 12)))
   (global-set-key "\M-p" (lambda () (interactive) (scroll-down 12)))
-#+END_SRC
+#+end_src
 ** Smarter open line
    [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun pb/key-smart-open-line ()
     "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
     (interactive)
@@ -1068,14 +1069,44 @@
 
   (global-set-key (kbd "M-o") 'pb/key-smart-open-line)
   (global-set-key (kbd "M-O") 'pb/key-smart-open-line-above)
-#+END_SRC
+#+end_src
 ** Split current frame into evenly balanced "3"
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
-#+END_SRC
+#+end_src
+** Switch over to lower-case org-mode properties (once per org-file)
+   #+begin_src emacs-lisp
+     (defun pb/lower-case-org-keywords ()
+       "Lower case Org keywords and block identifiers.
+
+     Example: \"#+TITLE\" -> \"#+title\"
+              \"#+BEGIN_EXAMPLE\" -> \"#+begin_example\"
+
+     Directly from very bottom of:
+     https://github.com/howardabrams/hamacs/blob/main/ha-org-word-processor.org"
+
+       (interactive)
+       (save-excursion
+         (goto-char (point-min))
+         (let ((case-fold-search nil)
+               (count 0)
+               ;; All keywords can be found with this expression:
+               ;; (org-keyword-re "\\(?1:#\\+[A-Z_]+\\(?:_[[:alpha:]]+\\)*\\)\\(?:[ :=~’”]\\|$\\)")
+               ;; Match examples: "#+foo bar", "#+foo:", "=#+foo=", "~#+foo~",
+               ;;                 "‘#+foo’", "“#+foo”", ",#+foo bar",
+               ;;                 "#+FOO_bar<eol>", "#+FOO<eol>".
+               ;;
+               ;; Perhap I want the #+begin_src and whatnot:
+               (org-keyword-re (rx line-start (optional (zero-or-more space))
+                                   "#+" (group (or "BEGIN" "END") "_" (one-or-more alpha)))))
+           (while (re-search-forward org-keyword-re nil :noerror)
+             (setq count (1+ count))
+             (replace-match (downcase (match-string-no-properties 1)) :fixedcase nil nil 1))
+           (message "Lower-cased %d matches" count))))
+   #+end_src
 ** Text/Font scaling interactively
    [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (defun set-font-everywhere (font-spec &optional all-frames)
     (when (null (assq 'font default-frame-alist))
       (add-to-list 'default-frame-alist '(font . "")))
@@ -1113,10 +1144,10 @@
   (define-key global-map (kbd "C-+") 'increase-font-size)
   (define-key global-map (kbd "C--") 'decrease-font-size)
 
-#+END_SRC
+#+end_src
 ** Use Insert key to toggle overwrite/insert
    [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (when (eq system-type 'darwin)
     ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
     ;; copy ctrl-insert, paste shift-insert on windows keyboard
@@ -1125,11 +1156,11 @@
 
     ;; insert to toggle `overwrite-mode'
     (global-set-key [help] #'overwrite-mode))
-#+END_SRC
+#+end_src
 * Startup
   We do these after everything else has been setup so we have commands available for key-mappings
 ** Base Key Mappings
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "<f1>")   'goto-line)
   (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
   (global-set-key (kbd "<f3>")   'align-regexp)
@@ -1155,20 +1186,20 @@
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
-#+END_SRC
+#+end_src
 ** Files to have open when we start (and in specified buffer order)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
   (find-file "~/Repository/00-09 System/01 Org/journal.org")
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
-#+END_SRC
+#+end_src
 ** Initial window size and default font
    Which one?
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
   (setq ns-use-thin-smoothing t)
   (when window-system
     (progn
@@ -1186,7 +1217,7 @@
         )
       )
     )
-#+END_SRC
+#+end_src
 * History
   |------------+-------------------------------------------------------------------|
   | 1990.07.13 | Make Systems (on Sunview).                                        |
