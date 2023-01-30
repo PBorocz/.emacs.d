@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: main
-# key: main
+# name: main_
+# key: main_
 # --
 def main():
     $0
