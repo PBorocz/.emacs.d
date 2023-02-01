@@ -8,29 +8,26 @@
 * Basic Configuration
 #+begin_src emacs-lisp
   (setq
-   auto-save-default nil                    ; Stop creating #autosave# files
-   create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
-   default-directory (concat (getenv "HOME") "/")
-   font-lock-maximum-decoration t
-   inhibit-compacting-font-caches t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-   inhibit-default-init t
-   inhibit-splash-screen t
-   initial-scratch-message nil              ; Start scratch buffers empty..
-   make-backup-files nil                    ; Stop creating backup~ files
-   ring-bell-function 'ignore
-   search-highlight t
-   sentence-end-double-space nil            ; Period single space ends sentence
-   switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-   uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
-   uniquify-separator "/"
-   uniquify-after-kill-buffer-p t           ; Rename after killing uniquified
-   uniquify-ignore-buffers-re "^\\*"        ; Don't muck with special buffers
-   vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-   visible-bell t
-   )
-
-  ;; (fido-mode t)
-  ;; (fido-vertical-mode t)
+     auto-save-default nil                    ; Stop creating #autosave# files
+     create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
+     default-directory (concat (getenv "HOME") "/")
+     font-lock-maximum-decoration t
+     inhibit-compacting-font-caches t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+     inhibit-default-init t
+     inhibit-splash-screen t
+     initial-scratch-message nil              ; Start scratch buffers empty..
+     make-backup-files nil                    ; Stop creating backup~ files
+     ring-bell-function 'ignore
+     search-highlight t
+     sentence-end-double-space nil            ; Period single space ends sentence
+     switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+     uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
+     uniquify-separator "/"
+     uniquify-after-kill-buffer-p t           ; Rename after killing uniquified
+     uniquify-ignore-buffers-re "^\\*"        ; Don't muck with special buffers
+     vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+     visible-bell t
+     )
 
   (defalias 'list-buffers 'ibuffer)         ; make ibuffer default for buffer management
 
@@ -56,6 +53,7 @@
   (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
 #+end_src
 * Local Tools
+  These require a local installation (ie. outside emacs)
 ** aspell
    Live spell checking
 #+begin_src emacs-lisp
@@ -1199,28 +1197,56 @@
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
-** Initial window size and default font
+** Window size and font management
    Which one?
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
+  (defun pb/font-size-monitor ()
+    "Set 4K monitor font."
+    (interactive)
+    (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+    )
+
+  (defun pb/font-size-laptop ()
+    "Set laptop font."
+    (interactive)
+    (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+    )
+
   (setq ns-use-thin-smoothing t)
-  (when window-system
-    (progn
-      (if (> (x-display-pixel-width) 2000)
-          (progn
-            (set-frame-font    "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-            (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
-            (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
-            )
-        (progn
-          (set-frame-font "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+  (if (and (display-graphic-p)
+           (>= (x-display-pixel-width) 3840))
+      (progn
+        (pb/font-size-monitor)
+        (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
+        (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
+        )
+      (progn
+        (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
+          (pb/font-size-laptop)
           (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
           (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
           )
         )
       )
-    )
+
+  ;; (when window-system
+  ;;   (progn
+  ;;     (if (> (x-display-pixel-width) 2000)
+  ;;         (progn
+  ;;           (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+  ;;           (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
+  ;;           (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
+  ;;           )
+  ;;       (progn
+  ;;         (set-frame-font "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+  ;;         (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
+  ;;         (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
+  ;;         )
+  ;;       )
+  ;;     )
+  ;;   )
 #+end_src
 * History
   |------------+-------------------------------------------------------------------|
