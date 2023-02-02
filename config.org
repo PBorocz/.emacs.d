@@ -1202,16 +1202,18 @@
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
+  (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
+    (set-frame-font (format pb/font 24))
     )
 
   (defun pb/font-size-laptop ()
     "Set laptop font."
     (interactive)
-    (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
+    (set-frame-font (format pb/font 16))
     )
 
   (setq ns-use-thin-smoothing t)
