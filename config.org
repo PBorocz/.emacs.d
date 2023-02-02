@@ -202,15 +202,17 @@
     :init
     (setq doom-modeline-vcs-max-length 20
           display-time-string-forms '((propertize (format-time-string "%F %R" now))))
-    :config
-    (doom-modeline-mode 1))
+    :hook
+    (after-init . doom-modeline-mode)
+    (doom-modeline-mode . display-battery-mode)
+    )
 #+end_src
 ** editor-config
 #+begin_src emacs-lisp
   (use-package editorconfig
     :init
     (editorconfig-mode 1)
-  )
+    )
 #+end_src
 ** eglot
    - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
@@ -372,14 +374,10 @@
 
   (use-package magit
     :demand t
-
     :bind
     ("C-x C-g" . magit-status)
-
     :config
-    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-
-    )
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 
   (use-package ibuffer-git)
 #+end_src
@@ -566,6 +564,10 @@
                   (let ((org-attach-method 'mv))
                     (call-interactively #'org-attach-dired-to-subtree))))))
 #+end_src
+** pbcopy
+#+begin_src emacs-lisp
+    (use-package pbcopy)
+#+end_src
 ** pdf
 #+begin_src emacs-lisp
   (use-package pdf-tools
@@ -574,7 +576,6 @@
     )
   (pdf-tools-install)
 #+end_src
-
 ** postgresql
 #+begin_src emacs-lisp
   (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
@@ -726,6 +727,11 @@
            ))
   (setq default-major-mode 'text-mode)
 #+end_src
+** toml-mode
+#+begin_src emacs-lisp
+  (use-package toml-mode
+    :defer t)
+#+end_src
 ** vertico
 #+begin_src emacs-lisp
   (use-package vertico
@@ -772,9 +778,15 @@
    "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+begin_src emacs-lisp
    (use-package vterm
+     :defer t
      :config
      (setq vterm-shell "/usr/local/bin/fish")
-     )
+     :hook
+     (vterm-mode . (lambda ()
+                     (setq-local show-trailing-whitespace nil)))
+     :custom
+     (vterm-always-compile-module t))
+
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
@@ -801,12 +813,11 @@
 #+end_src
 ** yaml-mode
 #+begin_src emacs-lisp
-  ;; (use-package yaml-mode)
-
-  ;; (add-to-list 'auto-mode-alist '("\\.yml$"  . yaml-mode))
-  ;; (add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
-
-  ;; (add-hook 'yaml-mode-hook '(lambda () (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+  ;; NOT ready yet, needs emacs 29 for tree sitter support:
+  ;; (use-package yaml-pro
+  ;;   :defer t
+  ;;   :hook
+  ;;   (yaml-mode . yaml-pro-ts-mode))
 #+end_src
 ** yasnippet
    While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
