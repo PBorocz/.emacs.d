@@ -33,7 +33,7 @@
 
   ;; Setup defaults across all buffers:
   (setq-default
-   fill-column 128
+   fill-column 96
    frame-title-format '("%f [%m]")
    indent-tabs-mode nil         ; Make sure spaces are used when indenting anything!
    truncate-lines t             ; Start out with NO line truncation.
