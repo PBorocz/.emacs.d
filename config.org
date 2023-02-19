@@ -144,8 +144,7 @@
     (("C-x C-d" . dired-jump)
      ("C-x j"   . dired-jump-other-window)
 
-     ;; Make "e" act the same in dired as it does in rg/grep,
-     ;; ie. make the buffer editable (C-c C-c to save edits)
+     ;; Make "e" act the same in dired as it does in rg/grep, ie. make the buffer editable (C-c C-s to save edits)
      (:map dired-mode-map
            ("e" . dired-toggle-read-only)
            ("." . dired-up-directory)
@@ -164,7 +163,7 @@
             global-auto-revert-non-file-buffers t
             wdired-allow-to-change-permissions  t
             )
-      (define-key dired-mode-map (kbd ".") 'dired-up-directory)
+      ;; (define-key dired-mode-map (kbd ".") 'dired-up-directory)
       )
     )
 
@@ -399,6 +398,7 @@
   (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
 #+end_src
 ** org
+*** Setup base package
 #+begin_src emacs-lisp
   (when window-system (global-prettify-symbols-mode t))
   (visual-line-mode 1)
@@ -455,10 +455,16 @@
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
+  ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
+  ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
+  (add-to-list 'org-file-apps '(directory . emacs))
+
   (font-lock-add-keywords 'org-mode
                           '(("^ *\\([-]\\) "
                              (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
+#+end_src
+*** Setup supplemental packages
+#+begin_src emacs-lisp
   (use-package org-bullets
     :after 'org
     :config
@@ -468,25 +474,9 @@
   (use-package org-cliplink
     :after 'org
     )
-
-  ;; -----------------------------------------------------------------------------
-  ;; Keys.. (FIXME: Make specific to org-mode?)
-  ;; -----------------------------------------------------------------------------
-  ;; (global-set-key (kbd "C-c l")     'org-store-link)
-  ;; (global-set-key (kbd "C-c a")     'org-agenda)
-  ;; (global-set-key (kbd "C-c |")     'org-table-create-or-convert-from-region)
-  ;; (global-set-key (kbd "C-c C->")   'org-do-promote)
-  ;; (global-set-key (kbd "C-c C-<")   'org-do-demote)
-  ;; (global-set-key (kbd "C-<right>") 'org-metaright)
-  ;; (global-set-key (kbd "C-<left>")  'org-metaleft)
-
-  ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
-  ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
-  (add-to-list 'org-file-apps '(directory . emacs))
-
-  ;; -----------------------------------------------------------------------------
-  ;; Babel: setup languages so we can evaluate source-code blocks
-  ;; -----------------------------------------------------------------------------
+#+end_src
+*** Babel
+#+begin_src emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
@@ -496,7 +486,9 @@
      (sqlite     . t)
      ))
   (setq org-confirm-babel-evaluate nil)
-
+#+end_src
+*** Symbols
+#+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
   ;; Prettify Symbols
   ;; -----------------------------------------------------------------------------
@@ -519,7 +511,9 @@
           )
     )
   (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
-
+#+end_src
+*** GTD & capture
+#+begin_src emacs-lisp
   ;; ---------------------------------------------------------------------------
   ;; GTD
   ;; ---------------------------------------------------------------------------
@@ -550,7 +544,9 @@
           ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
           ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
           ))
-
+#+end_src
+*** Attachments
+#+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
   ;; Attachments
   ;; -----------------------------------------------------------------------------
