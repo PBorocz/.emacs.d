@@ -274,81 +274,15 @@
     :config
     (setq graphviz-dot-indent-width 4))
 #+end_src
+** helpful
+#+begin_src emacs-lisp
+  (use-package helpful)
+#+end_src
 ** hungry-delete
 #+begin_src emacs-lisp
   (use-package hungry-delete
       :init
       (global-hungry-delete-mode))
-#+end_src
-** ido
-#+begin_src emacs-lisp
-  ;; (use-package ido
-  ;;   :demand t
-  ;;   :init
-  ;;   (setq
-  ;;    ido-default-buffer-method 'selected-window ;; use current pane for newly switched buffer
-  ;;    ido-default-file-method 'selected-window ;; use current pane for newly opened file
-  ;;    ido-enable-flex-matching t ;; enable fuzzy matching
-  ;;    ido-file-extensions-order '(".org" ".py" ".emacs" ".txt" ".xml" ".el" ".ini" ".cfg")
-  ;;    ido-ignore-directories '(".git")
-  ;;    ido-vertical-define-keys 'C-n-and-C-p-only
-  ;;    ido-virtual-buffers '()
-  ;;    recentf-list '()
-  ;;    )
-  ;;   :config
-  ;;   (ido-mode t))
-
-  ;; (use-package ido-vertical-mode
-  ;;   :demand t
-  ;;   :config
-  ;;   (ido-vertical-mode 1))
-#+end_src
-** ivy
-#+begin_src emacs-lisp
-  ;; (use-package counsel)
-  ;; (use-package ivy
-  ;;   :config
-  ;;   (setq
-  ;;    ivy-use-virtual-buffers t
-  ;;    ivy-count-format "%d/%d "
-  ;;    )
-  ;;   :config (ivy-mode))
-
-  ;; (use-package all-the-icons-ivy-rich
-  ;;   :after ivy
-  ;;   :init (all-the-icons-ivy-rich-mode 1))
-
-  ;; (use-package ivy-rich
-  ;;   :after ivy
-  ;;   :init (ivy-rich-mode 1))
-
-  ;; ;; Clear buffer history...
-  ;; ;; https://stackoverflow.com/questions/14151777/how-to-clear-the-emacs-buffer-history
-  ;; ;; (setq ido-virtual-buffers '())
-  ;; (setq recentf-list '())
-
-  ;; ;; ???
-  ;; (defun ivy-rich-switch-buffer-icon (candidate)
-  ;;   (with-current-buffer
-  ;;       (get-buffer candidate)
-  ;;     (let ((icon (all-the-icons-icon-for-mode major-mode)))
-  ;;       (if (symbolp icon)
-  ;;           (all-the-icons-icon-for-mode 'fundamental-mode)
-  ;;         icon))))
-
-  ;; (setq ivy-rich--display-transformers-list
-  ;;       '(ivy-switch-buffer
-  ;;         (:columns
-  ;;          ((ivy-rich-switch-buffer-icon :width 2)
-  ;;           (ivy-rich-candidate (:width 30))
-  ;;           (ivy-rich-switch-buffer-size (:width 7))
-  ;;           (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
-  ;;           (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
-  ;;           (ivy-rich-switch-buffer-project (:width 15 :face success))
-  ;;           (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path x (ivy-rich-minibuffer-width 0.3))))))
-  ;;          :predicate
-  ;;          (lambda (cand) (get-buffer cand)))))
-
 #+end_src
 ** justfile
 #+begin_src emacs-lisp
@@ -664,31 +598,15 @@
     )
 #+end_src
 ** ripgrep
-   - Use wgrep-save-all-buffers to save once changes have been committed after
-     editing rg results buffer.
+   Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
 #+begin_src emacs-lisp
   (use-package rg
     :config
     (rg-enable-menu))
-
-    ;; <2023-01-14 Sat> Why is the following in here? Let's try without....
-    ;; (defun rg-autoload-keymap ()
-    ;;   (interactive)
-    ;;   (if (not (require 'rg nil t))
-    ;;       (user-error (format "Cannot load rg"))
-    ;;     (let ((key-vec (this-command-keys-vector)))
-    ;;       (global-set-key key-vec rg-global-map)
-    ;;       (setq unread-command-events
-    ;;         (mapcar (lambda (ev) (cons t ev))
-    ;;                 (listify-key-sequence key-vec))))))
-    ;; (global-set-key (kbd "C-c s") #'rg-autoload-keymap)
-    ;; (with-eval-after-load 'rg
-    ;;   (advice-add 'rg-run :after
-    ;;               #'(lambda (_pattern _files _dir &optional _literal _confirm _flags) (pop-to-buffer (rg-buffer-name)))))
 #+end_src
 ** savehist
 #+begin_src emacs-lisp
-  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  ;; Persist history over Emacs restarts (vertico sorts by history position)
   (use-package savehist
     :init
     (savehist-mode))
@@ -859,7 +777,7 @@
 ** Change case of text
    [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
 #+begin_src emacs-lisp
-  (defun toggle-letter-case ()
+  (defun pb/toggle-letter-case ()
     "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
     (interactive)
     (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
@@ -889,7 +807,7 @@
         (downcase-region p1 p2) (put this-command 'state "all lower")) )
       )
     )
-  (global-set-key (kbd "M-l") 'toggle-letter-case) ;; Overrides existing mapping
+  (global-set-key (kbd "M-l") 'pb/toggle-letter-case) ;; Overrides existing mapping
 #+end_src
 ** Ctrl-A behaviour enhancement
    C-a now goes to logical beginning of line before going to physical beginning of one.

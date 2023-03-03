@@ -26,8 +26,8 @@
   (setq use-package-always-ensure    t
         use-package-expand-minimally t))
 
-;; Set the location of a separate "custom" file (ie. custom-set-variables and custom-set-faces).
-;; (we don't want it stored below in this file. ;-()
+;; Set the location of a separate "custom" file (ie. custom-set-variables and custom-set-faces)
+;; (we don't want it stored below in *this* file. ;-()
 (use-package cus-edit
   :custom
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -38,11 +38,13 @@
 ;; (setq debug-on-error 1)
 ;; (setq debug-on-quit t)
 
-;; Get the rest of our configuration from our tangled config.org file:
+;; ------------------------------------------------------------------------------
+;; Get the rest of our configuration from our tangled config.org file!
+;; ------------------------------------------------------------------------------
 (require 'org)
 (org-babel-load-file (expand-file-name (concat user-emacs-directory "config.org")))
 
-;; Display startup time
+;; How long did it take for us to startup?
 (defun pb/_display-startup-time ()
   (message
    "Emacs loaded in %s with %d garbage collections."

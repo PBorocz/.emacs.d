@@ -41,22 +41,23 @@
       monokai-height-plus-3 1.1
       monokai-height-plus-2 1.0)
 
-;; Prefer loading newest compiled .el file
-(setq load-prefer-newer         noninteractive
+;; Prefer loading newest compiled .el file and turn off
+(setq load-prefer-newer noninteractive
       package-enable-at-startup t
-      inhibit-startup-message   t)
+      inhibit-startup-message t)
 
 (set-window-scroll-bars (minibuffer-window) nil nil)
-(set-default-coding-systems 'utf-8) ;; Set default coding system (especially for Windows)
+(set-default-coding-systems 'utf-8)
 
-(blink-cursor-mode     1)
-(column-number-mode    t)
-(global-font-lock-mode 1)
+(blink-cursor-mode      1)
+(column-number-mode     t)
+(global-font-lock-mode  1)
 (menu-bar-mode         -1)
 (scroll-bar-mode       -1)
 (tool-bar-mode         -1)
 (tooltip-mode          -1)
 
+;; Turn these off for now; later, we'll use pb/toggle-letter-case to do this a bit better.
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region   'disabled nil)
 
