@@ -1,6 +1,6 @@
-# name : #+begin_...#+end_
+# name : #+begin_ python ...#+end_
 # key: src_
 # --
-#+BEGIN_SRC $1
+#+begin_src python
   $0
-#+END_SRC
+#+end_src
