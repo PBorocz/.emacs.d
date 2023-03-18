@@ -809,15 +809,21 @@
       (modify-frame-parameters
        frame '((user-position . t) (top . 0.5) (left . 0.5)))))
 #+end_src
-** Create a new vterm from the current buffer location:
+** Create new vterm/shell buffer (2 ways):
 #+begin_src emacs-lisp
-  (defun pb/vterm ()
-    "Create an terminal buffer from the current dired location"
+  (defun pb/vterm-current-directory ()
+    "Create a terminal buffer from the current dired location"
     (interactive)
     (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
       (vterm (concat shell-name "@"))
       )
     )
+
+  (defun pb/vterm-by-name ()
+    "Create a terminal buffer based on name provided."
+    (interactive)
+    (let ((shell-name (read-string "Shell name: ")))
+      (vterm (concat shell-name "@"))))
 #+end_src
 ** Change case of text
    [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
@@ -857,10 +863,10 @@
 ** Ctrl-A behaviour enhancement
    C-a now goes to logical beginning of line before going to physical beginning of one.
 #+begin_src emacs-lisp
-  (defun pb/key-back-to-indentation-or-beginning () (interactive)
+  (defun pb/key-back-to-indentation-or-beginning ()
+    (interactive)
     (if (= (point) (progn (back-to-indentation) (point)))
         (beginning-of-line)))
-  (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 #+end_src
 ** Fill/unfill with M-q
    http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
@@ -877,17 +883,16 @@
   (global-set-key [remap     fill-paragraph] #'endless/fill-or-unfill)
   (global-set-key [remap org-fill-paragraph] #'endless/fill-or-unfill)
 #+end_src
-** Smarter C-w (backward word)
+** Smarter C-w (backward word kill)
    [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
     #+begin_src emacs-lisp
     ;; Here's a better C-w (kill region if active, otherwise kill backward word)
-    (defun kill-region-or-backward-word ()
+    (defun pb/kill-region-or-backward-word ()
       (interactive)
       (if (region-active-p)
           (kill-region (region-beginning) (region-end))
         (backward-kill-word 1)))
 
-    (global-set-key (kbd "C-w") (lambda () (interactive) (kill-region-or-backward-word)))
 #+end_src
 ** Kill this buffer
    [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
@@ -1149,11 +1154,16 @@
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
   ;; <f10> still available!
   ;; <f11> still available!
-  (global-set-key (kbd "<f12>")  'pb/vterm)
+  (global-set-key (kbd "<f12>")   'pb/vterm-current-directory)
+  (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
 
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+
+  (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
+
+  (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
 #+end_src
 ** Files to have open when we start (and in specified buffer order)
 #+begin_src emacs-lisp
