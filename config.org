@@ -81,20 +81,14 @@
     (display-time))
 #+end_src
 ** anzu
-   Usage of this package is below in the ~Base Key Mapping~ section
+Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
   (use-package anzu
     :config
     (global-anzu-mode)
     )
-#+end_src
-** beacon
-#+begin_src emacs-lisp
-  (use-package beacon
-    :config
-    (setq beacon-blink-duration 0.8) ;; I think this is the default but have here for example of how to configure.
-  )
-  (beacon-mode 1)
+  (global-set-key (kbd   "<f6>") 'anzu-query-replace)
+  (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 #+end_src
 ** company
    [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
@@ -125,17 +119,8 @@
    (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
  )
 #+end_src
-** dimmer
-#+begin_src emacs-lisp
-  (use-package dimmer
-    :init
-    (dimmer-mode)
-    :config
-    (setq dimmer-fraction 0.8)
-    )
-#+end_src
 ** dired
-   https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
+https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
 #+begin_src emacs-lisp
   (use-package dired
     :ensure nil
@@ -275,6 +260,7 @@
     (setq graphviz-dot-indent-width 4))
 #+end_src
 ** helpful
+Improve quality of most-used C-h methods.
 #+begin_src emacs-lisp
   (use-package helpful
     :demand t
@@ -302,11 +288,34 @@
     )
 
 #+end_src
-** hungry-delete
+** hungry-deletes
+Aggressively (but reluctantly) delete white-space.
 #+begin_src emacs-lisp
-  (use-package hungry-delete
-      :init
-      (global-hungry-delete-mode))
+  ;; https://github.com/hrehfeld/emacs-smart-hungry-delete
+  (use-package smart-hungry-delete
+    :ensure t
+    :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+                 ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+                 ([remap delete-char] . smart-hungry-delete-forward-char))
+    :init (smart-hungry-delete-add-default-hooks))
+
+  ;; This errors out on python-mode-map, trying the version above for now.
+  ;; (use-package smart-hungry-delete
+  ;;   :ensure t
+  ;;   :bind (:map python-mode-map
+  ;;               ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+  ;;               ([remap delete-backward-char] . smart-hungry-delete-backward-char)
+  ;;               ([remap delete-char] . smart-hungry-delete-forward-char))
+  ;;   :init (smart-hungry-delete-add-default-hooks))
+  ;;
+  ;; 2023-03-23 Replace with smart-hungry-delete (and only for python-mode) since
+  ;; we've been getting a bit too many fubars hungy-delete within large .org files.
+  ;;
+  ;; (use-package hungry-delete
+  ;;     :init
+  ;;     (global-hungry-delete-mode)
+  ;;     :config
+  ;;     (setq hungry-delete-join-reluctantly 1))
 #+end_src
 ** justfile
 #+begin_src emacs-lisp
@@ -339,16 +348,14 @@
   (use-package ibuffer-git)
 #+end_src
 ** markdown
-   Specifically, GithubFlavoredMarkdown-mode
+Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
   (use-package markdown-mode
     :mode ("*\\.md\\'" . gfm-mode)
     :init
     (setq
-     markdown-command "multimarkdown"
-     markdown-open-command "/usr/local/bin/mark"
-     )
-    )
+     markdown-command      "multimarkdown"
+     markdown-open-command "/usr/local/bin/mark")) ;; Opens application -> Marked2
 
   ;; Use visual-line-mode in gfm-mode
   (defun my-gfm-mode-hook ()
@@ -454,7 +461,13 @@
      :config
      (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
  #+end_src
-**** Babel
+**** org-web-tools
+[[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org...]]
+[[https://blog.nawaz.org/posts/2023/Mar/solving-a-scraping-problem-with-emacs-and-org-mode/][Solving a Scraping Problem with Emacs and Org Mode]] (Blog post demonstrating org-web-tools)
+ #+begin_src emacs-lisp
+   (use-package org-web-tools)
+ #+end_src
+**** babel
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -536,8 +549,9 @@
                     (call-interactively #'org-attach-dired-to-subtree))))))
 #+end_src
 ** pbcopy
+Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 #+begin_src emacs-lisp
-    (use-package pbcopy)
+  (use-package pbcopy)
 #+end_src
 ** pdf
 #+begin_src emacs-lisp
@@ -666,18 +680,12 @@
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** smart-jump
-#+begin_src emacs-lisp
-  (use-package smart-jump
-    :config
-    (smart-jump-setup-default-registers))
-#+end_src
 ** text
 #+begin_src emacs-lisp
   (setq text-mode-hook
         '(lambda ()
-           (auto-fill-mode    0)
-           (setq tab-width    4)
+           (auto-fill-mode 0)
+           (setq tab-width 4)
            (flyspell-mode)
            ))
   (setq default-major-mode 'text-mode)
@@ -687,7 +695,7 @@
   (use-package toml-mode
     :defer t)
 #+end_src
-** vertico
+** vertico & orderless
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
@@ -695,17 +703,9 @@
     (vertico-mode)
     :custom
     (vertico-cycle t)
+    (vertico-scroll-margin 0)
     (vertico-count 10)
     )
-
-  ;; Different scroll margin
-  (setq vertico-scroll-margin 0)
-
-  ;; Show more candidates
-  ;; (setq vertico-count 20)
-
-  ;; Grow and shrink the Vertico minibuffer
-  ;; (setq vertico-resize t)
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   ;; (setq vertico-cycle t)
@@ -884,18 +884,18 @@
   (global-set-key [remap org-fill-paragraph] #'endless/fill-or-unfill)
 #+end_src
 ** Smarter C-w (backward word kill)
-   [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
-    #+begin_src emacs-lisp
-    ;; Here's a better C-w (kill region if active, otherwise kill backward word)
-    (defun pb/kill-region-or-backward-word ()
-      (interactive)
-      (if (region-active-p)
-          (kill-region (region-beginning) (region-end))
-        (backward-kill-word 1)))
+[[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
+#+begin_src emacs-lisp
+  ;; Here's a better C-w (kill region if active, otherwise kill backward word)
+  (defun pb/kill-region-or-backward-word ()
+    (interactive)
+    (if (region-active-p)
+        (kill-region (region-beginning) (region-end))
+      (backward-kill-word 1)))
 
 #+end_src
 ** Kill this buffer
-   [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
+[[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
 #+begin_src emacs-lisp
   ;; Kill *this* buffer
   (defun pb/-kill-this-buffer- ()
@@ -906,117 +906,10 @@
   (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
 #+end_src
 ** Line join
-   [[http://whattheemacsd.com/key-bindings.el-03.html]]
+http://whattheemacsd.com/key-bindings.el-03.html]]
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
 #+end_src
-** Open most common org files
-*** 'prj' Goto Projects org file
- #+begin_src emacs-lisp
-   (defun pb/prj ()
-      (interactive)
-      (find-file "~/Repository/00-09 System/01 Org/projects.org"))
- #+end_src
-*** 'gtd' Goto GTD file
- #+begin_src emacs-lisp
- (defun pb/gtd ()
-    (interactive)
-    (find-file "~/Repository/00-09 System/01 Org/gtd.org"))
- #+end_src
-*** 'ref' Goto REFERENCE.org file.
- #+begin_src emacs-lisp
- (defun pb/ref ()
-    (interactive)
-    (find-file "~/Repository/00-09 System/01 Org/REFERENCE"))
- #+end_src
-*** Better insert date-time
- #+begin_src emacs-lisp
-   (defun pb/insert-date ()
-     "Insert current date and or time.
-
-      Insert date in this format: yyyy-mm-DD.
-      When called with `universal-argument', prompt for a format to use.
-      If there's text selection, delete it first.
-
-      Do not use this function in lisp code. Call `format-time-string' directly.
-
-      Based directly on:
-      URL `http://ergoemacs.org/emacs/elisp_insert-date-time.html'
-      version 2016-12-18
-      "
-     (interactive)
-     (when (use-region-p) (delete-region (region-beginning) (region-end)))
-     (let (($style
-            (string-to-number
-             (substring
-              (ido-completing-read
-               "Style:"
-               '(
-                 "0 → <2019-04-18 Thu> (default)"
-                 "1 → <2019-04-18 Thu 11:09>"
-                 "2 → 2019-04-18"
-                 "3 → 2016-10-10T19:39:47-07:00"
-                 "4 → 2016-10-10 19:39:58-07:00"
-                 "5 → Monday, October 10, 2016"
-                 "6 → Mon, Oct 10, 2016"
-                 "7 → October 10, 2016"
-                 "8 → Oct 10, 2016"
-                 )) 0 1)
-            )))
-       (insert
-        (cond
-         ((= $style 0)
-          ;; <2019-04-18 Thu>
-          (format-time-string "<%Y-%m-%d %a>")
-          )
-
-         ((= $style 1)
-          ;; <2019-04-18 Thu 13:15>
-          (format-time-string "<%Y-%m-%d %a %H:%m>")
-          )
-
-         ((= $style 2)
-          ;; 2016-10-10
-          (format-time-string "%Y-%m-%d")
-          )
-
-         ((= $style 3)
-          ;; 2016-10-10T19:02:23-07:00
-          (concat
-           (format-time-string "%Y-%m-%dT%T")
-           (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-          )
-
-         ((= $style 4)
-          ;; 2016-10-10 19:10:09-07:00
-          (concat
-           (format-time-string "%Y-%m-%d %T")
-           (funcall (lambda ($x) (format "%s:%s" (substring $x 0 3) (substring $x 3 5))) (format-time-string "%z")))
-          )
-
-         ((= $style 5)
-          ;; Monday, October 10, 2016
-          (format-time-string "%A, %B %d, %Y")
-          )
-         ((= $style 7)
-          ;; Mon, Oct 10, 2016
-          (format-time-string "%a, %b %d, %Y")
-          )
-
-         ((= $style 8)
-          ;; October 10, 2016
-          (format-time-string "%B %d, %Y")
-          )
-
-         ((= $style 8)
-          ;; Oct 10, 2016
-          (format-time-string "%b %d, %Y")
-          )
-
-         ;; Default if nothing selected: <2019-04-18 Thu>
-         (t
-          (format-time-string "<%Y-%m-%d %a>"))))))
- #+end_src
 ** Scroll page without moving cursor
 #+begin_src emacs-lisp
   (global-set-key "\M-n" (lambda () (interactive) (scroll-up 12)))
