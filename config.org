@@ -656,12 +656,18 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :hook (prog-mode)
     )
 #+end_src
-** ripgrep
+** ripgrep (aka rg)
    Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
 #+begin_src emacs-lisp
   (use-package rg
     :config
     (rg-enable-menu))
+
+  ;; Separate these into 2 cases:
+  ;; This one only works on selected text BUT doesn't prompt for directory or file type!
+  (global-set-key (kbd   "<f5>") 'rg-dwim)
+  ;; While this one prompts for something to query on but also asks for directory and type as well..
+  (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
 ** savehist
 #+begin_src emacs-lisp
@@ -742,6 +748,8 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
      :custom
      (vterm-always-compile-module t))
 
+   (global-set-key (kbd "<f12>")   'pb/vterm-current-directory)
+   (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
 #+end_src
 ** vlf
 #+begin_src emacs-lisp
@@ -1026,44 +1034,41 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
 * Startup
   We do these after everything else has been setup so we have commands available for key-mappings
 ** Base Key Mappings
+*** Function Keys
 #+begin_src emacs-lisp
   (global-set-key (kbd "<f1>")   'goto-line)
   (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
   (global-set-key (kbd "<f3>")   'align-regexp)
   ;; <f4> still available!
-
-  ;; Separate these into 2 cases:
-  ;; This one only works on selected text BUT doesn't prompt for directory or file type!
-  (global-set-key (kbd   "<f5>") 'rg-dwim)
-  ;; While this one prompts for something to query on but also asks for directory and type as well..
-  (global-set-key (kbd "C-<f5>") 'rg-literal)
-
-  (global-set-key (kbd   "<f6>") 'anzu-query-replace)
-  (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
-
-  ; Keyboard macro shortcuts (based on mid-80's Brief editor mappings ;-)
-  (global-set-key (kbd "<f7>")   'kmacro-start-macro)
+  ;; <f5> Used for search
+  ;; <f6> Used for search-replace
+  (global-set-key (kbd "<f7>")   'kmacro-start-macro) ; Keyboard macro shortcuts (based on mid-80's Brief editor mappings ;-)
   (global-set-key (kbd "<f8>")   'kmacro-end-macro)
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
-  ;; <f10> still available!
-  ;; <f11> still available!
-  (global-set-key (kbd "<f12>")   'pb/vterm-current-directory)
-  (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
-
+  ;; <f10> still available! (but has an existing emacs assignment)
+  ;; <f11> still available! (but used by MacOS to hide all windows and display desktop.)
+  ;; <f12> Used to open a new vterm
+#+end_src
+*** Other Custom Key Mappings
+#+begin_src emacs-lisp
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
+  ;; Better "beginning of line"
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 
+  ;; Better "delete word backwards"
   (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
 #+end_src
-** Files to have open when we start (and in specified buffer order)
+** Files to have open when we start
 #+begin_src emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
   (find-file "~/Repository/00-09 System/01 Org/journal.org")
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
+
+  ;; Start with this as file displayed on startup:
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
 ** Window size and font management
