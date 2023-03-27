@@ -120,7 +120,8 @@ Highlight global-search-replace strings dynamically.
  )
 #+end_src
 ** dired
-https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_name=iossmf#dired
+*** Base Package
+[[https://github.com/MatthewZMD/.emacs.d]]
 #+begin_src emacs-lisp
   (use-package dired
     :ensure nil
@@ -148,13 +149,14 @@ https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_n
             global-auto-revert-non-file-buffers t
             wdired-allow-to-change-permissions  t
             )
-      ;; (define-key dired-mode-map (kbd ".") 'dired-up-directory)
       )
     )
 
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
-
+#+end_src
+*** Supplemental
+#+begin_src emacs-lisp
   ;;
   ;; Sort dired listings with directories first
   ;; https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
@@ -172,8 +174,8 @@ https://github.com/MatthewZMD/.emacs.d?utm_source=share&utm_medium=ios_app&utm_n
     (mydired-sort))
 
   ;;
-  ;; Extra font-lock support for dired display
-  ;; c/o https://github.com/purcell/diredfl
+  ;; Color our dired display by type of file/directory
+  ;; https://github.com/purcell/diredfl
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
 #+end_src
@@ -1076,76 +1078,36 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
-    (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-    (defun pb/font-size-monitor ()
-      "Set 4K monitor font."
-      (interactive)
-      (set-frame-font (format pb/font 24))
-      )
+  (defun pb/font-size-monitor ()
+    "Set 4K monitor font."
+    (interactive)
+    (set-frame-font (format pb/font 24))
+    )
 
-    (defun pb/font-size-laptop ()
-      "Set laptop font."
-      (interactive)
-      (set-frame-font (format pb/font 16))
-      )
+  (defun pb/font-size-laptop ()
+    "Set laptop font."
+    (interactive)
+    (set-frame-font (format pb/font 16))
+    )
 
-    (setq ns-use-thin-smoothing t)
-    (if (and (display-graphic-p)
-             (>= (x-display-pixel-width) 3840))
-        (progn
-          (pb/font-size-monitor)
-          (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
-          (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
-          )
-        (progn
-          (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
-            (pb/font-size-laptop)
-            (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-            (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
-            )
+  (setq ns-use-thin-smoothing t)
+  (if (and (display-graphic-p)
+           (>= (x-display-pixel-width) 3840))
+      (progn
+        (pb/font-size-monitor)
+        (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
+        (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
+        )
+      (progn
+        (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
+          (pb/font-size-laptop)
+          (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
+          (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
           )
         )
-
-    ;; 2023-02-23 FIXME: Incorporate the following when we get a chance.
-    ;; (from https://www.reddit.com/r/emacs/comments/119v8xq/updating_font_size_immediately/j9obxt3/?utm_source=share&utm_medium=ios_app&utm_name=iossmf&context=3
-    ;;   and https://github.com/mnp/dispwatch)
-    ;; (defun my-display-changed-hook (disp)
-    ;;   (let* ((attrs (frame-monitor-attributes))
-    ;;          (monitor-name (cdr (assq 'name attrs)))
-    ;;          (size 18)) ; default size for mystery monitors
-    ;;     (cond ((string= monitor-name "ASUS VP28U") ; 4k ASUS
-    ;;            (setq size 18))
-    ;;           ((string= monitor-name "Colour LCD") ; laptop
-    ;;            (setq size 14))
-    ;;           ((string= monitor-name "Built-in Retina Display")
-    ;;            (setq size 14))
-    ;;           (t (message "Unknown monitor %s" monitor-name)))
-    ;;     (message (format "On monitor \"%s\"; setting font to %spt" monitor-name size))
-    ;;     (set-frame-font (format "Fira Code-%s" size))))
-
-    ;; (use-package dispwatch
-    ;;     :config (and
-    ;;              (add-hook 'dispwatch-display-change-hooks #'my-display-changed-hook)
-    ;;              (dispwatch-mode 1)))
-
-
-    ;; (when window-system
-    ;;   (progn
-    ;;     (if (> (x-display-pixel-width) 2000)
-    ;;         (progn
-    ;;           (set-frame-font  "-*-Source Code Pro-light-normal-normal-*-24-*-*-*-m-0-iso10646-1")
-    ;;           (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
-    ;;           (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
-    ;;           )
-    ;;       (progn
-    ;;         (set-frame-font "-*-Source Code Pro-light-normal-normal-*-16-*-*-*-m-0-iso10646-1")
-    ;;         (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-    ;;         (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
-    ;;         )
-    ;;       )
-    ;;     )
-    ;;   )
+      )
 #+end_src
 * History
   |------------+-------------------------------------------------------------------|
