@@ -8,28 +8,29 @@
 * Basic Configuration
 #+begin_src emacs-lisp
   (setq
-     auto-save-default nil                    ; Stop creating #autosave# files
-     create-lockfiles nil                     ; We don’t need lockfiles since were ONLY single-user!
-     default-directory (concat (getenv "HOME") "/")
-     font-lock-maximum-decoration t
-     inhibit-compacting-font-caches t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-     inhibit-default-init t
-     inhibit-splash-screen t
-     initial-scratch-message nil              ; Start scratch buffers empty..
-     make-backup-files nil                    ; Stop creating backup~ files
-     ring-bell-function 'ignore
-     search-highlight t
-     sentence-end-double-space nil            ; Period single space ends sentence
-     switch-to-buffer-obey-display-actions t  ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-     uniquify-buffer-name-style 'forward      ; https://github.com/bbatsov/prelude
-     uniquify-separator "/"
-     uniquify-after-kill-buffer-p t           ; Rename after killing uniquified
-     uniquify-ignore-buffers-re "^\\*"        ; Don't muck with special buffers
-     vc-follow-symlinks t                     ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-     visible-bell t
+     auto-save-default                      nil       ; Stop creating #autosave# files
+     create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
+     default-directory                      (concat (getenv  "HOME") "/")
+     font-lock-maximum-decoration           t
+     inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+     inhibit-default-init                   t
+     inhibit-splash-screen                  t
+     initial-scratch-message                nil       ; Start scratch buffers empty..
+     make-backup-files                      nil       ; Stop creating backup~ files
+     ring-bell-function                     'ignore
+     search-highlight                       t
+     sentence-end-double-space              nil       ; Period single space ends sentence
+     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+     uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
+     uniquify-separator                     "/"
+     uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
+     uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+     vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+     visible-bell                           t
      )
 
-  (defalias 'list-buffers 'ibuffer)         ; make ibuffer default for buffer management
+  ;; Define all aliases
+  (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
   ;; Setup defaults across all buffers:
   (setq-default
@@ -904,6 +905,40 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
       (backward-kill-word 1)))
 
 #+end_src
+** Smarter Split Windows
+https://macowners.club/posts/custom-functions-5-navigation/
+#+begin_src emacs-lisp
+  (defun pb/nav-split-and-follow-below ()
+    "Split the selected window in two with the new window is below. This uses `split-window-below' but follows with the cursor."
+    (interactive)
+    (split-window-below)
+    (other-window 1)
+    )
+
+  (defun pb/nav-split-and-follow-right ()
+    "Split the selected window in two with the new window is to the right. This uses `split-window-right' but follows with the cursor."
+    (interactive)
+    (split-window-right)
+    (other-window 1)
+    )
+
+  (defun pb/toggle-split-direction ()
+    "Toggle window split from vertical to horizontal or vice-versa.
+     Credit: https://github.com/olivertaylor/dotfiles/blob/master/emacs/init.el"
+
+    (interactive)
+    (if (> (length (window-list)) 2)
+        (error "Sorry, can only toggle split direction with 2 windows.")
+      (let ((was-full-height (window-full-height-p)))
+        (delete-other-windows)
+        (if was-full-height
+            (split-window-vertically)
+          (split-window-horizontally))
+        (save-selected-window
+          (other-window 1)
+          (switch-to-buffer (other-buffer)))))
+    )
+#+end_src
 ** Kill this buffer
 [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
 #+begin_src emacs-lisp
@@ -1056,6 +1091,10 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+
+  ;; Better split windows
+  (global-set-key (kbd "C-x 2") 'pb/nav-split-and-follow-below)
+  (global-set-key (kbd "C-x 3") 'pb/nav-split-and-follow-right)
 
   ;; Better "beginning of line"
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
