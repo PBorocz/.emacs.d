@@ -23,8 +23,14 @@
   (package-install 'use-package))
 
 (eval-and-compile
-  (setq use-package-always-ensure    t
-        use-package-expand-minimally t))
+  (setq use-package-always-ensure         t
+        use-package-expand-minimally      t
+        use-package-verbose               t
+        use-package-compute-statistics    t
+        use-package-minimum-reported-time 0.1
+        debug-on-error                    nil
+        )
+  )
 
 ;; Set the location of a separate "custom" file (ie. custom-set-variables and custom-set-faces)
 ;; (we don't want it stored below in *this* file. ;-()
