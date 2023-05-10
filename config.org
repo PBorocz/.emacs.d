@@ -184,20 +184,20 @@ Highlight global-search-replace strings dynamically.
   (add-hook 'dired-mode-hook 'diredfl-mode)
 #+end_src
 ** doom-modeline
-   [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
-   http://www.emacswiki.org/emacs/DisplayTime
-   http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
+http://www.emacswiki.org/emacs/DisplayTime
+http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :init
     (setq doom-modeline-vcs-max-length 20
-	  display-time-string-forms '((propertize (format-time-string "%F %R" now))))
+          display-time-string-forms '((propertize (format-time-string "%F %R" now))))
     :hook
     (after-init         . doom-modeline-mode)
     (doom-modeline-mode . display-battery-mode)
     :config
-    (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.75)))))
-    (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.50)))))
+    (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.80)))))
+    (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.60)))))
     )
 #+end_src
 ** editor-config
@@ -449,29 +449,26 @@ Specifically, GithubFlavoredMarkdown-mode
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 **** prettify-symbols
-#+begin_src emacs-lisp
-  ;; -----------------------------------------------------------------------------
-  ;; Prettify Symbols
-  ;; -----------------------------------------------------------------------------
-  (defun pb/load-prettify-symbols ()
-    (interactive)
-    (setq prettify-symbols-alist
-          (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                  '(("#+begin_src"     . ?)
-                    ("#+end_src"       . ?)
+  #+begin_src emacs-lisp
+    (defun pb/load-prettify-symbols ()
+      (interactive)
+      (setq prettify-symbols-alist
+            (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+                    '(("#+begin_src"     . ?)
+                      ("#+end_src"       . ?)
 
-                    ("#+begin_example" . ?)
-                    ("#+end_example"   . ?)
+                      ("#+begin_example" . ?)
+                      ("#+end_example"   . ?)
 
-                    ("#+header:"       . ?)
+                      ("#+header:"       . ?)
 
-                    (":properties:"    . ?)
-                    (":end:"           . ?🛑)
+                      (":properties:"    . ?)
+                      (":end:"           . ?🛑)
+                      )
                     )
-                  )
-          )
-    )
-  (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
+            )
+      )
+    (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
 #+end_src
 **** org-appear
  #+begin_src emacs-lisp
@@ -1136,7 +1133,7 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
-  (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; Define this individually for interactive use when we move between environments without restarting:
   (defun pb/font-size-monitor ()
