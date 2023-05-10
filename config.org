@@ -191,15 +191,13 @@ Highlight global-search-replace strings dynamically.
   (use-package doom-modeline
     :init
     (setq doom-modeline-vcs-max-length 20
-          display-time-string-forms '((propertize (format-time-string "%F %R" now))))
+	  display-time-string-forms '((propertize (format-time-string "%F %R" now))))
     :hook
-    (after-init . doom-modeline-mode)
+    (after-init         . doom-modeline-mode)
     (doom-modeline-mode . display-battery-mode)
     :config
-    (custom-set-faces
-     '(mode-line ((t (:family "SF Mono" :height 0.85 :weight 'light)))))
-    (custom-set-faces
-     '(mode-line-inactive ((t (:family "SF Mono" :height 0.85 :weight 'light)))))
+    (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.75)))))
+    (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.50)))))
     )
 #+end_src
 ** editor-config
@@ -376,7 +374,6 @@ Specifically, GithubFlavoredMarkdown-mode
 ** org
 *** Base Package Definition
 #+begin_src emacs-lisp
-  (when window-system (global-prettify-symbols-mode t))
   (visual-line-mode 1)
 
   ;; -----------------------------------------------------------------------------
@@ -407,15 +404,18 @@ Specifically, GithubFlavoredMarkdown-mode
           org-enforce-todo-dependencies            t
           org-export-backends                      (quote (ascii html icalendar latex md odt))
           org-hide-emphasis-markers                t
-          org-id-prefix                            "ID" ;; We don't want simply numbers!
           org-hide-leading-stars                   t
+          org-id-prefix                            "ID" ;; We don't want simply numbers!
+          org-image-actual-width                   '(300)
           org-link-search-must-match-exact-heading nil
           org-list-allow-alphabetical              t
+          org-pretty-entities                      t
           org-return-follows-link                  t
           org-src-fontify-natively                 t
           org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
           org-startup-folded                       t
           org-startup-indented                     t
+          org-startup-with-inline-images           t
           org-use-fast-todo-selection              t
           org-use-speed-commands                   nil
 
@@ -434,48 +434,8 @@ Specifically, GithubFlavoredMarkdown-mode
   ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
   ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
   (add-to-list 'org-file-apps '(directory . emacs))
-
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 #+end_src
 *** Supplemental Packages
-**** org-bullets
- #+begin_src emacs-lisp
-   (use-package org-bullets
-     :after 'org
-     :config
-     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-     )
- #+end_src
-**** org-cliplink
- #+begin_src emacs-lisp
-   (use-package org-cliplink
-     :after 'org
-     )
- #+end_src
-**** org-modern-indent
- #+begin_src emacs-lisp
-   (use-package org-modern-indent
-     :load-path "~/.emacs.d/site-lisp/org-modern-indent/"
-     ; or
-     ; :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent"))
-     :config ; add late to hook
-     (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
- #+end_src
-**** org-pretty-table-mode
- #+begin_src emacs-lisp
-   (use-package org-pretty-table
-     :load-path "~/.emacs.d/site-lisp/org-pretty-table"
-     :config
-     (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
- #+end_src
-**** org-web-tools
-[[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org...]]
-[[https://blog.nawaz.org/posts/2023/Mar/solving-a-scraping-problem-with-emacs-and-org-mode/][Solving a Scraping Problem with Emacs and Org Mode]] (Blog post demonstrating org-web-tools)
- #+begin_src emacs-lisp
-   (use-package org-web-tools)
- #+end_src
 **** babel
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -488,7 +448,7 @@ Specifically, GithubFlavoredMarkdown-mode
      ))
   (setq org-confirm-babel-evaluate nil)
 #+end_src
-*** Symbols
+**** prettify-symbols
 #+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
   ;; Prettify Symbols
@@ -513,7 +473,54 @@ Specifically, GithubFlavoredMarkdown-mode
     )
   (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
 #+end_src
-*** GTD & Capture
+**** org-appear
+ #+begin_src emacs-lisp
+   (use-package org-appear
+       :hook (org-mode . org-appear-mode))
+ #+end_src
+**** org-cliplink
+ #+begin_src emacs-lisp
+   (use-package org-cliplink
+     :after 'org
+     )
+ #+end_src
+**** org-modern-indent
+ #+begin_src emacs-lisp
+   (use-package org-modern-indent
+     :load-path "~/.emacs.d/site-lisp/org-modern-indent/"
+     ; or
+     ; :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent"))
+     :config ; add late to hook
+     (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+ #+end_src
+**** org-pretty-table-mode
+ #+begin_src emacs-lisp
+   (use-package org-pretty-table
+     :load-path "~/.emacs.d/site-lisp/org-pretty-table"
+     :config
+     (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
+ #+end_src
+**** org-superstar
+ #+begin_src emacs-lisp
+   ;; Nice(r) bullets (replaces org-bullets)
+   (use-package org-superstar
+     :config
+     (setq org-superstar-special-todo-items t)
+     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+     )
+
+   (setq org-superstar-item-bullet-alist
+         '((?* . ?•)
+           (?+ . ?➤)
+           (?- . ?•)))
+ #+end_src
+**** org-web-tools
+[[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org...]]
+[[https://blog.nawaz.org/posts/2023/Mar/solving-a-scraping-problem-with-emacs-and-org-mode/][Solving a Scraping Problem with Emacs and Org Mode]] (Blog post demonstrating org-web-tools)
+ #+begin_src emacs-lisp
+   (use-package org-web-tools)
+ #+end_src
+*** Org Capture Templates (and GTD support)
 #+begin_src emacs-lisp
   ;; ---------------------------------------------------------------------------
   ;; GTD
