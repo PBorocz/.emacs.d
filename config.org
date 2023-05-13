@@ -250,6 +250,16 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
 #+end_src
+** find-file-in-project
+ #+begin_src emacs-lisp
+   (use-package find-file-in-project
+     :load-path "~/.emacs.d/site-lisp/find-file-in-project/"
+     :config
+     (setq ffip-use-rust-fd t)
+     :bind
+     ("C-c C-x C-f" . find-file-in-project) ;; Note: override org-emphasize (which I've never used)
+     )
+ #+end_src
 ** fish-shell-mode
 #+begin_src emacs-lisp
   (use-package fish-mode)
