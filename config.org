@@ -8,28 +8,28 @@
 * Basic Configuration
 #+begin_src emacs-lisp
   (setq
-     auto-save-default                      nil       ; Stop creating #autosave# files
-     blink-cursor-interval                  0.3       ; Default is 0.5
-     create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
-     default-directory                      (concat (getenv  "HOME") "/")
-     font-lock-maximum-decoration           t
-     inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-     inhibit-default-init                   t
-     inhibit-splash-screen                  t
-     initial-scratch-message                nil       ; Start scratch buffers empty..
-     make-backup-files                      nil       ; Stop creating backup~ files
-     ring-bell-function                     'ignore
-     search-highlight                       t
-     sentence-end-double-space              nil       ; Period single space ends sentence
-     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-     uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
-     uniquify-separator                     "/"
-     uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
-     uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
-     vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-     visible-bell                           t
-     word-wrap                              nil
-     )
+   auto-save-default                      nil       ; Stop creating #autosave# files
+   blink-cursor-interval                  0.3       ; Default is 0.5
+   create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
+   default-directory                      (concat (getenv  "HOME") "/")
+   font-lock-maximum-decoration           t
+   inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+   inhibit-default-init                   t
+   inhibit-splash-screen                  t
+   initial-scratch-message                nil       ; Start scratch buffers empty..
+   make-backup-files                      nil       ; Stop creating backup~ files
+   ring-bell-function                     'ignore
+   search-highlight                       t
+   sentence-end-double-space              nil       ; Period single space ends sentence
+   switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+   uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
+   uniquify-separator                     "/"
+   uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
+   uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+   vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+   visible-bell                           t
+   word-wrap                              nil
+   )
 
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
@@ -40,7 +40,7 @@
                 indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
                 truncate-lines            t   ; Start out with NO line truncation.
                 yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
-   )
+                )
 
   ;; We want y or n to be sufficient for yes/no prompts.
   (fset 'yes-or-no-p 'y-or-n-p)
@@ -55,6 +55,7 @@
   (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
 
   (global-auto-revert-mode)   ;; refresh a buffer if changed on disk
+
 #+end_src
 * Local Tools
   These require a local installation (ie. outside emacs)
@@ -189,16 +190,19 @@ http://www.emacswiki.org/emacs/DisplayTime
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :init
-    (setq doom-modeline-vcs-max-length 20
-          display-time-string-forms '((propertize (format-time-string "%F %R" now))))
-    :hook
-    (after-init         . doom-modeline-mode)
-    (doom-modeline-mode . display-battery-mode)
-    :config
-    (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.80)))))
-    (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.60)))))
-    )
+
+      :init
+      (setq doom-modeline-vcs-max-length 20
+            display-time-string-forms '((propertize (format-time-string "%F %R" now))))
+
+      :hook
+      (after-init         . doom-modeline-mode)
+      (doom-modeline-mode . display-battery-mode)
+
+      :config
+      (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.80)))))
+      (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.90)))))
+      )
 #+end_src
 ** editor-config
 #+begin_src emacs-lisp
@@ -264,6 +268,25 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 #+begin_src emacs-lisp
   (use-package fish-mode)
 #+end_src
+** hl-line+
+Give me a temporary line-highlight on window change.
+ #+begin_src emacs-lisp
+   ;; https://tech.toryanderson.com/2021/09/24/replacing-beacon.el-with-hl-line-flash/
+   (use-package hl-line+
+     :load-path "~/.emacs.d/site-lisp/hl-line+/"
+
+     :hook
+     (focus-in                . hl-line-flash)
+     (post-command            . hl-line-flash)
+     (window-scroll-functions . hl-line-flash)
+
+     :custom
+     (global-hl-line-mode                    nil)
+     (hl-line-flash-show-period              0.5)
+     (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+     (hl-line-overlay-priority               -100) ;; sadly, seems not observed by diredfl
+     )
+ #+end_src
 ** git
  #+begin_src emacs-lisp
    (use-package git-timemachine)
@@ -512,7 +535,11 @@ Specifically, GithubFlavoredMarkdown-mode
    ;; Nice(r) bullets (replaces org-bullets)
    (use-package org-superstar
      :config
-     (setq org-superstar-special-todo-items t)
+
+     ;; Set the following to "t" to make TODO items have a 'checkbox' icon,
+     ;; irrespective of their depth.
+     (setq org-superstar-special-todo-items nil)
+
      (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
      )
 
