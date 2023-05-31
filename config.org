@@ -282,8 +282,8 @@ Give me a temporary line-highlight on window change.
 
      :custom
      (global-hl-line-mode                    nil)
-     (hl-line-flash-show-period              0.5)
-     (hl-line-inhibit-highlighting-for-modes '(dired-mode))
+     (hl-line-flash-show-period              0.4)
+     (hl-line-inhibit-highlighting-for-modes '(dired-mode vterm-mode))
      (hl-line-overlay-priority               -100) ;; sadly, seems not observed by diredfl
      )
  #+end_src
@@ -340,24 +340,6 @@ Aggressively (but reluctantly) delete white-space.
                  ([remap delete-backward-char] . smart-hungry-delete-backward-char)
                  ([remap delete-char] . smart-hungry-delete-forward-char))
     :init (smart-hungry-delete-add-default-hooks))
-
-  ;; This errors out on python-mode-map, trying the version above for now.
-  ;; (use-package smart-hungry-delete
-  ;;   :ensure t
-  ;;   :bind (:map python-mode-map
-  ;;               ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-  ;;               ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-  ;;               ([remap delete-char] . smart-hungry-delete-forward-char))
-  ;;   :init (smart-hungry-delete-add-default-hooks))
-  ;;
-  ;; 2023-03-23 Replace with smart-hungry-delete (and only for python-mode) since
-  ;; we've been getting a bit too many fubars hungy-delete within large .org files.
-  ;;
-  ;; (use-package hungry-delete
-  ;;     :init
-  ;;     (global-hungry-delete-mode)
-  ;;     :config
-  ;;     (setq hungry-delete-join-reluctantly 1))
 #+end_src
 ** justfile
 #+begin_src emacs-lisp
@@ -751,6 +733,34 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   (use-package toml-mode
     :defer t)
 #+end_src
+** tree-sitter
+<2023-05-31 Wed> When we're ready to move to a more stable Emacs 29, tree-sitter and respective grammars are already installed
+#+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
+          (css        "https://github.com/tree-sitter/tree-sitter-css")
+          (elisp      "https://github.com/Wilfred/tree-sitter-elisp")
+          (go         "https://github.com/tree-sitter/tree-sitter-go")
+          (html       "https://github.com/tree-sitter/tree-sitter-html")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json       "https://github.com/tree-sitter/tree-sitter-json")
+          (make       "https://github.com/alemuller/tree-sitter-make")
+          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+          (python     "https://github.com/tree-sitter/tree-sitter-python")
+          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
+        )
+
+  (setq major-mode-remap-alist
+        '((yaml-mode       . yaml-ts-mode)
+          (bash-mode       . bash-ts-mode)
+          (js2-mode        . js-ts-mode)
+          (typescript-mode . typescript-ts-mode)
+          (json-mode       . json-ts-mode)
+          (css-mode        . css-ts-mode)
+          (python-mode     . python-ts-mode))
+        )
+#+end_src
 ** vertico & orderless
 #+begin_src emacs-lisp
   (use-package vertico
@@ -758,9 +768,9 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :init
     (vertico-mode)
     :custom
-    (vertico-cycle t)
+    (vertico-cycle         t)
     (vertico-scroll-margin 0)
-    (vertico-count 10)
+    (vertico-count         10)
     )
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
@@ -1190,14 +1200,14 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
            (>= (x-display-pixel-width) 3840))
       (progn
         (pb/font-size-monitor)
-        (set-frame-width  (selected-frame) 272) ;; Note that these are a function of
-        (set-frame-height (selected-frame)  67) ;; the fontsize listed right above!
+        (set-frame-width  (selected-frame) 293) ;; Note that these are a function of
+        (set-frame-height (selected-frame)  75) ;; the fontsize listed above!
         )
       (progn
         (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
           (pb/font-size-laptop)
           (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-          (set-frame-height (selected-frame)  42) ;; the fontsize listed right above!
+          (set-frame-height (selected-frame)  42) ;; the fontsize listed above!
           )
         )
       )
