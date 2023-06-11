@@ -268,6 +268,14 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 #+begin_src emacs-lisp
   (use-package fish-mode)
 #+end_src
+** hide-mode-line
+Hide the mode line for buffers that don't need it (vterm only?)
+ #+begin_src emacs-lisp
+   (use-package hide-mode-line
+     :config
+     (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
+     )
+ #+end_src
 ** hl-line+
 Give me a temporary line-highlight on window change.
  #+begin_src emacs-lisp
@@ -500,9 +508,7 @@ Specifically, GithubFlavoredMarkdown-mode
  #+begin_src emacs-lisp
    (use-package org-modern-indent
      :load-path "~/.emacs.d/site-lisp/org-modern-indent/"
-     ; or
-     ; :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent"))
-     :config ; add late to hook
+     :config
      (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
  #+end_src
 **** org-pretty-table-mode
@@ -536,7 +542,7 @@ Specifically, GithubFlavoredMarkdown-mode
  #+begin_src emacs-lisp
    (use-package org-web-tools)
  #+end_src
-*** Org Capture Templates (and GTD support)
+**** Org capture templates & GTD
 #+begin_src emacs-lisp
   ;; ---------------------------------------------------------------------------
   ;; GTD
@@ -962,21 +968,21 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
       (backward-kill-word 1)))
 
 #+end_src
-** Smarter Split Windows
+** COMMENT Smarter Split Windows
 https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (defun pb/split-and-follow-below ()
     "Split the selected window in two with the new window is below. This uses `split-window-below' but follows with the cursor."
     (interactive)
     (split-window-below)
-    (other-window 1)
+    ;; (other-window 1)
     )
 
   (defun pb/split-and-follow-right ()
     "Split the selected window in two with the new window is to the right. This uses `split-window-right' but follows with the cursor."
     (interactive)
     (split-window-right)
-    (other-window 1)
+    ;; (other-window 1)
     )
 #+end_src
 ** Toggle Window Split
@@ -1180,9 +1186,10 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
-  ;; (defvar pb/font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/font "-*-Ubuntu Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
   ;; (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; Define this individually for interactive use when we move between environments without restarting:
   (defun pb/font-size-monitor ()
