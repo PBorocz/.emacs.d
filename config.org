@@ -31,6 +31,10 @@
    word-wrap                              nil
    )
 
+  ;; Set title-bar to transparent.
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
@@ -968,23 +972,6 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
       (backward-kill-word 1)))
 
 #+end_src
-** COMMENT Smarter Split Windows
-https://macowners.club/posts/custom-functions-5-navigation/
-#+begin_src emacs-lisp
-  (defun pb/split-and-follow-below ()
-    "Split the selected window in two with the new window is below. This uses `split-window-below' but follows with the cursor."
-    (interactive)
-    (split-window-below)
-    ;; (other-window 1)
-    )
-
-  (defun pb/split-and-follow-right ()
-    "Split the selected window in two with the new window is to the right. This uses `split-window-right' but follows with the cursor."
-    (interactive)
-    (split-window-right)
-    ;; (other-window 1)
-    )
-#+end_src
 ** Toggle Window Split
 https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
@@ -1157,10 +1144,6 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
   ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
-
-  ;; Better split windows
-  (global-set-key (kbd "C-x 2") 'pb/split-and-follow-below)
-  (global-set-key (kbd "C-x 3") 'pb/split-and-follow-right)
 
   ;; Toggle window split
   (global-set-key (kbd "C-x O") 'pb/toggle-split-direction)
