@@ -1158,6 +1158,7 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
 #+begin_src emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
+  (find-file "~/Repository/00-09 System/01 Org/history.org")
   (find-file "~/Repository/00-09 System/01 Org/journal.org")
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
 
@@ -1171,8 +1172,8 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
 #+begin_src emacs-lisp
   ;; (defvar pb/font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
   ;; (defvar pb/font "-*-Ubuntu Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  ;; (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; Define this individually for interactive use when we move between environments without restarting:
   (defun pb/font-size-monitor ()
