@@ -60,6 +60,12 @@
 
   (global-auto-revert-mode)   ;; refresh a buffer if changed on disk
 
+  ;; Font availability...
+  ;; (defvar pb/var-fixedwidth-font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/var-fixedwidth-font "-*-Ubuntu Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 #+end_src
 * Local Tools
   These require a local installation (ie. outside emacs)
@@ -418,10 +424,19 @@ Specifically, GithubFlavoredMarkdown-mode
     :config
     (add-hook 'markdown-mode-hook 'visual-line-mode)
     (add-hook 'markdown-mode-hook 'pb/markdown-config)
+    ;;(add-hook 'markdown-mode-hook 'pb/variable-width-face-mode)
     )
 
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
+#+end_src
+** olivetti (writing mode)
+https://github.com/rnkn/olivetti
+#+begin_src emacs-lisp
+  (use-package olivetti
+      :init
+      (setq olivetti-body-width 0.50)
+      )
 #+end_src
 ** org
 *** Base Package Definition
@@ -1197,22 +1212,18 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
-  ;; (defvar pb/font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  ;; (defvar pb/font "-*-Ubuntu Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  ;; (defvar pb/font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; Define this individually for interactive use when we move between environments without restarting:
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font (format pb/font 20))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/font-size-laptop ()
     "Set laptop font."
     (interactive)
-    (set-frame-font (format pb/font 14))
+    (set-frame-font (format pb/var-fixedwidth-font 14))
     )
 
   (setq ns-use-thin-smoothing t)
