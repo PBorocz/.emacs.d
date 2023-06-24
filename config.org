@@ -69,7 +69,7 @@
   (setq ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
-* Packages
+* Packages & Modes
 ** /"built-ins"/
 #+begin_src emacs-lisp
   (use-package paren
@@ -258,6 +258,24 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
 #+end_src
+** emacs-garbage-collection collection
+   Gather garbage-collection statistics for Emacs core devs
+   https://elpa.gnu.org/packages/emacs-gc-stats.html
+#+begin_src emacs-lisp
+  (use-package emacs-gc-stats
+    :config
+
+    ;; Optionally reset Emacs GC settings to default values (recommended)
+    (setq emacs-gc-stats-gc-defaults 'emacs-defaults)
+
+    ;; Optionally set reminder to upload the stats after 3 weeks.
+    (setq emacs-gc-stats-remind t) ; can also be a number of days
+
+    ;; Optionally disable logging the command names
+    ;; (setq emacs-gc-stats-inhibit-command-name-logging t)
+    (emacs-gc-stats-mode +1)
+  )
+#+end_src
 ** find-file-in-project
  #+begin_src emacs-lisp
    (use-package find-file-in-project
@@ -306,6 +324,11 @@ Give me a temporary line-highlight on window change.
    (use-package git-gutter
      :init
      (global-git-gutter-mode +1))
+ #+end_src
+** gpt
+https://github.com/karthink/gptel
+ #+begin_src emacs-lisp
+   ;; (use-package gptel)
  #+end_src
 ** graphviz/dot-mode
 #+begin_src emacs-lisp
@@ -391,12 +414,14 @@ Specifically, GithubFlavoredMarkdown-mode
     :init
     (setq
      markdown-command      "multimarkdown"
-     markdown-open-command "/usr/local/bin/mark")) ;; Opens application -> Marked2
+     markdown-open-command "/usr/local/bin/mark") ;; Opens application -> Marked2
+    :config
+    (add-hook 'markdown-mode-hook 'visual-line-mode)
+    (add-hook 'markdown-mode-hook 'pb/markdown-config)
+    )
 
-  ;; Use visual-line-mode in gfm-mode
-  (defun my-gfm-mode-hook ()
-    (visual-line-mode 1))
-  (add-hook 'gfm-mode-hook 'my-gfm-mode-hook)
+  (defun pb/markdown-config ()
+    (local-set-key (kbd "M-q") 'ignore))
 #+end_src
 ** org
 *** Base Package Definition
@@ -418,6 +443,8 @@ Specifically, GithubFlavoredMarkdown-mode
                 ("C-<right>"    . org-metaright)
                 ("C-<left>"     . org-metaleft)
                 )
+    :config
+    (add-hook 'text-mode-hook #'visual-line-mode)
     :init
     (setq org-M-RET-may-split-line                 nil
           org-adapt-indentation                    t
