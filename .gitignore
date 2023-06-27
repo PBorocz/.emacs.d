@@ -1,3 +1,4 @@
+*.eld
 history
 /config.el
 /elpa/

@@ -68,7 +68,7 @@
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 #+end_src
 * Local Tools
-  These require a local installation (ie. outside emacs)
+  These require a local/manual installation (ie. outside emacs)
 ** aspell
    Live spell checking
 #+begin_src emacs-lisp
@@ -80,18 +80,22 @@
 #+begin_src emacs-lisp
   (use-package paren
     :ensure nil
+
     :init
     (setq show-paren-delay 0)  ; We want matching parens to show immediately
+
     :config
     (show-paren-mode t))
 
   (use-package time
     :ensure nil
+
     :init
     (setq display-time-day-and-date  t
           display-time-24hr-format   t
           display-time-use-mail-icon t
           display-time-interval      10)
+
     :config
     (display-time))
 #+end_src
@@ -106,19 +110,23 @@ Highlight global-search-replace strings dynamically.
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 #+end_src
 ** company
-   [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
-   #+begin_src emacs-lisp
-     (use-package company
-       :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
-       :demand t
-       :init
-       (setq company-idle-delay 0.1
-             company-minimum-prefix-length 1)
-       :bind (:map company-active-map
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous))
-       :config
-       (global-company-mode))
+[[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
+#+begin_src emacs-lisp
+  (use-package company
+    :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
+
+    :demand t
+
+    :init
+    (setq company-idle-delay 0.1
+          company-minimum-prefix-length 1)
+
+    :bind (:map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous))
+
+    :config
+    (global-company-mode))
 #+end_src
 ** css
 #+begin_src emacs-lisp
@@ -170,12 +178,9 @@ Highlight global-search-replace strings dynamically.
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
 #+end_src
-*** Supplemental
+*** Supplementary
+[[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 #+begin_src emacs-lisp
-  ;;
-  ;; Sort dired listings with directories first
-  ;; https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst
-  ;;
   (defun mydired-sort ()
     (save-excursion
       (let (buffer-read-only)
@@ -229,7 +234,9 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
       :commands (eglot eglot-ensure)
+
       :hook ((python-mode . eglot-ensure))
+
       :bind (:map eglot-mode-map
                   ("C-c e a" . eglot-code-actions)
                   ("C-c e r" . eglot-rename)
@@ -240,6 +247,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
                   ("C-c f n" . flymake-goto-next-error)
                   ("C-c f p" . flymake-goto-prev-error)
                   ("C-c f d" . flymake-show-project-diagnostics))
+
       :custom
       (eglot-autoshutdown t)
       (eglot-menu-string "eglot")
@@ -260,6 +268,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
   (use-package elm-mode
     :config
     (setq elm-format-on-save t)
+
     :init
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
@@ -286,8 +295,10 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
  #+begin_src emacs-lisp
    (use-package find-file-in-project
      :load-path "~/.emacs.d/site-lisp/find-file-in-project/"
+
      :config
      (setq ffip-use-rust-fd t)
+
      :bind
      ("C-c C-x C-f" . find-file-in-project) ;; Note: override org-emphasize (which I've never used)
      )
@@ -333,6 +344,7 @@ Give me a temporary line-highlight on window change.
  #+end_src
 ** gpt
 https://github.com/karthink/gptel
+WIP as I need a paid account in OpenAI :-(
  #+begin_src emacs-lisp
    ;; (use-package gptel)
  #+end_src
@@ -347,6 +359,7 @@ Improve quality of most-used C-h methods.
 #+begin_src emacs-lisp
   (use-package helpful
     :demand t
+
     :bind
     ("C-x C-g" . magit-status)
 
@@ -377,9 +390,11 @@ Aggressively (but reluctantly) delete white-space.
   ;; https://github.com/hrehfeld/emacs-smart-hungry-delete
   (use-package smart-hungry-delete
     :ensure t
+
     :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
                  ([remap delete-backward-char] . smart-hungry-delete-backward-char)
                  ([remap delete-char] . smart-hungry-delete-forward-char))
+
     :init (smart-hungry-delete-add-default-hooks))
 #+end_src
 ** justfile
@@ -405,8 +420,10 @@ Aggressively (but reluctantly) delete white-space.
 
   (use-package magit
     :demand t
+
     :bind
     ("C-x C-g" . magit-status)
+
     :config
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 
@@ -417,10 +434,12 @@ Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
   (use-package markdown-mode
     :mode ("*\\.md\\'" . gfm-mode)
+
     :init
     (setq
      markdown-command      "multimarkdown"
      markdown-open-command "/usr/local/bin/mark") ;; Opens application -> Marked2
+
     :config
     (add-hook 'markdown-mode-hook 'visual-line-mode)
     (add-hook 'markdown-mode-hook 'pb/markdown-config)
@@ -434,20 +453,20 @@ Specifically, GithubFlavoredMarkdown-mode
 https://github.com/rnkn/olivetti
 #+begin_src emacs-lisp
   (use-package olivetti
-      :init
-      (setq olivetti-body-width 0.50)
-      )
+    :init
+    (setq olivetti-body-width 0.50)
+    )
 #+end_src
 ** org
 *** Base Package Definition
 #+begin_src emacs-lisp
-  (visual-line-mode 1)
 
   ;; -----------------------------------------------------------------------------
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
     :defer nil
+
     :bind (:map org-mode-map
                 ("C-M-<return>" . org-insert-subheading)
                 ("C-c l"        . org-store-link)
@@ -458,8 +477,11 @@ https://github.com/rnkn/olivetti
                 ("C-<right>"    . org-metaright)
                 ("C-<left>"     . org-metaleft)
                 )
+
     :config
     (add-hook 'text-mode-hook #'visual-line-mode)
+    (visual-line-mode 1)
+
     :init
     (setq org-M-RET-may-split-line                 nil
           org-adapt-indentation                    t
@@ -503,8 +525,37 @@ https://github.com/rnkn/olivetti
   ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
   ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
   (add-to-list 'org-file-apps '(directory . emacs))
+
+  ;; ---------------------------------------------------------------------------
+  ;; GTD Configuration
+  ;; ---------------------------------------------------------------------------
+  ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
+  (setq org-todo-keywords
+        '((sequence
+           "TODO(t)"
+           "WORK(w)"
+           "WAIT(a)"
+           "|"
+           "DONE(x)"
+           )))
+
+  ;; Format of DONE items
+  (setq org-fontify-done-headline t)
+  (set-face-attribute 'org-done          nil :foreground "gray36" :strike-through nil)
+  (set-face-attribute 'org-headline-done nil :foreground "gray36" :strike-through nil)
+
+  ;; ---------------------------------------------------------------------------
+  ;; Capture templates
+  ;; ---------------------------------------------------------------------------
+  (define-key global-map (kbd "C-c c") 'org-capture)
+  (setq org-capture-templates
+        '(
+          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+          ))
 #+end_src
-*** Supplemental Packages
+*** Supplemental Org Packages
 **** babel
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
@@ -588,36 +639,7 @@ https://github.com/rnkn/olivetti
  #+begin_src emacs-lisp
    (use-package org-web-tools)
  #+end_src
-**** Org capture templates & GTD
-#+begin_src emacs-lisp
-  ;; ---------------------------------------------------------------------------
-  ;; GTD
-  ;; ---------------------------------------------------------------------------
-  ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
-  (setq org-todo-keywords
-        '((sequence
-           "TODO(t)"
-           "WORK(w)"
-           "WAIT(a)"
-           "|"
-           "DONE(x)"
-           )))
-
-  ;; Format of DONE items
-  (setq org-fontify-done-headline t)
-  (set-face-attribute 'org-done          nil :foreground "gray36" :strike-through nil)
-  (set-face-attribute 'org-headline-done nil :foreground "gray36" :strike-through nil)
-
-  ;; Capture
-  (define-key global-map (kbd "C-c c") 'org-capture)
-  (setq org-capture-templates
-        '(
-          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-          ))
-#+end_src
-*** Attachments
+*** Attachment Management
 #+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
   ;; Attachments
@@ -660,7 +682,7 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     (sql-set-product "postgres")
     (sql-set-sqli-buffer)
     (sql-rename-buffer)
-  )
+    )
 
   (defun upcase-sql-keywords ()
     (interactive)
@@ -674,50 +696,26 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
             (upcase-word 1)
             (forward-char))))))
 
-  ;; (setq sql-connection-alist
-  ;;     '(
-  ;;       (bart
-  ;;       (sql-product 'postgres)
-  ;;       (sql-port 5432)
-  ;;       (sql-server "localhost")
-  ;;       (sql-user "django")
-  ;;       (sql-password "--sorry, getme from environment--")
-  ;;       (sql-database "bart-dw"))
-
-  ;;       (bart-prod
-  ;;       (sql-product 'postgres)
-  ;;       (sql-port 5432)
-  ;;       (sql-server "bartdw-prod.xxxxx.amazonaws.com")
-  ;;       (sql-user "bartdw")
-  ;;       (sql-password "--sorry, getme from environment--")
-  ;;       (sql-database "bartdw"))
-
-  ;;       (udp
-  ;;       (sql-product 'postgres)
-  ;;       (sql-port 5432)
-  ;;       (sql-server "localhost")
-  ;;       (sql-user "django")
-  ;;       (sql-password "--sorry, getme from environment--")
-  ;;       (sql-database "udp"))
-  ;;      )
-  ;; )
-
-  ; Wrappers for quick startup (not used anymore past Energy Solutions)
-  ;; (defun sql-bart-prod ()
-  ;;   (interactive)
-  ;;   (wrapper-sql-connect 'postgres 'bart-prod))
-
-  ;; (defun sql-bart ()
-  ;;   (interactive)
-  ;;   (wrapper-sql-connect 'postgres 'bart))
-
-  ;; (defun sql-udp ()
-  ;;   (interactive)
-  ;;   (wrapper-sql-connect 'postgres 'udp))
+  (setq sql-connection-alist
+      '(
+        (foo
+        (sql-product 'postgres)
+        (sql-port 5432)
+        (sql-server "localhost")
+        (sql-user "--sorry, getme from environment--")
+        (sql-password "--sorry, getme from environment also--")
+        (sql-database "db-foo"))
+       )
+      )
 
   (defun wrapper-sql-connect (product connection)
     (setq sql-product product)
     (sql-connect connection))
+
+  ; Startup wrappers
+  (defun sql-environment-foo ()
+    (interactive)
+    (wrapper-sql-connect 'postgres 'foo))
 #+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
@@ -786,7 +784,7 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :defer t)
 #+end_src
 ** tree-sitter
-<2023-05-31 Wed> When we're ready to move to a more stable Emacs 29, tree-sitter and respective grammars are already installed
+As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* ready to move tree-sitter and respective grammars are already installed.
 #+begin_src emacs-lisp
   (setq treesit-language-source-alist
         '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
@@ -817,8 +815,10 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
+
     :init
     (vertico-mode)
+
     :custom
     (vertico-cycle         t)
     (vertico-scroll-margin 0)
@@ -848,15 +848,18 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
           completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 ** vterm
-   "C-c C-t" to go into "buffer" mode (for copy/paste operations)
+"C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+begin_src emacs-lisp
    (use-package vterm
      :defer t
+
      :config
      (setq vterm-shell "/usr/local/bin/fish")
+
      :hook
      (vterm-mode . (lambda ()
                      (setq-local show-trailing-whitespace nil)))
+
      :custom
      (vterm-always-compile-module t))
 
@@ -887,16 +890,15 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+end_src
 ** yaml-mode
+<2023-06-27 Tue> NOT ready yet, needs emacs 29 for tree sitter support:
 #+begin_src emacs-lisp
-  ;; NOT ready yet, needs emacs 29 for tree sitter support:
   ;; (use-package yaml-pro
   ;;   :defer t
   ;;   :hook
   ;;   (yaml-mode . yaml-pro-ts-mode))
 #+end_src
 ** yasnippet
-   While the majority of the time, I don't rely on snippets, there are a very select /few/ that I
-   consider worthwhile, thus, keep use of yasnippets for now.
+   While the majority of the time, I don't rely on snippets, there are a very select /few/ that I consider worthwhile, thus, keep use of yasnippets for now.
 #+begin_src emacs-lisp
   ;; Don't do snippet expansion within comments/docstrings for py:
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
@@ -917,7 +919,7 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 
     (yas-global-mode t))
 #+end_src
-* Custom Commands
+* My Custom Commands
   These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!)
 ** Center window (aka frame) on current monitor
    [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
