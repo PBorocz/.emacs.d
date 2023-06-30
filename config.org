@@ -233,20 +233,23 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 #+begin_src emacs-lisp
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
-      :commands (eglot eglot-ensure)
+      :commands
+      (eglot eglot-ensure)
 
-      :hook ((python-mode . eglot-ensure))
+      :hook
+      ((python-mode . eglot-ensure))
 
-      :bind (:map eglot-mode-map
-                  ("C-c e a" . eglot-code-actions)
-                  ("C-c e r" . eglot-rename)
-                  ("C-c e f" . eglot-format)
-                  ("C-c x r" . xref-find-references)
-                  ("C-c x f" . xref-find-definitions)
-                  ("C-c x a" . xref-find-apropos)
-                  ("C-c f n" . flymake-goto-next-error)
-                  ("C-c f p" . flymake-goto-prev-error)
-                  ("C-c f d" . flymake-show-project-diagnostics))
+      :bind
+      (:map eglot-mode-map
+            ("C-c e a" . eglot-code-actions)
+            ("C-c e r" . eglot-rename)
+            ("C-c e f" . eglot-format)
+            ("C-c x r" . xref-find-references)
+            ("C-c x f" . xref-find-definitions)
+            ("C-c x a" . xref-find-apropos)
+            ("C-c f n" . flymake-goto-next-error)
+            ("C-c f p" . flymake-goto-prev-error)
+            ("C-c f d" . flymake-show-project-diagnostics))
 
       :custom
       (eglot-autoshutdown t)
@@ -313,25 +316,6 @@ Hide the mode line for buffers that don't need it (vterm only?)
    (use-package hide-mode-line
      :config
      (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
-     )
- #+end_src
-** hl-line+
-Give me a temporary line-highlight on window change.
- #+begin_src emacs-lisp
-   ;; https://tech.toryanderson.com/2021/09/24/replacing-beacon.el-with-hl-line-flash/
-   (use-package hl-line+
-     :load-path "~/.emacs.d/site-lisp/hl-line+/"
-
-     :hook
-     (focus-in                . hl-line-flash)
-     (post-command            . hl-line-flash)
-     (window-scroll-functions . hl-line-flash)
-
-     :custom
-     (global-hl-line-mode                    nil)
-     (hl-line-flash-show-period              0.4)
-     (hl-line-inhibit-highlighting-for-modes '(dired-mode vterm-mode))
-     (hl-line-overlay-priority               -100) ;; sadly, seems not observed by diredfl
      )
  #+end_src
 ** git
@@ -449,12 +433,15 @@ Specifically, GithubFlavoredMarkdown-mode
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
 #+end_src
-** olivetti (writing mode)
+** olivetti
 https://github.com/rnkn/olivetti
 #+begin_src emacs-lisp
   (use-package olivetti
     :init
     (setq olivetti-body-width 0.50)
+
+    :hook
+    ((markdown-mode . olivetti-mode))
     )
 #+end_src
 ** org
@@ -758,6 +745,14 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :init
     (savehist-mode))
 #+end_src
+** save place
+#+begin_src emacs-lisp
+  ;; Persist history over Emacs restarts (vertico sorts by history position)
+  (use-package saveplace
+    :config
+    (setq-default save-place t)
+    )
+#+end_src
 ** shell
 #+begin_src emacs-lisp
   (setq explicit-shell-file-name "/usr/local/bin/fish")
@@ -847,6 +842,13 @@ As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* r
           completion-category-defaults nil
           completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
+** volatile-highlights
+ #+begin_src emacs-lisp
+   (use-package volatile-highlights
+     :custom
+     (volatile-highlights-mode t)
+     )
+#+end_src
 ** vterm
 "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+begin_src emacs-lisp
@@ -875,6 +877,7 @@ As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* r
   (use-package web-mode)
 
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.htmx$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.dhtml$" . web-mode))
   (setq web-mode-engines-alist '(("django" . "\\.html$")))
 
