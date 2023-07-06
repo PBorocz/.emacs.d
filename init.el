@@ -37,6 +37,7 @@
 (use-package cus-edit
   :custom
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
+
   :config
   (load custom-file 'noerror))
 

@@ -13,6 +13,7 @@
    create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
    default-directory                      (concat (getenv  "HOME") "/")
    font-lock-maximum-decoration           t
+   global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
    inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
    inhibit-default-init                   t
    inhibit-splash-screen                  t
@@ -22,6 +23,7 @@
    search-highlight                       t
    sentence-end-double-space              nil       ; Period single space ends sentence
    switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+   use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
    uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
    uniquify-separator                     "/"
    uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
@@ -58,7 +60,9 @@
   (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
   (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
 
-  (global-auto-revert-mode)   ;; refresh a buffer if changed on disk
+  (global-auto-revert-mode 1) ;; refresh a buffer if changed on disk
+
+  (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
   ;; Font availability...
   ;; (defvar pb/var-fixedwidth-font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
@@ -143,8 +147,9 @@ Highlight global-search-replace strings dynamically.
  )
 #+end_src
 ** dired
-*** Base Package
 [[https://github.com/MatthewZMD/.emacs.d]]
+and
+[[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 #+begin_src emacs-lisp
   (use-package dired
     :ensure nil
@@ -177,10 +182,7 @@ Highlight global-search-replace strings dynamically.
 
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
-#+end_src
-*** Supplementary
-[[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
-#+begin_src emacs-lisp
+
   (defun mydired-sort ()
     (save-excursion
       (let (buffer-read-only)
@@ -413,6 +415,24 @@ Aggressively (but reluctantly) delete white-space.
 
   (use-package ibuffer-git)
 #+end_src
+** marginalia
+#+begin_src emacs-lisp
+  ;; Enable rich annotations using the Marginalia package
+  (use-package marginalia
+    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+    ;; available in the *Completions* buffer, add it to the
+    ;; `completion-list-mode-map'.
+    :bind (:map minibuffer-local-map
+           ("M-A" . marginalia-cycle))
+
+    ;; The :init section is always executed.
+    :init
+
+    ;; Marginalia must be actived in the :init section of use-package such that
+    ;; the mode gets enabled right away. Note that this forces loading the
+    ;; package.
+    (marginalia-mode))
+#+end_src
 ** markdown
 Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
@@ -432,6 +452,14 @@ Specifically, GithubFlavoredMarkdown-mode
 
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
+#+end_src
+** move-text
+Specifically, GithubFlavoredMarkdown-mode
+#+begin_src emacs-lisp
+  (use-package move-text
+    :init
+    (move-text-default-bindings)
+    )
 #+end_src
 ** olivetti
 https://github.com/rnkn/olivetti
@@ -751,6 +779,9 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   (use-package saveplace
     :config
     (setq-default save-place t)
+
+    :init
+    (save-place-mode 1)
     )
 #+end_src
 ** shell
