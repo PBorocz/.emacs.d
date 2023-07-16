@@ -312,6 +312,24 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 #+begin_src emacs-lisp
   (use-package fish-mode)
 #+end_src
+** format-all
+ht [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
+#+begin_src emacs-lisp
+  (use-package format-all
+
+    :preface
+    (defun pb/format-code ()
+      "Auto-format whole buffer."
+      (interactive)
+      (if (derived-mode-p 'prolog-mode)
+          (prolog-indent-buffer)
+        (format-all-buffer)))
+
+    :config
+    (global-set-key (kbd "M-F") #'pb/format-code)
+    (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
+    )
+#+end_src
 ** hide-mode-line
 Hide the mode line for buffers that don't need it (vterm only?)
  #+begin_src emacs-lisp
@@ -1048,7 +1066,6 @@ As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* r
     (if (region-active-p)
         (kill-region (region-beginning) (region-end))
       (backward-kill-word 1)))
-
 #+end_src
 ** Toggle Window Split
 https://macowners.club/posts/custom-functions-5-navigation/
@@ -1092,7 +1109,7 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   (global-set-key "\M-p" (lambda () (interactive) (scroll-down 12)))
 #+end_src
 ** Smarter open line
-   [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
+ [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
 #+begin_src emacs-lisp
   (defun pb/key-smart-open-line ()
     "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
@@ -1231,6 +1248,10 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
 
   ;; Better "delete word backwards"
   (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
+
+  ;; Swap windows (useful for org on left, dired on right (built-in as of 26.1)
+  ;; (C-x C-o used to be "delete-blank-lines but i never use that)
+  (global-set-key (kbd "C-x C-o") 'window-swap-states)
 #+end_src
 ** Files *to* have open when we start
 #+begin_src emacs-lisp
