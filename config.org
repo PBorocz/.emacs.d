@@ -65,11 +65,11 @@
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
   ;; Font availability...
-  ;; (defvar pb/var-fixedwidth-font "-*-DejaVu Sans Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  ;; (defvar pb/var-fixedwidth-font "-*-Ubuntu Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; As of 2023-07, we're trying SF Mono as an alternative to SCP-Light...we'll see
+  ;;(defvar pb/var-fixedwidth-font    "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-SF Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
 #+end_src
 * Local Tools
   These require a local/manual installation (ie. outside emacs)
@@ -112,6 +112,20 @@ Highlight global-search-replace strings dynamically.
     )
   (global-set-key (kbd   "<f6>") 'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
+#+end_src
+** biome (weather)
+#+begin_src emacs-lisp
+  (use-package ct
+    :demand t
+    )
+
+  (use-package biome
+       :load-path "~/.emacs.d/site-lisp/biome/"
+
+       :config
+       (setq biome-query-coords
+             '(("Home" 37.5566667 122.373611)))
+       )
 #+end_src
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
@@ -1265,7 +1279,11 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
 ** Window size and font management
-   Which one?
+Scaling:
+  - For all frames (since I can never remember) -> increase-font-size/decrease-font-size
+  - For current buffer -> text-scale-adjust (C-+ and C--)
+
+ Which one?
    - M-x describe-font <cr> <cr>
    - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
