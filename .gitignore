@@ -1,6 +1,7 @@
 *.eld
 history
 places
+/request
 /config.el
 /elpa/
 /ido.last

@@ -65,14 +65,21 @@
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
   ;; Font availability...
-  ;; As of 2023-07, we're trying SF Mono as an alternative to SCP-Light...we'll see
-  ;;(defvar pb/var-fixedwidth-font    "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-SF Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
+  ;; Our "goto"/default font (for years):
+  ;;(defvar pb/var-fixedwidth-font "-*-SF Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
+  ;; As of 2023-07, we're trying SF Mono as an alternative to SCP-Light...we'll see
+  ;;(defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
+  ;; However, as of 2023-08-04, ran across this font on the Dash/Plotly site and liked it!
+  (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+end_src
 * Local Tools
-  These require a local/manual installation (ie. outside emacs)
+These require a local/manual installation (ie. outside emacs)
 ** aspell
    Live spell checking
 #+begin_src emacs-lisp
@@ -114,6 +121,7 @@ Highlight global-search-replace strings dynamically.
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
 #+end_src
 ** biome (weather)
+e.g. curl "https://api.open-meteo.com/v1/forecast?latitude=37.5566667&longitude=122.373611&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m" | jq .
 #+begin_src emacs-lisp
   (use-package ct
     :demand t
@@ -122,9 +130,23 @@ Highlight global-search-replace strings dynamically.
   (use-package biome
        :load-path "~/.emacs.d/site-lisp/biome/"
 
+       :demand t
+
        :config
        (setq biome-query-coords
              '(("Home" 37.5566667 122.373611)))
+
+       (biome-def-preset biome-next-2-weeks
+         ((:name . "Weather Forecast")
+          (:group . "daily")
+          (:params
+           ("forecast_days" . 16)
+           ("timezone" . "PST8PDT")
+           ("daily" "apparent_temperature_min" "apparent_temperature_max" "windspeed_10m_max" "winddirection_10m_dominant" "uv_index_max" "temperature_2m_min" "temperature_2m_max")
+           ("longitude" . 122.373611)
+           ("latitude" . 37.5566667)
+           ("windspeed_unit" . "mph")
+           ("temperature_unit" . "fahrenheit"))))
        )
 #+end_src
 ** company
@@ -324,7 +346,9 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
  #+end_src
 ** fish-shell-mode
 #+begin_src emacs-lisp
-  (use-package fish-mode)
+  ;; Tried commenting this out as of 2023-07-30 as part of testing out 29.1 and going back to 28.2
+  ;; it doesn't seem to have any impact...leave it out??
+  ;; (use-package fish-mode)
 #+end_src
 ** format-all
 ht [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
@@ -352,6 +376,21 @@ Hide the mode line for buffers that don't need it (vterm only?)
      (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
      )
  #+end_src
+** indent
+https://github.com/jdtsmith/indent-bars
+ #+begin_src emacs-lisp
+   (use-package indent-bars
+     :load-path "~/.emacs.d/site-lisp/indent-bars"
+
+     :config
+     (setq
+      indent-bars-prefer-character t
+      indent-bars-display-on-blank-lines t
+      )
+
+     :hook
+     ((python-mode yaml-mode) . indent-bars-mode))
+ #+end_src
 ** git
  #+begin_src emacs-lisp
    (use-package git-timemachine)
@@ -362,9 +401,10 @@ Hide the mode line for buffers that don't need it (vterm only?)
  #+end_src
 ** gpt
 https://github.com/karthink/gptel
-WIP as I need a paid account in OpenAI :-(
  #+begin_src emacs-lisp
-   ;; (use-package gptel)
+   (use-package gptel
+    :config
+    (setq gptel-api-key (getenv "OPENAI_KEY")))
  #+end_src
 ** graphviz/dot-mode
 #+begin_src emacs-lisp
@@ -498,7 +538,7 @@ https://github.com/rnkn/olivetti
 #+begin_src emacs-lisp
   (use-package olivetti
     :init
-    (setq olivetti-body-width 0.50)
+    (setq olivetti-body-width 0.66)
 
     :hook
     ((markdown-mode . olivetti-mode))
@@ -843,6 +883,7 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 #+end_src
 ** tree-sitter
 As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* ready to move tree-sitter and respective grammars are already installed.
+As of <2023-07-30 Sun> Still a few issue with 29.1 but seems like we don't need the major-mode-remap-alist below in 29.1 (and leaving it out doesn't seem to be affecting 28.2 either)
 #+begin_src emacs-lisp
   (setq treesit-language-source-alist
         '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
@@ -859,15 +900,15 @@ As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* r
           (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
         )
 
-  (setq major-mode-remap-alist
-        '((yaml-mode       . yaml-ts-mode)
-          (bash-mode       . bash-ts-mode)
-          (js2-mode        . js-ts-mode)
-          (typescript-mode . typescript-ts-mode)
-          (json-mode       . json-ts-mode)
-          (css-mode        . css-ts-mode)
-          (python-mode     . python-ts-mode))
-        )
+  ;; (setq major-mode-remap-alist
+  ;;       '((yaml-mode       . yaml-ts-mode)
+  ;;         (bash-mode       . bash-ts-mode)
+  ;;         (js2-mode        . js-ts-mode)
+  ;;         (typescript-mode . typescript-ts-mode)
+  ;;         (json-mode       . json-ts-mode)
+  ;;         (css-mode        . css-ts-mode)
+  ;;         (python-mode     . python-ts-mode))
+  ;;       )
 #+end_src
 ** vertico & orderless
 #+begin_src emacs-lisp
@@ -1292,7 +1333,7 @@ Scaling:
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 20))
+    (set-frame-font (format pb/var-fixedwidth-font 22))
     )
 
   (defun pb/font-size-laptop ()
