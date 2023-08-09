@@ -587,7 +587,6 @@ https://github.com/rnkn/olivetti
           org-image-actual-width                   '(300)
           org-link-search-must-match-exact-heading nil
           org-list-allow-alphabetical              t
-          org-pretty-entities                      t
           org-return-follows-link                  t
           org-src-fontify-natively                 t
           org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824

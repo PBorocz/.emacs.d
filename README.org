@@ -3,23 +3,15 @@
 #+OPTION: todo:t
 
 * Introduction
-  My Emacs setup after decadal bankruptcy filing.
+The configuration depends on Org mode. Specifically [[file:init.el][init.el]] sets up a few initial GUI settings, bootstraps [[https://github.com/jwiegley/use-package][use-package]], and loads [[file:config.org][config.org]] (where the majority of the configuration magic happens)
 
-  The configuration depends on Org mode. Specifically [[file:init.el][init.el]] sets up a few initial GUI settings, bootstraps
-  [[https://github.com/jwiegley/use-package][use-package]], and loads [[file:config.org][config.org]], which is where the majority of the configuration magic happens.
+--> [[file:config.org][Configuration (config.org)]]
+
 * Notes
-  I've been happily using ~(require 'xxx)~ since 1990. However, startup times have continued to
-  ramp up (albeit only once per day at most).
+I've been happily using ~(require 'xxx)~ since 1990 (really, see some of my history at the bottom of [[file:config.org][config.org]]).
 
-  Thus, this repo reflects my /first/ attempt at actually cleaning up and using [[https://github.com/jwiegley/use-package][use-package]] over
-  an above simply cutting/pasting other people's usage.
+However, startup times have continued to ramp up (albeit only once per day at most).
 
-  There's a LOT to be cleaned up and learned so don't take my usage as idiomatic!
-* GTD
-** [#3] Address ido-vertical-mode and ido-menu
-** [#2] Optimisation and more idiomatic use-package usage:
-   [[http://cachestocaches.com/2015/8/getting-started-use-package/][Getting started with use-package]]
-   [[https://menno.io/posts/use-package/][Better Emacs Config: use-package]]
-   [[https://ianyepan.github.io/posts/setting-up-use-package/][Quick Tutorial on use-package]]
-   [[https://github.com/Likhon-baRoy/.emacs.d][Nice examples and nice org-mode configuration]]
-   [[https://www.reddit.com/r/emacs/comments/yzvmov/emacs_a_full_fledge_configuration_of_emacs/][Reddit with some good highlights.]]
+Thus, this repo reflects my /first/ attempt at actually cleaning up and using [[https://github.com/jwiegley/use-package][use-package]] over an above simply cutting/pasting other people's usage.
+
+There's a LOT to be cleaned up and learned so don't take my usage as idiomatic!
