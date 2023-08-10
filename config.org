@@ -87,7 +87,7 @@ These require a local/manual installation (ie. outside emacs)
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 * Packages & Modes
-** /"built-ins"/
+** -built-ins-
 #+begin_src emacs-lisp
   (use-package paren
     :ensure nil
@@ -332,6 +332,16 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (emacs-gc-stats-mode +1)
   )
 #+end_src
+** grammarly
+#+begin_src emacs-lisp
+  ;; Arghh...relies on tree-sitter, will have to wait until Emacs-29 upgrade!! :-(
+  ;; (use-package eglot-grammarly
+  ;;   :load-path "~/.emacs.d/site-lisp/eglot-grammarly"
+  ;;   :defer t  ; defer package loading
+  ;;   :hook ((text-mode markdown-mode). (lambda ()
+  ;;                                       (require 'eglot-grammarly)
+  ;;                                       (eglot-ensure))))
+#+end_src
 ** find-file-in-project
  #+begin_src emacs-lisp
    (use-package find-file-in-project
@@ -397,7 +407,12 @@ https://github.com/jdtsmith/indent-bars
 
    (use-package git-gutter
      :init
-     (global-git-gutter-mode +1))
+     (global-git-gutter-mode +1)
+
+     :config
+     (setq git-gutter:disabled-modes '(org-mode image-mode))
+
+     )
  #+end_src
 ** gpt
 https://github.com/karthink/gptel
