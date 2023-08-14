@@ -337,16 +337,6 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (emacs-gc-stats-mode +1)
   )
 #+end_src
-** grammarly
-#+begin_src emacs-lisp
-  ;; Arghh...relies on tree-sitter, will have to wait until Emacs-29 upgrade!! :-(
-  ;; (use-package eglot-grammarly
-  ;;   :load-path "~/.emacs.d/site-lisp/eglot-grammarly"
-  ;;   :defer t  ; defer package loading
-  ;;   :hook ((text-mode markdown-mode). (lambda ()
-  ;;                                       (require 'eglot-grammarly)
-  ;;                                       (eglot-ensure))))
-#+end_src
 ** find-file-in-project
  #+begin_src emacs-lisp
    (use-package find-file-in-project
@@ -901,33 +891,17 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :defer t)
 #+end_src
 ** tree-sitter
-As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* ready to move tree-sitter and respective grammars are already installed.
-As of <2023-07-30 Sun> Still a few issue with 29.1 but seems like we don't need the major-mode-remap-alist below in 29.1 (and leaving it out doesn't seem to be affecting 28.2 either)
+- As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* ready to move tree-sitter and respective grammars are already installed.
+- As of <2023-07-30 Sun> Still a few issue with 29.1 but seems like we don't need the major-mode-remap-alist below in 29.1 (and leaving it out doesn't seem to be affecting 28.2 either)
+- As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
 #+begin_src emacs-lisp
-  (setq treesit-language-source-alist
-        '((bash       "https://github.com/tree-sitter/tree-sitter-bash")
-          (css        "https://github.com/tree-sitter/tree-sitter-css")
-          (elisp      "https://github.com/Wilfred/tree-sitter-elisp")
-          (go         "https://github.com/tree-sitter/tree-sitter-go")
-          (html       "https://github.com/tree-sitter/tree-sitter-html")
-          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-          (json       "https://github.com/tree-sitter/tree-sitter-json")
-          (make       "https://github.com/alemuller/tree-sitter-make")
-          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
-          (python     "https://github.com/tree-sitter/tree-sitter-python")
-          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
-          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
-        )
+  (use-package treesit-auto
+    :demand t
 
-  ;; (setq major-mode-remap-alist
-  ;;       '((yaml-mode       . yaml-ts-mode)
-  ;;         (bash-mode       . bash-ts-mode)
-  ;;         (js2-mode        . js-ts-mode)
-  ;;         (typescript-mode . typescript-ts-mode)
-  ;;         (json-mode       . json-ts-mode)
-  ;;         (css-mode        . css-ts-mode)
-  ;;         (python-mode     . python-ts-mode))
-  ;;       )
+    :config
+    (global-treesit-auto-mode)
+
+    )
 #+end_src
 ** vertico & orderless
 #+begin_src emacs-lisp
