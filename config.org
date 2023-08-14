@@ -37,6 +37,11 @@
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
+  ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
+  ;; cauing C-g for minibuffer-quit to start the debugger(!). We don't want that.
+  ;; per https://emacs.stackexchange.com/questions/70177/how-can-i-apply-toggle-debug-on-quit-ignore-debugger-entered-lisp-error/70180
+  (add-to-list 'debug-ignored-errors 'minibuffer-quit)
+
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
@@ -74,7 +79,7 @@
   ;; As of 2023-07, we're trying SF Mono as an alternative to SCP-Light...we'll see
   ;;(defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-  ;; However, as of 2023-08-04, ran across this font on the Dash/Plotly site and liked it!
+  ;; However, as of 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
   (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+end_src
@@ -265,9 +270,9 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     )
 #+end_src
 ** eglot
-   - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
-   - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
-   - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
+- [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
+- [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
+- [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
 #+begin_src emacs-lisp
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
@@ -301,7 +306,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(python-mode . ("ruff-lsp"))))
+                 '(python-mode . ("/Users/peter/.local/bin/ruff-lsp"))))
 #+end_src
 ** elm-mode
    https://github.com/jcollard/elm-mode
@@ -1347,7 +1352,7 @@ Scaling:
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 22))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/font-size-laptop ()
@@ -1361,36 +1366,36 @@ Scaling:
            (>= (x-display-pixel-width) 3840))
       (progn
         (pb/font-size-monitor)
-        (set-frame-width  (selected-frame) 293) ;; Note that these are a function of
-        (set-frame-height (selected-frame)  75) ;; the fontsize listed above!
+        ;; (set-frame-width  (selected-frame) 293) ;; Note that these are a function of
+        ;; (set-frame-height (selected-frame)  75) ;; the fontsize listed above!
         )
     (progn
       (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
         (pb/font-size-laptop)
-        (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-        (set-frame-height (selected-frame)  42) ;; the fontsize listed above!
+        ;; (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
+        ;; (set-frame-height (selected-frame)  42) ;; the fontsize listed above!
         )
       )
     )
 #+end_src
 * History
-  |------------+-------------------------------------------------------------------|
-  | 1990.07.13 | Make Systems (on Sunview).                                        |
-  | 1991.06.07 | Teknekron (X using twm).                                          |
-  | 1993.12.08 | Teknekron (emacs version 19).                                     |
-  | 1994.03.26 | Added tcl initialisation logic.                                   |
-  | 2006.01.08 | First real cleanup since the mid-90's (!).                        |
-  | 2006.10.02 | Configured into AXA Rosenberg.                                    |
-  | 2008.01.19 | Update/cleanup, addition of ECB, OrgMode.                         |
-  | 2011.04.15 | Added multiplatform support for Ubuntu & MacOS.                   |
-  | 2011.09.05 | Updated OrgMode for another attempt at GTD.                       |
-  | 2011.09.05 | Final tweaks obo EnergySolutions environment.                     |
-  | 2012.08.15 | Added support for Ropemacs & Pymacs for python IDE.               |
-  | 2012.08.28 | Added support for GRIN integration.                               |
-  | 2013.05.12 | Declaring dotemacs-bankruptcy! Moving to site-start architecture. |
-  | 2020.06.10 | Test and discard of lsp, rebuilt venv for elpy (~/emacs-venv)     |
-  | 2021.01.04 | Clean up of emacs folders.                                        |
-  | 2021.11.28 | Moved to PARA file organisation for all main directories.         |
-  | 2022.03.15 | Moved to support numbered file repository structure.              |
-  | 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
-  |------------+-------------------------------------------------------------------|
+|------------+-------------------------------------------------------------------|
+| 1990.07.13 | Make Systems (on Sunview).                                        |
+| 1991.06.07 | Teknekron (X using twm).                                          |
+| 1993.12.08 | Teknekron (emacs version 19).                                     |
+| 1994.03.26 | Added tcl initialisation logic.                                   |
+| 2006.01.08 | First real cleanup since the mid-90's (!).                        |
+| 2006.10.02 | Configured into AXA Rosenberg.                                    |
+| 2008.01.19 | Update/cleanup, addition of ECB, OrgMode.                         |
+| 2011.04.15 | Added multiplatform support for Ubuntu & MacOS.                   |
+| 2011.09.05 | Updated OrgMode for another attempt at GTD.                       |
+| 2011.09.05 | Final tweaks obo EnergySolutions environment.                     |
+| 2012.08.15 | Added support for Ropemacs & Pymacs for python IDE.               |
+| 2012.08.28 | Added support for GRIN integration.                               |
+| 2013.05.12 | Declaring dotemacs-bankruptcy! Moving to site-start architecture. |
+| 2020.06.10 | Test and discard of lsp, rebuilt venv for elpy (~/emacs-venv)     |
+| 2021.01.04 | Clean up of emacs folders.                                        |
+| 2021.11.28 | Moved to PARA file organisation for all main directories.         |
+| 2022.03.15 | Moved to support numbered file repository structure.              |
+| 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
+|------------+-------------------------------------------------------------------|

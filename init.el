@@ -42,8 +42,8 @@
   (load custom-file 'noerror))
 
 ;; If necessary for debugging config issues in our tangled file.
-;; (setq debug-on-error 1)
-;; (setq debug-on-quit t)
+(setq debug-on-error 1)
+(setq debug-on-quit t)
 
 ;; ------------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
