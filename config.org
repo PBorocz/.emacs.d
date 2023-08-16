@@ -356,7 +356,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
   ;; (use-package fish-mode)
 #+end_src
 ** format-all
-ht [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
+hat-tip to [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
   (use-package format-all
 
@@ -412,9 +412,7 @@ https://github.com/jdtsmith/indent-bars
 ** gpt
 https://github.com/karthink/gptel
  #+begin_src emacs-lisp
-   (use-package gptel
-    :config
-    (setq gptel-api-key (getenv "OPENAI_KEY")))
+   (use-package gptel)
  #+end_src
 ** graphviz/dot-mode
 #+begin_src emacs-lisp
