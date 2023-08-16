@@ -815,6 +815,19 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     (interactive)
     (wrapper-sql-connect 'postgres 'foo))
 #+end_src
+** pulsar
+[[https://protesilaos.com/emacs/pulsar]]
+#+begin_src emacs-lisp
+  (use-package pulsar
+    :load-path "~/.emacs.d/site-lisp/pulsar/"
+
+    :config
+    (setq pulsar-delay 0.06)
+    (setq pulsar-face 'pulsar-cyan)
+    (pulsar-global-mode 1)
+    (add-hook 'next-error-hook #'pulsar-pulse-line)
+    )
+#+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
