@@ -452,14 +452,18 @@ Improve quality of most-used C-h methods.
 #+end_src
 ** hungry-deletes
 Aggressively (but reluctantly) delete white-space.
+[[https://github.com/hrehfeld/emacs-smart-hungry-delete]]
 #+begin_src emacs-lisp
-  ;; https://github.com/hrehfeld/emacs-smart-hungry-delete
   (use-package smart-hungry-delete
     :ensure t
 
-    :bind (([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-                 ([remap delete-backward-char] . smart-hungry-delete-backward-char)
-                 ([remap delete-char] . smart-hungry-delete-forward-char))
+    :bind (
+           ([remap delete-char]                   . smart-hungry-delete-forward-char)
+           ([remap org-delete-char]               . smart-hungry-delete-forward-char)
+
+           ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+           ([remap delete-backward-char]          . smart-hungry-delete-backward-char)
+           )
 
     :init (smart-hungry-delete-add-default-hooks))
 #+end_src
