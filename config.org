@@ -306,7 +306,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(python-mode . ("/Users/peter/.local/bin/ruff-lsp"))))
+                 '(python-mode . ("~/.local/bin/ruff-lsp"))))
 #+end_src
 ** elm-mode
    https://github.com/jcollard/elm-mode
@@ -389,12 +389,19 @@ https://github.com/jdtsmith/indent-bars
 
      :config
      (setq
-      indent-bars-prefer-character t
-      indent-bars-display-on-blank-lines t
+      indent-bars-color '(highlight :face-bg t :blend 1.0)
+      indent-bars-pattern "."
+      indent-bars-width-frac 0.1
+      indent-bars-pad-frac 0.1
+      indent-bars-zigzag nil
+      indent-bars-color-by-depth nil
+      indent-bars-highlight-current-depth nil
+      indent-bars-display-on-blank-lines nil
       )
 
      :hook
-     ((python-mode yaml-mode) . indent-bars-mode))
+     ((python-mode yaml-mode) . indent-bars-mode)
+     )
  #+end_src
 ** git
  #+begin_src emacs-lisp
@@ -694,6 +701,7 @@ https://github.com/rnkn/olivetti
        :hook (org-mode . org-appear-mode))
  #+end_src
 **** org-cliplink
+Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
  #+begin_src emacs-lisp
    (use-package org-cliplink
      :after 'org
@@ -731,11 +739,12 @@ https://github.com/rnkn/olivetti
            (?+ . ?➤)
            (?- . ?•)))
  #+end_src
-**** org-web-tools
+**** org-web-tools (INACTIVE)
 [[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org...]]
 [[https://blog.nawaz.org/posts/2023/Mar/solving-a-scraping-problem-with-emacs-and-org-mode/][Solving a Scraping Problem with Emacs and Org Mode]] (Blog post demonstrating org-web-tools)
  #+begin_src emacs-lisp
-   (use-package org-web-tools)
+   ;; Has problems with 29.1, revert to org-cliplink for now until package get's an upgrade.
+   ;; (use-package org-web-tools)
  #+end_src
 *** Attachment Management
 #+begin_src emacs-lisp
@@ -823,9 +832,13 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 
     :config
     (setq pulsar-delay 0.06)
-    (setq pulsar-face 'pulsar-cyan)
-    (pulsar-global-mode 1)
+    (setq pulsar-face 'pulsar-yellow)
+    (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook))
+      (add-hook hook #'pulsar-mode))
     (add-hook 'next-error-hook #'pulsar-pulse-line)
+
+    ;; Don't use global mode as it looks ugly trying to pulse my complex vterm fish prompt ;-(
+    ;; (pulsar-global-mode 1)
     )
 #+end_src
 ** rainbow-delimiters

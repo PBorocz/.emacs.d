@@ -19,7 +19,8 @@
    (setq file-name-handler-alist file-name-handler-alist-original)
    (makunbound 'gc-cons-threshold-original)
    (makunbound 'file-name-handler-alist-original)
-   (message "(...restored original values of 'gc-cons-threshold' and 'file-name-handler-alist')")))
+   )
+ )
 ;; -----------------------------------------------------------------------------
 
 ;; Native compilation settings

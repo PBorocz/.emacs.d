@@ -18,6 +18,7 @@
 (add-to-list 'package-archives '("org"   . "https://orgmode.org/elpa/"))
 (package-initialize)
 
+;; Setup use of use-package macro(s) for the rest of our package installs.
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -33,7 +34,7 @@
   )
 
 ;; Set the location of a separate "custom" file (ie. custom-set-variables and custom-set-faces)
-;; (we don't want it stored below in *this* file. ;-()
+;; (ie. we don't want it stored below in *this* file. ;-()
 (use-package cus-edit
   :custom
   (custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -41,17 +42,17 @@
   :config
   (load custom-file 'noerror))
 
-;; If necessary for debugging config issues in our tangled file.
+;; In case we run into any issues debugging our tangled config file:
 (setq debug-on-error 1)
-(setq debug-on-quit t)
+(setq debug-on-quit  t)
 
-;; ------------------------------------------------------------------------------
+;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
-;; ------------------------------------------------------------------------------
 (require 'org)
 (org-babel-load-file (expand-file-name (concat user-emacs-directory "config.org")))
+;; -----------------------------------------------------------------------------
 
-;; How long did it take for us to startup?
+;; How long did our startup take?
 (defun pb/_display-startup-time ()
   (message
    "Emacs loaded in %s with %d garbage collections."
