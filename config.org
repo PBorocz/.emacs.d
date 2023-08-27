@@ -373,36 +373,6 @@ hat-tip to [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
     (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
     )
 #+end_src
-** hide-mode-line
-Hide the mode line for buffers that don't need it (vterm only?)
- #+begin_src emacs-lisp
-   (use-package hide-mode-line
-     :config
-     (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
-     )
- #+end_src
-** indent
-https://github.com/jdtsmith/indent-bars
- #+begin_src emacs-lisp
-   (use-package indent-bars
-     :load-path "~/.emacs.d/site-lisp/indent-bars"
-
-     :config
-     (setq
-      indent-bars-color '(highlight :face-bg t :blend 1.0)
-      indent-bars-pattern "."
-      indent-bars-width-frac 0.1
-      indent-bars-pad-frac 0.1
-      indent-bars-zigzag nil
-      indent-bars-color-by-depth nil
-      indent-bars-highlight-current-depth nil
-      indent-bars-display-on-blank-lines nil
-      )
-
-     :hook
-     ((python-mode yaml-mode) . indent-bars-mode)
-     )
- #+end_src
 ** git
  #+begin_src emacs-lisp
    (use-package git-timemachine)
@@ -427,6 +397,14 @@ https://github.com/karthink/gptel
     :config
     (setq graphviz-dot-indent-width 4))
 #+end_src
+** hide-mode-line
+Hide the mode line for buffers that don't need it (vterm only?)
+ #+begin_src emacs-lisp
+   (use-package hide-mode-line
+     :config
+     (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
+     )
+ #+end_src
 ** helpful
 Improve quality of most-used C-h methods.
 #+begin_src emacs-lisp
@@ -474,6 +452,28 @@ Aggressively (but reluctantly) delete white-space.
 
     :init (smart-hungry-delete-add-default-hooks))
 #+end_src
+** indent
+https://github.com/jdtsmith/indent-bars
+ #+begin_src emacs-lisp
+   (use-package indent-bars
+     :load-path "~/.emacs.d/site-lisp/indent-bars"
+
+     :config
+     (setq
+      indent-bars-color '(highlight :face-bg t :blend 1.0)
+      indent-bars-pattern "."
+      indent-bars-width-frac 0.1
+      indent-bars-pad-frac 0.1
+      indent-bars-zigzag nil
+      indent-bars-color-by-depth nil
+      indent-bars-highlight-current-depth nil
+      indent-bars-display-on-blank-lines nil
+      )
+
+     :hook
+     ((python-mode yaml-pro-ts-mode) . indent-bars-mode)
+     )
+ #+end_src
 ** justfile
 #+begin_src emacs-lisp
   (use-package just-mode
@@ -505,6 +505,8 @@ Aggressively (but reluctantly) delete white-space.
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 
   (use-package ibuffer-git)
+
+  (use-package magit-todos-mode)
 #+end_src
 ** marginalia
 #+begin_src emacs-lisp
@@ -919,10 +921,24 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :defer t)
 #+end_src
 ** tree-sitter
-- As of <2023-05-31 Wed> As of now, still too many issues on 29....when we *are* ready to move tree-sitter and respective grammars are already installed.
-- As of <2023-07-30 Sun> Still a few issue with 29.1 but seems like we don't need the major-mode-remap-alist below in 29.1 (and leaving it out doesn't seem to be affecting 28.2 either)
 - As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
+  (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
 #+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '(
+          (bash       "https://github.com/tree-sitter/tree-sitter-bash")
+          (cmake      "https://github.com/uyha/tree-sitter-cmake")
+          (css        "https://github.com/tree-sitter/tree-sitter-css")
+          (html       "https://github.com/tree-sitter/tree-sitter-html")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json       "https://github.com/tree-sitter/tree-sitter-json")
+          (make       "https://github.com/alemuller/tree-sitter-make")
+          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+          (python     "https://github.com/tree-sitter/tree-sitter-python")
+          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
+        )
+
   (use-package treesit-auto
     :demand t
 
@@ -1018,12 +1034,11 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 #+end_src
 ** yaml-mode
-<2023-06-27 Tue> NOT ready yet, needs emacs 29 for tree sitter support:
 #+begin_src emacs-lisp
-  ;; (use-package yaml-pro
-  ;;   :defer t
-  ;;   :hook
-  ;;   (yaml-mode . yaml-pro-ts-mode))
+  (use-package yaml-pro
+     :defer t
+     :hook
+     (yaml-mode . yaml-pro-ts-mode))
 #+end_src
 ** yasnippet
    While the majority of the time, I don't rely on snippets, there are a very select /few/ that I consider worthwhile, thus, keep use of yasnippets for now.
