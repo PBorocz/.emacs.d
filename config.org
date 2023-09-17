@@ -38,7 +38,7 @@
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
-  ;; cauing C-g for minibuffer-quit to start the debugger(!). We don't want that.
+  ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
   ;; per https://emacs.stackexchange.com/questions/70177/how-can-i-apply-toggle-debug-on-quit-ignore-debugger-entered-lisp-error/70180
   (add-to-list 'debug-ignored-errors 'minibuffer-quit)
 
@@ -54,7 +54,7 @@
                 )
 
   ;; We want y or n to be sufficient for yes/no prompts.
-  (fset 'yes-or-no-p 'y-or-n-p)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 
   ;; Don't let Emacs suspend by getting rid of pesky "\C-z" and "\C-x\C-z" annoying minimize
   (unbind-key "C-z")
@@ -73,14 +73,12 @@
 
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
-  ;; Our "goto"/default font (for years):
-  ;;(defvar pb/var-fixedwidth-font "-*-SF Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
+  ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-  ;; As of 2023-07, we're trying SF Mono as an alternative to SCP-Light...we'll see
-  ;;(defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-  ;; However, as of 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
-  (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; 2023-09-03, going back to my old standby ;-(
+  (defvar pb/var-fixedwidth-font-laptop  "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font-monitor "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+end_src
 * Local Tools
@@ -124,35 +122,6 @@ Highlight global-search-replace strings dynamically.
     )
   (global-set-key (kbd   "<f6>") 'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
-#+end_src
-** biome (weather)
-e.g. curl "https://api.open-meteo.com/v1/forecast?latitude=37.5566667&longitude=122.373611&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m" | jq .
-#+begin_src emacs-lisp
-  (use-package ct
-    :demand t
-    )
-
-  (use-package biome
-       :load-path "~/.emacs.d/site-lisp/biome/"
-
-       :demand t
-
-       :config
-       (setq biome-query-coords
-             '(("Home" 37.5566667 122.373611)))
-
-       (biome-def-preset biome-next-2-weeks
-         ((:name . "Weather Forecast")
-          (:group . "daily")
-          (:params
-           ("forecast_days" . 16)
-           ("timezone" . "PST8PDT")
-           ("daily" "apparent_temperature_min" "apparent_temperature_max" "windspeed_10m_max" "winddirection_10m_dominant" "uv_index_max" "temperature_2m_min" "temperature_2m_max")
-           ("longitude" . 122.373611)
-           ("latitude" . 37.5566667)
-           ("windspeed_unit" . "mph")
-           ("temperature_unit" . "fahrenheit"))))
-       )
 #+end_src
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
@@ -307,6 +276,10 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(python-mode . ("~/.local/bin/ruff-lsp"))))
+
+  (use-package treesit-auto
+    :config
+    (global-treesit-auto-mode))
 #+end_src
 ** elm-mode
    https://github.com/jcollard/elm-mode
@@ -330,7 +303,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (setq emacs-gc-stats-gc-defaults 'emacs-defaults)
 
     ;; Optionally set reminder to upload the stats after 3 weeks.
-    (setq emacs-gc-stats-remind t) ; can also be a number of days
+    (setq emacs-gc-stats-remind nil) ; can also be a number of days
 
     ;; Optionally disable logging the command names
     ;; (setq emacs-gc-stats-inhibit-command-name-logging t)
@@ -506,7 +479,9 @@ https://github.com/jdtsmith/indent-bars
 
   (use-package ibuffer-git)
 
-  (use-package magit-todos-mode)
+  (use-package magit-todos
+    :load-path "~/.emacs.d/site-lisp/magit-todos/"
+    )
 #+end_src
 ** marginalia
 #+begin_src emacs-lisp
@@ -905,6 +880,32 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
+** terminal-notifier
+#+begin_src emacs-lisp
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Terminal notifier
+  ;; requires 'brew install terminal-notifier'
+
+  (defvar terminal-notifier-command (executable-find "terminal-notifier") "/usr/local/bin/terminal-notifier")
+
+  (defun terminal-notifier-notify (title message)
+    "Show a message with terminal-notifier-command."
+    (start-process "terminal-notifier"
+                   "terminal-notifier"
+                   terminal-notifier-command
+                   "-title" title
+                   "-message" message
+                   "-send" "org.gnu.Emacs"))
+
+  (defun timed-notification (time msg)
+    (interactive "sNotification when (e.g: 2 minutes, 60 seconds, 3 days): \nsMessage: ")
+    (run-at-time time nil (lambda (msg) (terminal-notifier-notify "Emacs" msg)) msg))
+
+  ;; (terminal-notifier-notify "Emacs notification" "Something amusing happened")
+
+  (setq org-show-notification-handler
+        (lambda (msg) (timed-notification nil msg)))
+#+end_src
 ** text
 #+begin_src emacs-lisp
   (setq text-mode-hook
@@ -1058,9 +1059,14 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
 
     ;; Use the method above to keep snippets only when we're writing actual code.
-    (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+    ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
 
-    (yas-global-mode t))
+    (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
+    (add-hook 'python-base-mode-hook #'yas-minor-mode)
+
+    (yas-global-mode 1)
+    (yas-reload-all)
+    )
 #+end_src
 * My Custom Commands
   These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!)
@@ -1369,13 +1375,13 @@ Scaling:
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 20))
+    (set-frame-font (format pb/var-fixedwidth-font-monitor 20))
     )
 
   (defun pb/font-size-laptop ()
     "Set laptop font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 14))
+    (set-frame-font (format pb/var-fixedwidth-font-laptop 14))
     )
 
   (setq ns-use-thin-smoothing t)

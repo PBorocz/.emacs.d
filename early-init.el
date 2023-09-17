@@ -35,9 +35,9 @@
 
 ;; Theme setting
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'monokai t)
 
-;; Reduce the font-size differences of org-mode headlines.
+;; Load monokai theme and reduce the font-size differences of org-mode headlines.
+(load-theme 'monokai t)
 (setq monokai-height-plus-4 1.2
       monokai-height-plus-3 1.1
       monokai-height-plus-2 1.0)
