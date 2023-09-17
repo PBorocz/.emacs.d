@@ -77,8 +77,7 @@
   ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; 2023-09-03, going back to my old standby ;-(
-  (defvar pb/var-fixedwidth-font-laptop  "-*-Source Code Pro-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font-monitor "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+end_src
 * Local Tools
@@ -249,7 +248,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
       (eglot eglot-ensure)
 
       :hook
-      ((python-mode . eglot-ensure))
+      ((python-ts-mode . eglot-ensure))
 
       :bind
       (:map eglot-mode-map
@@ -275,7 +274,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '(python-mode . ("~/.local/bin/ruff-lsp"))))
+                 '(python-ts-mode . ("~/.local/bin/ruff-lsp"))))
 
   (use-package treesit-auto
     :config
@@ -1375,13 +1374,13 @@ Scaling:
   (defun pb/font-size-monitor ()
     "Set 4K monitor font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font-monitor 20))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/font-size-laptop ()
     "Set laptop font."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font-laptop 14))
+    (set-frame-font (format pb/var-fixedwidth-font 14))
     )
 
   (setq ns-use-thin-smoothing t)
