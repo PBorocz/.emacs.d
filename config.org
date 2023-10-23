@@ -221,26 +221,6 @@ and
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
 #+end_src
-** doom-modeline
-[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
-http://www.emacswiki.org/emacs/DisplayTime
-http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-
-      :init
-      (setq doom-modeline-vcs-max-length 20
-            display-time-string-forms '((propertize (format-time-string "%F %R" now))))
-
-      :hook
-      (after-init         . doom-modeline-mode)
-      (doom-modeline-mode . display-battery-mode)
-
-      :config
-      (custom-set-faces '(mode-line          ((t (:family "SF Mono" :height 0.80)))))
-      (custom-set-faces '(mode-line-inactive ((t (:family "SF Mono" :height 0.90)))))
-      )
-#+end_src
 ** editor-config
 #+begin_src emacs-lisp
   (use-package editorconfig
@@ -384,14 +364,6 @@ https://github.com/karthink/gptel
     :config
     (setq graphviz-dot-indent-width 4))
 #+end_src
-** hide-mode-line
-Hide the mode line for buffers that don't need it (vterm only?)
- #+begin_src emacs-lisp
-   (use-package hide-mode-line
-     :config
-     (add-hook 'vterm-mode-hook #'hide-mode-line-mode)
-     )
- #+end_src
 ** helpful
 Improve quality of most-used C-h methods.
 #+begin_src emacs-lisp
@@ -859,19 +831,25 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :hook (prog-mode)
     )
 #+end_src
-** ripgrep (aka rg)
-   Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
+** deadgrep (aka ripgrep)
 #+begin_src emacs-lisp
-  (use-package rg
-    :config
-    (rg-enable-menu))
+  (use-package deadgrep)
+  (global-set-key (kbd   "<f5>") #'deadgrep)
+#+end_src
+*** ~ripgrep (aka rg)~
+Nuked on 2023-10-23 for deadgrep itself (I like the window behaviour better on it).
+Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
+#+begin_src emacs-lisp
+  ;;   (use-package rg
+  ;;     :config
+  ;;     (rg-enable-menu))
 
-  ;; Separate these into 2 cases:
-  ;; This one only works on selected text BUT doesn't prompt for directory or file type!
-  (global-set-key (kbd   "<f5>") 'rg-dwim)
+  ;;   ;; Separate these into 2 cases:
+  ;;   ;; This one only works on selected text BUT doesn't prompt for directory or file type!
+  ;;   (global-set-key (kbd   "<f5>") 'rg-dwim)
 
-  ;; While this one prompts for something to query on but also asks for directory and type as well..
-  (global-set-key (kbd "C-<f5>") 'rg-literal)
+  ;;   ;; While this one prompts for something to query on but also asks for directory and type as well..
+  ;;   (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
 ** savehist
 #+begin_src emacs-lisp
@@ -900,6 +878,39 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
+#+end_src
+** spaceline (modeline)
+#+begin_src emacs-lisp
+  (use-package spaceline
+      :init
+      (spaceline-emacs-theme)
+      )
+#+end_src
+*** ~smart-mode-line~
+#+begin_src emacs-lisp
+  ;; (use-package smart-mode-line
+  ;;     :hook
+  ;;     (sml/setup)
+  ;;     )
+#+end_src
+
+*** ~doom~
+[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
+http://www.emacswiki.org/emacs/DisplayTime
+http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+#+begin_src emacs-lisp
+  ;; (use-package doom-modeline
+  ;;     :init
+  ;;     (setq doom-modeline-vcs-max-length 20
+  ;;           doom-modeline-column-zero-based t
+  ;;           doom-modeline-position-column-line-format '("%l:%c")
+  ;;           display-time-string-forms '((propertize (format-time-string "%F %R" now)))
+  ;;           inhibit-compacting-font-caches t
+  ;;           )
+
+  ;;     :hook
+  ;;     (after-init . doom-modeline-mode)
+  ;;     )
 #+end_src
 ** terminal-notifier
 #+begin_src emacs-lisp
