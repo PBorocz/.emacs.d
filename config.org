@@ -874,20 +874,16 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
 ** spaceline (modeline)
+[[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
   (use-package spaceline
       :init
       (spaceline-emacs-theme)
+
+      :config
+      (spaceline-toggle-minor-modes-off)
       )
 #+end_src
-*** ~smart-mode-line~
-#+begin_src emacs-lisp
-  ;; (use-package smart-mode-line
-  ;;     :hook
-  ;;     (sml/setup)
-  ;;     )
-#+end_src
-
 *** ~doom~
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://www.emacswiki.org/emacs/DisplayTime
