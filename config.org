@@ -831,25 +831,19 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :hook (prog-mode)
     )
 #+end_src
-** deadgrep (aka ripgrep)
-#+begin_src emacs-lisp
-  (use-package deadgrep)
-  (global-set-key (kbd   "<f5>") #'deadgrep)
-#+end_src
-*** ~ripgrep (aka rg)~
-Nuked on 2023-10-23 for deadgrep itself (I like the window behaviour better on it).
+** rg (aka ripgrep)
 Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
 #+begin_src emacs-lisp
-  ;;   (use-package rg
-  ;;     :config
-  ;;     (rg-enable-menu))
+    (use-package rg
+      :config
+      (rg-enable-menu))
 
-  ;;   ;; Separate these into 2 cases:
-  ;;   ;; This one only works on selected text BUT doesn't prompt for directory or file type!
-  ;;   (global-set-key (kbd   "<f5>") 'rg-dwim)
+    ;; Separate these into 2 cases:
+    ;; This one only works on selected text BUT doesn't prompt for directory or file type!
+    (global-set-key (kbd   "<f5>") 'rg-project)
 
-  ;;   ;; While this one prompts for something to query on but also asks for directory and type as well..
-  ;;   (global-set-key (kbd "C-<f5>") 'rg-literal)
+    ;; While this one prompts for something to query on but also asks for directory and type as well..
+    (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
 ** savehist
 #+begin_src emacs-lisp
