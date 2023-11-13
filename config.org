@@ -59,7 +59,7 @@
 
   ;; We want y or n to be sufficient for yes/no prompts.
   ;; (defalias 'yes-or-no-p 'y-or-n-p) ;; Used for emacs <29
-  (setopt use-short-answers t) ;; Used for emacs >= 29.
+  (setq use-short-answers t) ;; Used for emacs >= 29.
 
   ;; Don't let Emacs suspend by getting rid of pesky "\C-z" and "\C-x\C-z" annoying minimize
   (unbind-key "C-z")
@@ -220,6 +220,14 @@ and
   ;; https://github.com/purcell/diredfl
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
+#+end_src
+** dumb-jump (inactive)
+Until ruff-lsp gets the ability to look up a definition, this won't work.
+It hooks into the xref system which is also used by eglot and thus, can't "lay over" it. Sad...
+[[https://github.com/jacktasia/dumb-jump][GitHub - jacktasia/dumb-jump: an Emacs "jump to definition" package for 50+ l...]]
+#+begin_src emacs-lisp
+  ;; (installed through packages-list-package)
+  ;; (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
 #+end_src
 ** editor-config
 #+begin_src emacs-lisp
@@ -1043,7 +1051,9 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
   (add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.htmx$" . web-mode))
   (add-to-list 'auto-mode-alist '("\\.dhtml$" . web-mode))
+
   (setq web-mode-engines-alist '(("django" . "\\.html$")))
+  (setq web-mode-engines-alist '(("django" . "\\.htmx$")))
 
   ;; For IRIS, we've decided to have HTML indenting match Python:
   (defun my-web-mode-hook ()
