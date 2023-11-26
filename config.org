@@ -881,34 +881,34 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** spaceline (modeline)
+** mode-lines
 [[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
-  (use-package spaceline
-      :init
-      (spaceline-emacs-theme)
+  ;; (use-package spaceline
+  ;;     :init
+  ;;     (spaceline-emacs-theme)
 
-      :config
-      (spaceline-toggle-minor-modes-off)
-      )
+  ;;     :config
+  ;;     (spaceline-toggle-minor-modes-off)
+  ;;     )
 #+end_src
 *** ~doom~
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://www.emacswiki.org/emacs/DisplayTime
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
-  ;; (use-package doom-modeline
-  ;;     :init
-  ;;     (setq doom-modeline-vcs-max-length 20
-  ;;           doom-modeline-column-zero-based t
-  ;;           doom-modeline-position-column-line-format '("%l:%c")
-  ;;           display-time-string-forms '((propertize (format-time-string "%F %R" now)))
-  ;;           inhibit-compacting-font-caches t
-  ;;           )
+  (use-package doom-modeline
+      :init
+      (setq doom-modeline-vcs-max-length 20
+            doom-modeline-column-zero-based t
+            doom-modeline-position-column-line-format '("%l:%c")
+            display-time-string-forms '((propertize (format-time-string "%F %R" now)))
+            inhibit-compacting-font-caches t
+            )
 
-  ;;     :hook
-  ;;     (after-init . doom-modeline-mode)
-  ;;     )
+      :hook
+      (after-init . doom-modeline-mode)
+      )
 #+end_src
 ** terminal-notifier
 #+begin_src emacs-lisp
@@ -1234,6 +1234,10 @@ https://macowners.club/posts/custom-functions-5-navigation/
 http://whattheemacsd.com/key-bindings.el-03.html]]
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
+#+end_src
+** Use project-file-find instead of file-find:
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-f") (lambda () (interactive) (project-find-file)))
 #+end_src
 ** Scroll page without moving cursor
 #+begin_src emacs-lisp

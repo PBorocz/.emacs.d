@@ -1,2 +1,4 @@
 ;;; -*- lisp-data -*-
-(("~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/"))
+(("~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/")
+ ("~/Repository/00-09 System/01 Org/")
+ ("~/.emacs.d/"))
