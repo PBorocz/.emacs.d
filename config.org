@@ -5,7 +5,7 @@
    user-mail-address (getenv "EMAIL_ADDRESS")
    )
 #+end_src
- Basic Configuration
+* Basic Configuration
 #+begin_src emacs-lisp
   (setq
      auto-save-default                      nil       ; Stop creating #autosave# files
@@ -49,6 +49,10 @@
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
+  ;; Delete selection mode
+  ;; 2023-12-02 Trying this out...
+  (delete-selection-mode 1)
+
   ;; Setup defaults across all buffers:
   (setq fill-column               96
         frame-title-format        '("%f [%m]")
@@ -82,7 +86,10 @@
   ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   ;; 2023-09-03, going back to my old standby ;-(
-  (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
+  ;; 2023-12-03 Replace raw source code pro with nerd font variant for better doom-modeline display support.
+  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+end_src
 * Local Tools
@@ -521,6 +528,45 @@ Specifically, GithubFlavoredMarkdown-mode
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
 #+end_src
+** mode-lines
+[[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
+#+begin_src emacs-lisp
+  ;; (use-package spaceline
+  ;;     :init
+  ;;     (spaceline-emacs-theme)
+
+  ;;     :config
+  ;;     (spaceline-toggle-minor-modes-off)
+  ;;     )
+#+end_src
+*** ~doom~
+[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
+http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :custom
+    (nerd-icons-font-family "Symbols Nerd Font Mono")
+    )
+
+  (use-package doom-modeline
+    :init
+    (setq doom-modeline-vcs-max-length 20
+          doom-modeline-column-zero-based t
+          doom-modeline-position-column-line-format '("%l:%c")
+          ;; display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
+          inhibit-compacting-font-caches t
+          doom-modeline-height 1
+          nerd-icons-scale-factor 1.25
+          )
+    (custom-set-faces
+     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.1))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+     )
+
+    :hook
+    (after-init . doom-modeline-mode)
+    )
+#+end_src
 ** move-text
 Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
@@ -880,35 +926,6 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
-#+end_src
-** mode-lines
-[[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
-#+begin_src emacs-lisp
-  ;; (use-package spaceline
-  ;;     :init
-  ;;     (spaceline-emacs-theme)
-
-  ;;     :config
-  ;;     (spaceline-toggle-minor-modes-off)
-  ;;     )
-#+end_src
-*** ~doom~
-[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
-http://www.emacswiki.org/emacs/DisplayTime
-http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-      :init
-      (setq doom-modeline-vcs-max-length 20
-            doom-modeline-column-zero-based t
-            doom-modeline-position-column-line-format '("%l:%c")
-            display-time-string-forms '((propertize (format-time-string "%F %R" now)))
-            inhibit-compacting-font-caches t
-            )
-
-      :hook
-      (after-init . doom-modeline-mode)
-      )
 #+end_src
 ** terminal-notifier
 #+begin_src emacs-lisp
