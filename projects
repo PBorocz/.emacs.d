@@ -1,4 +1,6 @@
 ;;; -*- lisp-data -*-
-(("~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/")
+(("~/Repository/10-19 Development/10 Development/10.17 raindrop-io-py/raindrop-io-py/")
  ("~/Repository/00-09 System/01 Org/")
- ("~/.emacs.d/"))
+ ("~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/")
+ ("~/.emacs.d/")
+ ("~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard/data_pipeline/"))
