@@ -2,7 +2,9 @@
 ;; As of 2023-12-06 (and almost daily lockups, don't worry about startup speed and focus on stability)
 ;; (this has only been an issue with v29+, never had a problem with 28!)
 ;; https://lists.gnu.org/archive/html/help-gnu-emacs/2007-06/msg00243.html
-(setq gc-cons-percentage 0.6)
+
+;; As of 2023-12-14, still suffering from buffer lockups...go back to NOTHING for a while..
+;; (setq gc-cons-percentage 0.6)
 
 ;; -----------------------------------------------------------------------------
 ;; Nicer handling of setting GC threshold for initialisation only

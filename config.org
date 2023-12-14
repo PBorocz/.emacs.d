@@ -613,7 +613,8 @@ https://github.com/rnkn/olivetti
     (visual-line-mode 1)
 
     :init
-    (setq org-M-RET-may-split-line                 nil
+    (setq fill-column                              96 ;; Org won't use the global fill-column, set here explicitly?
+          org-M-RET-may-split-line                 nil
           org-adapt-indentation                    t
           org-agenda-dim-blocked-tasks             'invisible
           org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
@@ -638,7 +639,6 @@ https://github.com/rnkn/olivetti
           org-startup-with-inline-images           t
           org-use-fast-todo-selection              t
           org-use-speed-commands                   nil
-
           ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
           org-refile-targets                        '((org-agenda-files :maxlevel . 2))
 
