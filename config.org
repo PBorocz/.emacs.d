@@ -902,14 +902,12 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
 #+end_src
 ** savehist
 #+begin_src emacs-lisp
-  ;; Persist history over Emacs restarts (vertico sorts by history position)
   (use-package savehist
     :init
     (savehist-mode))
 #+end_src
 ** save place
 #+begin_src emacs-lisp
-  ;; Persist history over Emacs restarts (vertico sorts by history position)
   (use-package saveplace
     :config
     (setq-default save-place t)
@@ -927,6 +925,13 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
+#+end_src
+** spacious-padding
+#+begin_src emacs-lisp
+  (use-package spacious-padding
+    :config
+    (spacious-padding-mode 1)
+  )
 #+end_src
 ** super-save
 #+begin_src emacs-lisp
