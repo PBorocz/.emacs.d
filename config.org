@@ -228,6 +228,17 @@ and
   ;; https://github.com/purcell/diredfl
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
+
+  (use-package dired-gitignore
+    :ensure t
+
+    :config
+    (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
+
+    ;; If you want to ignore gitignored files by default add also
+
+    (dired-gitignore-global-mode t)
+    )
 #+end_src
 ** dumb-jump (inactive)
 Until ruff-lsp gets the ability to look up a definition, this won't work.
@@ -255,7 +266,7 @@ It hooks into the xref system which is also used by eglot and thus, can't "lay o
       (eglot eglot-ensure)
 
       :hook
-      ((python-ts-mode . eglot-ensure))
+      ((python-ts-mode yaml-ts-mode) . eglot-ensure)
 
       :bind
       (:map eglot-mode-map
@@ -529,7 +540,23 @@ Specifically, GithubFlavoredMarkdown-mode
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
 #+end_src
-** mode-lines
+** mode-line
+*** [[https://github.com/jessiehildebrandt/mood-line/blob/master/mood-line.el][mood-line]]
+Nice and simple, no extraneous minor-modes or weird font's necessary!
+#+begin_src emacs-lisp
+  (use-package mood-line
+    :ensure t
+
+    :init
+    (custom-set-faces
+     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+     )
+    (mood-line-mode)
+    )
+#+end_src
+*** ARCHIVED (tried but discounted for one reason or another)
+**** [[https://github.com/TheBB/spaceline][spaceline]]       (tried but inactive now)
 [[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
   ;; (use-package spaceline
@@ -540,7 +567,15 @@ Specifically, GithubFlavoredMarkdown-mode
   ;;     (spaceline-toggle-minor-modes-off)
   ;;     )
 #+end_src
-*** ~doom~
+**** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]] (tried but inactive now)
+#+begin_src emacs-lisp
+  ;; (use-package smart-mode-line
+  ;;   :ensure t
+  ;;   :init
+  ;;   (sml/setup)
+  ;;   )
+#+end_src
+**** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]            (tried but inactive now)
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
@@ -549,24 +584,35 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (nerd-icons-font-family "Symbols Nerd Font Mono")
     )
 
-  (use-package doom-modeline
-    :init
-    (setq doom-modeline-vcs-max-length 20
-          doom-modeline-column-zero-based t
-          doom-modeline-position-column-line-format '("%l:%c")
-          ;; display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
-          inhibit-compacting-font-caches t
-          doom-modeline-height 1
-          nerd-icons-scale-factor 1.25
-          )
-    (custom-set-faces
-     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.1))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
-     )
+  ;; (use-package doom-modeline
+  ;;   :ensure t
 
-    :hook
-    (after-init . doom-modeline-mode)
-    )
+  ;;   :init
+  ;;   (setq
+  ;;    display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
+  ;;    doom-modeline-column-zero-based nil
+  ;;    doom-modeline-height 1
+
+  ;;    doom-modeline-position-column-format '("C%c")
+  ;;    doom-modeline-position-column-line-format '("%l - %c")
+  ;;    doom-modeline-position-line-format '("L%l")
+  ;;    doom-modeline-vcs-max-length 20
+
+  ;;    modeline-position-column-format '("C%c")
+  ;;    modeline-position-column-line-format '("%l - %c")
+  ;;    modeline-position-line-format '("L%l")
+
+  ;;    inhibit-compacting-font-caches t
+  ;;    nerd-icons-scale-factor 1.0
+  ;;    )
+  ;;   (custom-set-faces
+  ;;    '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+  ;;    '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+  ;;    )
+
+  ;;   :hook
+  ;;   (after-init . doom-modeline-mode)
+  ;;   )
 #+end_src
 ** move-text
 Specifically, GithubFlavoredMarkdown-mode
@@ -926,13 +972,6 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** spacious-padding
-#+begin_src emacs-lisp
-  (use-package spacious-padding
-    :config
-    (spacious-padding-mode 1)
-  )
-#+end_src
 ** super-save
 #+begin_src emacs-lisp
   ;; Auto-save buffers
@@ -977,6 +1016,31 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
            (flyspell-mode)
            ))
   (setq default-major-mode 'text-mode)
+#+end_src
+** theme (modus-vivendi)
+#+begin_src emacs-lisp
+  (use-package modus-themes
+    :ensure t
+
+    :config
+    ;; Add all your customizations prior to loading the themes
+    (setq modus-themes-italic-constructs t
+          modus-themes-bold-constructs nil)
+
+    (setq modus-themes-headings
+          '((0 . (0.8))			;; Document titles etc.
+            (1 . (1.2))
+            (2 . (1.1))))
+
+    (setq modus-themes-common-palette-overrides
+          '((fg-heading-1 blue)
+            (fg-heading-2 cyan)
+            (fg-heading-3 green)))
+
+    ;; Load the theme of your choice.
+    (load-theme 'modus-vivendi)
+
+  )
 #+end_src
 ** toml-mode
 #+begin_src emacs-lisp
@@ -1133,6 +1197,14 @@ yasnippets for now (but make sure they don't expand within comments!)
 
       (yas-global-mode 1)
       (yas-reload-all)
+      )
+#+end_src
+** zoom
+[[https://github.com/cyrus-and/zoom][GitHub - cyrus-and/zoom: Fixed and automatic balanced window layout for Emacs]]
+#+begin_src emacs-lisp
+  (use-package zoom
+      :config
+      (zoom-mode 1)
       )
 #+end_src
 * CUSTOM COMMANDS
@@ -1429,7 +1501,7 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   (find-file "~/Repository/00-09 System/01 Org/journal.org")
   (find-file "~/Repository/00-09 System/01 Org/gtd.org")
 
-  ;; Start with this as file displayed on startup:
+  ;; Start with this displayed on startup:
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
 ** Font Setting

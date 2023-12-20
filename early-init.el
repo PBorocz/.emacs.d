@@ -43,15 +43,6 @@
         inhibit-automatic-native-compilation     t)  ;; Make native compilation happens asynchronously
   )
 
-;; Theme setting
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-
-;; Load monokai theme and reduce the font-size differences of org-mode headlines.
-(load-theme 'monokai t)
-(setq monokai-height-plus-4 1.2
-      monokai-height-plus-3 1.1
-      monokai-height-plus-2 1.0)
-
 ;; Prefer loading newest compiled .el file and turn off
 (setq load-prefer-newer         noninteractive
       package-enable-at-startup t
