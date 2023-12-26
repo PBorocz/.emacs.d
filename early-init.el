@@ -59,6 +59,15 @@
 (tool-bar-mode         -1)
 (tooltip-mode          -1)
 
+;; Theme setting
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+
+;; Load monokai theme and reduce the font-size differences of org-mode headlines.
+(load-theme 'monokai t)
+(setq monokai-height-plus-4 1.2
+      monokai-height-plus-3 1.1
+      )
+
 ;; Turn these off for now; later, we'll use pb/toggle-letter-case to do this a bit better.
 (put 'downcase-region 'disabled nil)
 (put 'upcase-region   'disabled nil)

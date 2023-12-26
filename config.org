@@ -34,8 +34,14 @@
        )
 
     ;; Set title-bar to transparent.
+    ;; As of 2023-12-25 with the railwaycat build, these don't seem to work:
     (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
     (add-to-list 'default-frame-alist '(ns-appearance . dark))
+
+    ;; If we have to have it, set title-bar to something a bit nicer:
+    (setq frame-title-format '(buffer-file-name "%f" ("%b")))
+    ;; (setq frame-title-format '())
+    ;; (setq frame-title-format '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d"))))
 
     ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
     ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
@@ -81,17 +87,19 @@
 
     ;; Font availability...
 
-    (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-
     ;; 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
     ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
     ;; 2023-09-03, going back to my old standby ;-(
     ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-    ;; 2023-12-03 Replace raw source code pro with nerd font variant for better doom-modeline display support.
+    ;; 2023-12-24 Give a try to Astigmata from Jason Knight...nope.
+    ;; (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
+    ;; 2023-12-25 Replace raw source code pro with nerd font variant for better doom-modeline display support.
     (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
+    (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 #+end_src
 * LOCAL TOOLS
 These require a local/manual installation (ie. outside emacs)
@@ -471,6 +479,14 @@ https://github.com/jdtsmith/indent-bars
   (use-package just-mode
     :config
     (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
+    )
+#+end_src
+** lin
+#+begin_src emacs-lisp
+  (use-package lin
+    :ensure t
+    :config
+    (lin-global-mode 1)
     )
 #+end_src
 ** magit
@@ -1017,30 +1033,35 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
            ))
   (setq default-major-mode 'text-mode)
 #+end_src
-** theme (modus-vivendi)
+** themes
+*** monokai
 #+begin_src emacs-lisp
-  (use-package modus-themes
-    :ensure t
-
-    :config
-    ;; Add all your customizations prior to loading the themes
-    (setq modus-themes-italic-constructs t
-          modus-themes-bold-constructs nil)
-
-    (setq modus-themes-headings
-          '((0 . (0.8))			;; Document titles etc.
-            (1 . (1.2))
-            (2 . (1.1))))
-
-    (setq modus-themes-common-palette-overrides
-          '((fg-heading-1 blue)
-            (fg-heading-2 cyan)
-            (fg-heading-3 green)))
-
-    ;; Load the theme of your choice.
-    (load-theme 'modus-vivendi)
-
-  )
+  ;; (use-package monokai
+  ;;   :ensure nil
+  ;;   :config
+  ;;   (setq monokai-height-plus-4 1.2
+  ;; 	monokai-height-plus-3 1.1
+  ;;    )
+  ;;   (load-theme 'monokai nil)
+  ;; )
+#+end_src
+*** Prot's [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
+#+begin_src emacs-lisp
+  ;; (use-package ef-themes
+  ;;   :ensure nil
+  ;;   :config
+  ;;   (setq ef-themes-italic-constructs t
+  ;;         ef-themes-bold-constructs nil)
+  ;;   (setq ef-themes-headings
+  ;;         '((0 . (0.8))			;; Document titles etc.
+  ;;           (1 . (1.2))
+  ;;           (2 . (1.1))))
+  ;;   (setq ef-themes-common-palette-overrides
+  ;;         '((fg-heading-1 blue)
+  ;;           (fg-heading-2 cyan)
+  ;;           (fg-heading-3 green)))
+  ;;   (load-theme 'ef-autumn)
+  ;; )
 #+end_src
 ** toml-mode
 #+begin_src emacs-lisp
@@ -1504,7 +1525,7 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   ;; Start with this displayed on startup:
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
-** Font Setting
+** Font Settings
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
   - For current buffer -> M-x text-scale-adjust
