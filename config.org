@@ -306,7 +306,9 @@ It hooks into the xref system which is also used by eglot and thus, can't "lay o
     :config
     (global-treesit-auto-mode))
 
-  (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t)))
+  (add-hook 'prog-mode-hook (lambda () (setq truncate-lines t
+                                             fill-column    96
+                                             )))
 #+end_src
 ** elm-mode
    https://github.com/jcollard/elm-mode
@@ -338,6 +340,13 @@ It hooks into the xref system which is also used by eglot and thus, can't "lay o
   ;;   ;; (setq emacs-gc-stats-inhibit-command-name-logging t)
   ;;   (emacs-gc-stats-mode +1)
   ;; )
+#+end_src
+** envrc
+[[https://github.com/purcell/envrc]]
+#+begin_src emacs-lisp
+  (use-package envrc
+    (envrc-global-mode)
+    )
 #+end_src
 ** find-file-in-project
  #+begin_src emacs-lisp
@@ -568,7 +577,9 @@ Nice and simple, no extraneous minor-modes or weird font's necessary!
      '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
      '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
      )
+
     (mood-line-mode)
+
     )
 #+end_src
 *** ARCHIVED (tried but discounted for one reason or another)
