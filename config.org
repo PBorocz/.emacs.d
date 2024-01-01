@@ -345,6 +345,7 @@ It hooks into the xref system which is also used by eglot and thus, can't "lay o
 [[https://github.com/purcell/envrc]]
 #+begin_src emacs-lisp
   (use-package envrc
+    :config
     (envrc-global-mode)
     )
 #+end_src
@@ -565,7 +566,14 @@ Specifically, GithubFlavoredMarkdown-mode
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
 #+end_src
-** mode-line
+** mode-line(s)
+*** nerd-icons
+#+begin_src emacs-lisp
+  (use-package nerd-icons
+    :custom
+    (nerd-icons-font-family "Symbols Nerd Font Mono")
+    )
+#+end_src
 *** [[https://github.com/jessiehildebrandt/mood-line/blob/master/mood-line.el][mood-line]]
 Nice and simple, no extraneous minor-modes or weird font's necessary!
 #+begin_src emacs-lisp
@@ -579,67 +587,65 @@ Nice and simple, no extraneous minor-modes or weird font's necessary!
      )
 
     (mood-line-mode)
-
     )
 #+end_src
 *** ARCHIVED (tried but discounted for one reason or another)
-**** [[https://github.com/TheBB/spaceline][spaceline]]       (tried but inactive now)
+**** telephone-line
+**** [[https://github.com/TheBB/spaceline][spaceline]]
 [[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
-  ;; (use-package spaceline
-  ;;     :init
-  ;;     (spaceline-emacs-theme)
+  (use-package spaceline
+    :disabled
+    :init
+    (spaceline-emacs-theme)
 
-  ;;     :config
-  ;;     (spaceline-toggle-minor-modes-off)
-  ;;     )
+    :config
+    (spaceline-toggle-minor-modes-off)
+    )
 #+end_src
-**** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]] (tried but inactive now)
+**** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
 #+begin_src emacs-lisp
-  ;; (use-package smart-mode-line
-  ;;   :ensure t
-  ;;   :init
-  ;;   (sml/setup)
-  ;;   )
+  (use-package smart-mode-line
+    :disabled
+    :ensure t
+    :init
+    (sml/setup)
+    )
 #+end_src
-**** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]            (tried but inactive now)
+**** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
-  (use-package nerd-icons
-    :custom
-    (nerd-icons-font-family "Symbols Nerd Font Mono")
+  (use-package doom-modeline
+    :disabled
+    :ensure t
+
+    :init
+    (setq
+     display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
+     doom-modeline-column-zero-based nil
+     doom-modeline-height 1
+
+     doom-modeline-position-column-format '("C%c")
+     doom-modeline-position-column-line-format '("%l - %c")
+     doom-modeline-position-line-format '("L%l")
+     doom-modeline-vcs-max-length 20
+
+     modeline-position-column-format '("C%c")
+     modeline-position-column-line-format '("%l - %c")
+     modeline-position-line-format '("L%l")
+
+     inhibit-compacting-font-caches t
+     nerd-icons-scale-factor 1.0
+     )
+    (custom-set-faces
+     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+     )
+
+    :hook
+    (after-init . doom-modeline-mode)
     )
-
-  ;; (use-package doom-modeline
-  ;;   :ensure t
-
-  ;;   :init
-  ;;   (setq
-  ;;    display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
-  ;;    doom-modeline-column-zero-based nil
-  ;;    doom-modeline-height 1
-
-  ;;    doom-modeline-position-column-format '("C%c")
-  ;;    doom-modeline-position-column-line-format '("%l - %c")
-  ;;    doom-modeline-position-line-format '("L%l")
-  ;;    doom-modeline-vcs-max-length 20
-
-  ;;    modeline-position-column-format '("C%c")
-  ;;    modeline-position-column-line-format '("%l - %c")
-  ;;    modeline-position-line-format '("L%l")
-
-  ;;    inhibit-compacting-font-caches t
-  ;;    nerd-icons-scale-factor 1.0
-  ;;    )
-  ;;   (custom-set-faces
-  ;;    '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-  ;;    '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
-  ;;    )
-
-  ;;   :hook
-  ;;   (after-init . doom-modeline-mode)
-  ;;   )
 #+end_src
 ** move-text
 Specifically, GithubFlavoredMarkdown-mode
