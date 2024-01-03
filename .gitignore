@@ -8,6 +8,7 @@ abbrev.defs
 /backups
 /bookmarks
 /config.el
+/eln-cache
 /elpa
 /helm-doc.org
 /ido.last

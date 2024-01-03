@@ -1340,6 +1340,24 @@ yasnippets for now (but make sure they don't expand within comments!)
     (if (region-active-p)
         (kill-region (region-beginning) (region-end))
       (backward-kill-word 1)))
+
+  (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
+
+#+end_src
+** Better mark-word
+[[https://www.emacs.dyerdwelling.family/emacs/20231209092556-emacs--redefining-mark-paragraph-and-mark-word/]]
+#+begin_src emacs-lisp
+  (defun pb/mark-word()
+    "redefinition of mark-word"
+    (interactive)
+    (if (not (looking-at "\\<"))
+      (backward-word))
+    (push-mark)
+    (forward-word)
+    (setq mark-active t))
+
+  ;; Override existing keymapping
+  (global-set-key (kbd "M-@") 'pb/mark-word)
 #+end_src
 ** Toggle Window Split
 https://macowners.club/posts/custom-functions-5-navigation/
@@ -1524,13 +1542,14 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
   ;; Better "beginning of line"
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 
-  ;; Better "delete word backwards"
-  (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
-
   ;; Swap windows (useful for org on left, dired on right (built-in as of 26.1)
   ;; (C-x C-o used to be "delete-blank-lines but i never use that)
   (global-set-key (kbd "C-x C-o") 'window-swap-states)
 #+end_src
+
+#+RESULTS:
+: window-swap-states
+
 ** Files *to* have open when we start
 #+begin_src emacs-lisp
   (find-file "~/.emacs.d/config.org")
