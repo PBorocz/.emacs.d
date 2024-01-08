@@ -401,7 +401,9 @@ hat-tip to [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 ** gpt
 https://github.com/karthink/gptel
  #+begin_src emacs-lisp
-   (use-package gptel)
+   (use-package gptel
+     :init
+     (setq gptel-model "gpt-4"))
  #+end_src
 ** graphviz/dot-mode
 #+begin_src emacs-lisp
@@ -943,6 +945,13 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     ;; Don't use global mode as it looks ugly trying to pulse my complex vterm fish prompt ;-(
     ;; (pulsar-global-mode 1)
     )
+#+end_src
+** python (pet)
+[[https://github.com/wyuenho/emacs-pet]]
+#+begin_src emacs-lisp
+  (use-package pet
+    :config
+    (add-hook 'python-base-mode-hook 'pet-mode -10))
 #+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp

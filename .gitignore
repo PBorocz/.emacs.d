@@ -1,6 +1,7 @@
 *.eld
 *.eld.gz
 config.el
+gptel-crowdsourced-prompts.csv
 history
 places
 abbrev.defs
