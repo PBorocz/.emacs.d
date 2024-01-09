@@ -1,10 +1,11 @@
 *.eld
 *.eld.gz
+abbrev.defs
 config.el
 gptel-crowdsourced-prompts.csv
 history
 places
-abbrev.defs
+projects
 /auto-save-list
 /backups
 /bookmarks

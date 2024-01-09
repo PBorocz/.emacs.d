@@ -1,8 +1,8 @@
 ;;; -*- lisp-data -*-
 (("~/.emacs.d/")
- ("~/Repository/00-09 System/01 Org/")
  ("~/Repository/10-19 Development/10 Development/10.18 poetry_manage/")
  ("~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/")
+ ("~/Repository/00-09 System/01 Org/")
  ("~/Repository/10-19 Development/10 Development/10.17 raindrop-io-py/api/")
  ("~/Repository/10-19 Development/10 Development/10.17 raindrop-io-py/cli/")
  ("~/Repository/10-19 Development/10 Development/10.17 raindrop-io-py/raindropiocli/")
