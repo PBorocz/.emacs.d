@@ -58,7 +58,10 @@
 
   ;; Delete selection mode
   ;; 2023-12-02 Trying this out...
-  (delete-selection-mode 1)
+  ;; 2024-01-17 Turning this off, too many times I'd have a selection and then *any* key would nuke it!
+  ;;            Put another way, I *like* the idea of simply using "DEL" to delete a selected region but it also deletes
+  ;;            as soon as any other text is typed (can't seem to find a way have splitting this behaviour)
+  ;; (delete-selection-mode 1)
 
   ;; Setup defaults across all buffers:
   (setq fill-column               96
@@ -692,6 +695,12 @@ https://github.com/rnkn/olivetti
     (add-hook 'text-mode-hook #'visual-line-mode)
     (visual-line-mode 1)
 
+    ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
+    (org-link-set-parameters
+     "copy"
+     :follow (lambda (link) (kill-new link))
+     :export (lambda (_ desc &rest _) desc))
+
     :init
     (setq fill-column                              96 ;; Org won't use the global fill-column, set here explicitly?
           org-M-RET-may-split-line                 nil
@@ -755,6 +764,9 @@ https://github.com/rnkn/olivetti
           ("HOLD" . "systemBrownColor")
           ("WAIT" . "systemBrownColor")
           ("DONE" . "gray30")))
+
+  ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
+  (setq org-fontify-todo-headline nil)
 
   ;; Format of DONE items (defined like this so the entire headline is colored across, not just the DONE keyword.)
   (setq org-fontify-done-headline t)
@@ -874,6 +886,12 @@ Create an org-link from a URL in the clipboard with the actual title of the URL 
                   (let ((org-attach-method 'mv))
                     (call-interactively #'org-attach-dired-to-subtree))))))
 #+end_src
+** page-break-lines
+[[https://github.com/purcell/page-break-lines][Display a nice line for ^L's.]]
+#+begin_src emacs-lisp
+  (use-package page-break-lines
+    :init (global-page-break-lines-mode))
+#+end_src
 ** pbcopy
 Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 #+begin_src emacs-lisp
@@ -944,7 +962,7 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :load-path "~/.emacs.d/site-lisp/pulsar/"
 
     :config
-    (setq pulsar-delay 0.06)
+    (setq pulsar-delay 0.08)
     (setq pulsar-face 'pulsar-yellow)
     (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook))
       (add-hook hook #'pulsar-mode))
@@ -1420,7 +1438,8 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
 #+end_src
 ** Use project-file-find instead of file-find:
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-x C-f") (lambda () (interactive) (project-find-file)))
+  (global-set-key (kbd "C-x C-f")   (lambda () (interactive) (project-find-file)))
+  (global-set-key (kbd "C-M-x C-f") (lambda () (interactive) (find-file)))
 #+end_src
 ** Scroll page without moving cursor
 #+begin_src emacs-lisp

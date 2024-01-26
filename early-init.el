@@ -3,8 +3,9 @@
 ;; (this has only been an issue with v29+, never had a problem with 28!)
 ;; https://lists.gnu.org/archive/html/help-gnu-emacs/2007-06/msg00243.html
 
-;; As of 2023-12-14, still suffering from buffer lockups...go back to NOTHING for a while..
-;; (setq gc-cons-percentage 0.6)
+;; 2024-01-23: https://zenodo.org/records/10518083 seems to indicate this would help.
+;;             (specifically, by increasing this we trade off RAM for less frequent GC's)
+(setq gc-cons-percentage 0.6)
 
 ;; -----------------------------------------------------------------------------
 ;; Nicer handling of setting GC threshold for initialisation only
