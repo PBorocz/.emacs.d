@@ -135,12 +135,13 @@ These require a local/manual installation (ie. outside emacs)
 
     :init
     (setq display-time-day-and-date  t
-          display-time-24hr-format   t
-          display-time-use-mail-icon t
-          display-time-interval      10)
+	  display-time-24hr-format   t
+	  display-time-use-mail-icon t
+	  display-time-interval      10)
 
-    :config
-    (display-time))
+    ;; :config
+    ;; (display-time) ;; 2024-01-31 Turned off to address performance issues.
+    )
 #+end_src
 ** anzu
 Highlight global-search-replace strings dynamically.
@@ -1014,11 +1015,12 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
     ;; While this one prompts for something to query on but also asks for directory and type as well..
     (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
-** savehist
+** COMMENT savehist
 #+begin_src emacs-lisp
-  (use-package savehist
-    :init
-    (savehist-mode))
+  ;; 2024-01-31 Turn off to see if this solves performance/lockup issues.
+  ;; (use-package savehist
+  ;;   :init
+  ;;   (savehist-mode))
 #+end_src
 ** save place
 #+begin_src emacs-lisp
@@ -1081,16 +1083,24 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
         '(lambda ()
            (auto-fill-mode 0)
            (setq tab-width 4)
-           (flyspell-mode)
+           ;;(flyspell-mode) ;; Turned off 2024-01-31 to see if this solves performance/lockup issues.
            ))
   (setq default-major-mode 'text-mode)
 #+end_src
-** themes
+** theme(s)
 *** gruvbox
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
     :ensure t
-    :config (load-theme 'gruvbox-dark-hard t))
+    :config
+    (load-theme 'gruvbox-dark-hard t)
+    (custom-set-faces
+      '(org-level-1 ((t (:height 1.20))))
+      '(org-level-2 ((t (:height 1.15))))
+      '(org-level-3 ((t (:height 1.10))))
+      '(org-document-title ((t (:height 1.5 :underline nil)))) ; Set the font size of the document title.
+      )
+    )
 #+end_src
 *** monokai
 #+begin_src emacs-lisp
