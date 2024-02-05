@@ -248,25 +248,20 @@ Highlight global-search-replace strings dynamically.
       (dired-gitignore-global-mode t)
       )
 
-  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" to give me a choice.
-  ;; http://xahlee.info/emacs/emacs/dired_sort.html
-  (defun xah-dired-sort ()
-    "Sort dired dir listing in different ways.
-    Prompt for a choice.
-    URL `http://xahlee.info/emacs/emacs/dired_sort.html'
-    Version: 2018-12-23 2022-04-07"
+  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
+  ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
+  (defun _pb-dired-sort ()
     (interactive)
-    (let (xsortBy xarg)
-      (setq xsortBy (completing-read "Sort by:" '( "date" "size" "name" )))
+    (let (sort_by ls_arg)
+      (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
       (cond
-       ((equal xsortBy "name") (setq xarg "-Alh "))
-       ((equal xsortBy "date") (setq xarg "-Alh -t"))
-       ((equal xsortBy "size") (setq xarg "-Alh -S"))
-       ((equal xsortBy "dir" ) (setq xarg "-Alh --group-directories-first"))
-       (t (error "logic error 09535" )))
-      (dired-sort-other xarg )))
-
-  (define-key dired-mode-map (kbd "s") 'xah-dired-sort)
+       ((equal sort_by "Name") (setq ls_arg "-Alh "))
+       ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
+       ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
+       ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
+       (t (error "Sorry, that didn't work 🤦" )))
+      (dired-sort-other ls_arg )))
+  (define-key dired-mode-map (kbd "s") '_pb-dired-sort)
 #+end_src
 ** dumb-jump (inactive)
 Until ruff-lsp gets the ability to look up a definition, this won't work.
