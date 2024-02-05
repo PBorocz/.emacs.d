@@ -18,4 +18,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(mode-line-active ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
- '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8)))))
+ '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+ '(org-document-title ((t (:height 1.5 :underline nil))))
+ '(org-level-1 ((t (:height 1.2))))
+ '(org-level-2 ((t (:height 1.15))))
+ '(org-level-3 ((t (:height 1.1)))))

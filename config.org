@@ -5,7 +5,7 @@
    user-mail-address (getenv "EMAIL_ADDRESS")
    )
 #+end_src
-* BASIC CONFIGURATION
+* BASE CONFIGURATION
 #+begin_src emacs-lisp
   (setq
      auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
@@ -28,9 +28,11 @@
      uniquify-separator                     "/"
      uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
      uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+     user-full-name                         "Peter Borocz"
      vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
      visible-bell                           t
      word-wrap                              nil
+     x-stretch-cursor                       t
      )
 
   ;; Set title-bar to transparent.
@@ -104,20 +106,6 @@
 
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 #+end_src
-* LOCAL TOOLS
-These require a local/manual installation (ie. outside emacs)
-** aspell
-   Live spell checking
-#+begin_src emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
-#+end_src
-* DEVELOPMENT TOOLS
-** Flask Dev Server
-# WIP, need to find how to escape properly obo BOTH emacs *and* fish.
-#+begin_src emacs-lisp
-  (setq compile-command "\"/Users/peter/Repository/10-19 Development/10 Development/10.01 optimus_ludos/.venv/bin/flask run --debug -h localhost -p 5001 --debug\"")
-#+end_src
 * PACKAGES & MODES
 ** -built-ins-
 #+begin_src emacs-lisp
@@ -152,6 +140,13 @@ Highlight global-search-replace strings dynamically.
     )
   (global-set-key (kbd   "<f6>") 'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
+#+end_src
+** calendar
+#+begin_src emacs-lisp
+  (use-package calendar
+    :custom
+    (calendar-mark-holidays-flag t)
+    (calendar-date-style 'iso))
 #+end_src
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
@@ -188,69 +183,90 @@ Highlight global-search-replace strings dynamically.
 #+end_src
 ** dired
 [[https://github.com/MatthewZMD/.emacs.d]]
-and
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 #+begin_src emacs-lisp
-  (use-package dired
-    :ensure nil
+    (use-package dired
+      :ensure nil
 
-    :bind
-    (("C-x C-d" . dired-jump)
-     ("C-x j"   . dired-jump-other-window)
+      :bind
+      (("C-x C-d" . dired-jump)
+       ("C-x j"   . dired-jump-other-window)
 
-     ;; Make "e" act the same in dired as it does in rg/grep, ie. make the buffer editable (C-c C-s to save edits)
-     (:map dired-mode-map
-           ("e" . dired-toggle-read-only)
-           ("." . dired-up-directory)
-           )
-     )
+       ;; Make "e" act the same in dired as it does in rg/grep, ie. make the buffer editable (C-c C-s to save edits)
+       (:map dired-mode-map
+             ("e" . dired-toggle-read-only)
+             ("." . dired-up-directory)
+             )
+       )
 
-    :config
-    (progn
-      (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
-            delete-by-moving-to-trash           t
-            dired-dwim-target                   t
-            dired-hide-details-mode             nil
-            dired-listing-switches              "-ahl" ;; -a show all, -l show long form, -h show size nicer.
-            dired-recursive-copies              'always
-            dired-recursive-deletes             'always
-            global-auto-revert-non-file-buffers t
-            wdired-allow-to-change-permissions  t
-            )
+      :config
+      (progn
+        (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
+              dired-use-ls-dired                  t
+              insert-directory-program            "/usr/local/bin/gls"
+              delete-by-moving-to-trash           t
+              dired-dwim-target                   t
+              dired-hide-details-mode             nil
+              dired-listing-switches              "-Al" ;; and see below for dired-sort.
+              dired-recursive-copies              'always
+              dired-recursive-deletes             'always
+              global-auto-revert-non-file-buffers t
+              wdired-allow-to-change-permissions  t
+              )
+        )
       )
-    )
 
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
+    (when (string= system-type "darwin")
+      (setq dired-use-ls-dired nil))
 
-  (defun mydired-sort ()
-    (save-excursion
-      (let (buffer-read-only)
-        (forward-line 2) ;; beyond dir. header
-        (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-      (set-buffer-modified-p nil)))
+    (defun mydired-sort ()
+      (save-excursion
+        (let (buffer-read-only)
+          (forward-line 2) ;; beyond dir. header
+          (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+        (set-buffer-modified-p nil)))
 
-  (defadvice dired-readin
-    (after dired-after-updating-hook first () activate)
-    "Sort dired listings with directories first before adding marks."
-    (mydired-sort))
+    (defadvice dired-readin
+      (after dired-after-updating-hook first () activate)
+      "Sort dired listings with directories first before adding marks."
+      (mydired-sort))
 
-  ;;
-  ;; Color our dired display by type of file/directory
-  ;; https://github.com/purcell/diredfl
-  ;;
-  (add-hook 'dired-mode-hook 'diredfl-mode)
+    ;;
+    ;; Color our dired display by type of file/directory
+    ;; https://github.com/purcell/diredfl
+    ;;
+    (add-hook 'dired-mode-hook 'diredfl-mode)
 
-  (use-package dired-gitignore
-    :ensure t
+    (use-package dired-gitignore
+      :ensure t
 
-    :config
-    (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
+      :config
+      (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
 
-    ;; If you want to ignore gitignored files by default add also
+      ;; If you want to ignore gitignored files by default add also
 
-    (dired-gitignore-global-mode t)
-    )
+      (dired-gitignore-global-mode t)
+      )
+
+  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" to give me a choice.
+  ;; http://xahlee.info/emacs/emacs/dired_sort.html
+  (defun xah-dired-sort ()
+    "Sort dired dir listing in different ways.
+    Prompt for a choice.
+    URL `http://xahlee.info/emacs/emacs/dired_sort.html'
+    Version: 2018-12-23 2022-04-07"
+    (interactive)
+    (let (xsortBy xarg)
+      (setq xsortBy (completing-read "Sort by:" '( "date" "size" "name" )))
+      (cond
+       ((equal xsortBy "name") (setq xarg "-Alh "))
+       ((equal xsortBy "date") (setq xarg "-Alh -t"))
+       ((equal xsortBy "size") (setq xarg "-Alh -S"))
+       ((equal xsortBy "dir" ) (setq xarg "-Alh --group-directories-first"))
+       (t (error "logic error 09535" )))
+      (dired-sort-other xarg )))
+
+  (define-key dired-mode-map (kbd "s") 'xah-dired-sort)
 #+end_src
 ** dumb-jump (inactive)
 Until ruff-lsp gets the ability to look up a definition, this won't work.
@@ -291,6 +307,14 @@ It hooks into the xref system which is also used by eglot and thus, can't "lay o
             ("C-c f n" . flymake-goto-next-error)
             ("C-c f p" . flymake-goto-prev-error)
             ("C-c f d" . flymake-show-project-diagnostics))
+
+      :config
+      ;; Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
+      ;; However, modern machines can take on a lot more.
+      ;; Set it to 1MB which is equal to the limit defined in /proc/sys/fs/pipe-max-size/.
+      ;; Ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
+      ;; Ref: https://github.com/jwiegley/dot-emacs/blob/2b4c57963413cb80e8716f014f25eaf4850c369c/init.org#eglot
+      (setq read-process-output-max (* 1024 1024))
 
       :custom
       (eglot-autoshutdown t)
@@ -1295,6 +1319,14 @@ yasnippets for now (but make sure they don't expand within comments!)
       :config
       (zoom-mode 1)
       )
+#+end_src
+* LOCAL TOOLS
+These require a local/manual installation (ie. outside emacs)
+** aspell
+Live spell checking
+#+begin_src emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 * CUSTOM COMMANDS
   These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!)

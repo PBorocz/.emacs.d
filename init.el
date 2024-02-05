@@ -1,16 +1,6 @@
-
-;; Do this right up front to allow us to use VC-controlled
-;; configuration files later on in the startup process [as by the
-;; time we hit the same setting in the tangled config file
-;; (config.el), it's too late].
+;; Do this right up front to allow us to use VC-controlled configuration files later on in the startup process [as by the
+;; time we hit the same setting in the tangled config file (config.el), it's too late].
 (setq vc-follow-symlinks t)
-
-;; Emacs by default caps the number of bytes read from a subprocess
-;; in a single chunk to 4KB. However, modern machines can take on a
-;; lot more. Set it to 1MB which is equal to the limit defined
-;; in /proc/sys/fs/pipe-max-size/.
-;; Ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
-(setq read-process-output-max (* 1024 1024))
 
   ;; Set up repositories
 (require 'package)
