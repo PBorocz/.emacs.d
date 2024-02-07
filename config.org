@@ -8,37 +8,32 @@
 * BASE CONFIGURATION
 #+begin_src emacs-lisp
   (setq
-     auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
-     blink-cursor-interval                  0.3       ; Default is 0.5
-     create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
-     default-directory                      (concat (getenv  "HOME") "/")
-     font-lock-maximum-decoration           t
-     global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
-     inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-     inhibit-default-init                   t
-     inhibit-splash-screen                  t
-     initial-scratch-message                nil       ; Start scratch buffers empty..
-     make-backup-files                      nil       ; Stop creating backup~ files
-     ring-bell-function                     'ignore
-     search-highlight                       t
-     sentence-end-double-space              nil       ; Period single space ends sentence
-     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-     use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
-     uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
-     uniquify-separator                     "/"
-     uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
-     uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
-     user-full-name                         "Peter Borocz"
-     vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-     visible-bell                           t
-     word-wrap                              nil
-     x-stretch-cursor                       t
-     )
-
-  ;; Set title-bar to transparent.
-  ;; As of 2023-12-25 with the railwaycat build, these don't seem to work:
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+   auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
+   blink-cursor-interval                  0.3       ; Default is 0.5
+   create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
+   default-directory                      (concat (getenv  "HOME") "/")
+   font-lock-maximum-decoration           t
+   global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
+   inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+   inhibit-default-init                   t
+   inhibit-splash-screen                  t
+   initial-scratch-message                nil       ; Start scratch buffers empty..
+   make-backup-files                      nil       ; Stop creating backup~ files
+   ring-bell-function                     'ignore
+   search-highlight                       t
+   sentence-end-double-space              nil       ; Period single space ends sentence
+   switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+   use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
+   uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
+   uniquify-separator                     "/"
+   uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
+   uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+   user-full-name                         "Peter Borocz"
+   vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+   visible-bell                           t
+   word-wrap                              nil
+   x-stretch-cursor                       t
+   )
 
   ;; If we have to have it, set title-bar to something a bit nicer:
   (setq frame-title-format '(buffer-file-name "%f" ("%b")))
@@ -52,8 +47,8 @@
 
   ;; Per gpt-3.5-turbo, disable the lisp debugger and associated stack frame for common errors.
   (setq debug-on-error  nil
-        debug-on-signal nil
-        debug-on-quit   nil)
+		debug-on-signal nil
+		debug-on-quit   nil)
 
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
@@ -67,11 +62,11 @@
 
   ;; Setup defaults across all buffers:
   (setq fill-column               96
-        frame-title-format        '("%f [%m]")
-        indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
-        truncate-lines            t   ; Start out with NO line truncation.
-        yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
-        )
+		frame-title-format        '("%f [%m]")
+		indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
+		truncate-lines            t   ; Start out with NO line truncation.
+		yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
+		)
 
   ;; We want y or n to be sufficient for yes/no prompts.
   ;; (defalias 'yes-or-no-p 'y-or-n-p) ;; Used for emacs <29
@@ -698,65 +693,67 @@ https://github.com/rnkn/olivetti
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
-    :defer nil
+	:defer nil
 
-    :bind (:map org-mode-map
-                ("C-M-<return>" . org-insert-subheading)
-                ("C-c l"        . org-store-link)
-                ("C-c a"        . org-agenda)
-                ("C-c |"        . org-table-create-or-convert-from-region)
-                ("C-c C-<"      . org-promote-subtree)
-                ("C-c C->"      . org-demote-subtree)
-                ("C-<right>"    . org-metaright)
-                ("C-<left>"     . org-metaleft)
-                )
+	:bind (:map org-mode-map
+			("C-M-<return>" . org-insert-subheading)
+			("C-c l"        . org-store-link)
+			("C-c L"        . org-cliplink)
+			("C-c a"        . org-agenda)
+			("C-c |"        . org-table-create-or-convert-from-region)
+			("C-c C-<"      . org-promote-subtree)
+			("C-c C->"      . org-demote-subtree)
+			("C-<right>"    . org-metaright)
+			("C-<left>"     . org-metaleft)
+			)
 
-    :config
-    (add-hook 'text-mode-hook #'visual-line-mode)
-    (visual-line-mode 1)
+	:config
+	(add-hook 'text-mode-hook #'visual-line-mode)
+	(visual-line-mode 1)
 
-    ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
-    (org-link-set-parameters
-     "copy"
-     :follow (lambda (link) (kill-new link))
-     :export (lambda (_ desc &rest _) desc))
+	;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
+	(org-link-set-parameters
+	 "copy"
+	 :follow (lambda (link) (kill-new link))
+	 :export (lambda (_ desc &rest _) desc))
 
-    :init
-    (setq fill-column                              96 ;; Org won't use the global fill-column, set here explicitly?
-          org-M-RET-may-split-line                 nil
-          org-adapt-indentation                    t
-          org-agenda-dim-blocked-tasks             'invisible
-          org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-          org-catch-invisible-edits                'show-and-error
-          org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-          org-directory                            "~/Repository/00-09 System/01 Org"
-          org-ellipsis                             "▼"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-          org-enforce-todo-checkbox-dependencies   t
-          org-enforce-todo-dependencies            t
-          org-export-backends                      (quote (ascii html icalendar latex md odt))
-          org-hide-emphasis-markers                t
-          org-hide-leading-stars                   t
-          org-id-prefix                            "ID" ;; We don't want simply numbers!
-          org-image-actual-width                   '(300)
-          org-link-search-must-match-exact-heading nil
-          org-list-allow-alphabetical              t
-          org-return-follows-link                  t
-          org-src-fontify-natively                 t
-          org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
-          org-startup-folded                       t
-          org-startup-indented                     t
-          org-startup-with-inline-images           t
-          org-use-fast-todo-selection              t
-          org-use-speed-commands                   nil
-          ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-          org-refile-targets                        '((org-agenda-files :maxlevel . 2))
+	:init
+	(setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
+	  org-catch-invisible-edits 'show-and-error
+	  org-ellipsis              " ▼"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+	  org-startup-folded        t
+	  org-return-follows-link   t
+	  )
+	;; org-M-RET-may-split-line                 nil
+	;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
+	;; org-agenda-dim-blocked-tasks             'invisible
+	;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+	;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+	;; org-directory                            "~/Repository/00-09 System/01 Org"
+	;; org-enforce-todo-checkbox-dependencies   t
+	;; org-enforce-todo-dependencies            t
+	;; org-export-backends                      (quote (ascii html icalendar latex md odt))
+	;; org-hide-emphasis-markers                nil
+	;; org-hide-leading-stars                   nil
+	;; org-id-prefix                            "ID" ;; We don't want simply numbers!
+	;; org-image-actual-width                   '(300)
+	;; org-link-search-must-match-exact-heading nil
+	;; org-list-allow-alphabetical              t
+	;; org-src-fontify-natively                 t
+	;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
+	;; org-startup-indented                     t
+	;; org-startup-with-inline-images           t
+	;; org-use-fast-todo-selection              t
+	;; org-use-speed-commands                   nil
 
-          org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
-                                 (vm-imap . vm-visit-imap-folder-other-frame)
-                                 (gnus    . org-gnus-no-new-news)
-                                 (file    . find-file)  ;; Used to be find-file-other-window..
-                                 (wl      . wl-other-frame))
-          ))
+	;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
+	;;                         (vm-imap . vm-visit-imap-folder-other-frame)
+	;;                         (gnus    . org-gnus-no-new-news)
+	;;                         (file    . find-file)  ;; Used to be find-file-other-window..
+	;;                         (wl      . wl-other-frame))
+	;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+	;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
+	)
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
@@ -768,22 +765,25 @@ https://github.com/rnkn/olivetti
   ;; GTD Configuration
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
-  (setq org-todo-keywords
-        '((sequence
-           "TODO(t)"
-           "WAIT(a)"
-           "HOLD(h)"
-           "WORK(w)"
-           "|"
-           "DONE(x)"
-           )))
+  (setq org-todo-keywords '((sequence
+				 "TODO(t)"
+				 "WAIT(a)"
+				 "HOLD(h)"
+				 "WORK(w)"
+				 "|"
+				 "DONE(x)"
+				 )
+				)
+		)
 
   (setq org-todo-keyword-faces
-        '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
-          ("WORK" . "light green")
-          ("HOLD" . "systemBrownColor")
-          ("WAIT" . "systemBrownColor")
-          ("DONE" . "gray30")))
+		'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+	  ("WORK" . "light green")
+	  ("HOLD" . "systemBrownColor")
+	  ("WAIT" . "systemBrownColor")
+	  ("DONE" . "gray30")
+	  )
+		)
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   (setq org-fontify-todo-headline nil)
@@ -799,11 +799,11 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
-        '(
-          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-          ))
+		'(
+	  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+	  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+	  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+	  ))
 #+end_src
 *** Supplemental Org Packages
 **** babel
@@ -820,25 +820,19 @@ https://github.com/rnkn/olivetti
 #+end_src
 **** prettify-symbols
   #+begin_src emacs-lisp
-    (defun pb/load-prettify-symbols ()
-      (interactive)
-      (setq prettify-symbols-alist
-            (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
-                    '(("#+begin_src"     . ?)
-                      ("#+end_src"       . ?)
-
-                      ("#+begin_example" . ?)
-                      ("#+end_example"   . ?)
-
-                      ("#+header:"       . ?)
-
-                      (":properties:"    . ?)
-                      (":end:"           . ?🛑)
-                      )
-                    )
-            )
-      )
-    (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
+    ;; (defun pb/load-prettify-symbols ()
+    ;;   (interactive)
+    ;;   (setq prettify-symbols-alist
+    ;;         (mapcan (lambda (x) (list x (cons (upcase (car x)) (cdr x))))
+    ;;                 '(("#+begin_src"     . ?)
+    ;;                   ("#+end_src"       . ?)
+    ;;                   ("#+begin_example" . ?)
+    ;;                   ("#+end_example"   . ?)
+    ;;                   ("#+header:"       . ?)
+    ;;                   (":properties:"    . ?)
+    ;;                   (":end:"           . ?🛑)
+    ;;                   ))))
+    ;; (add-hook 'org-mode-hook #'pb/load-prettify-symbols)
 #+end_src
 **** org-appear
  #+begin_src emacs-lisp
@@ -854,42 +848,35 @@ Create an org-link from a URL in the clipboard with the actual title of the URL 
  #+end_src
 **** org-modern-indent
  #+begin_src emacs-lisp
-   (use-package org-modern-indent
-     :load-path "~/.emacs.d/site-lisp/org-modern-indent/"
-     :config
-     (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
+   ;; (use-package org-modern-indent
+   ;;   :load-path "~/.emacs.d/site-lisp/org-modern-indent/"
+   ;;   :config
+   ;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 90))
  #+end_src
 **** org-pretty-table-mode
  #+begin_src emacs-lisp
-   (use-package org-pretty-table
-     :load-path "~/.emacs.d/site-lisp/org-pretty-table"
-     :config
-     (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
+   ;; (use-package org-pretty-table
+   ;;   :load-path "~/.emacs.d/site-lisp/org-pretty-table"
+   ;;   :config
+   ;;   (add-hook 'org-mode-hook (lambda () (org-pretty-table-mode))))
  #+end_src
 **** org-superstar
  #+begin_src emacs-lisp
    ;; Nice(r) bullets (replaces org-bullets)
-   (use-package org-superstar
-     :config
+   ;; (use-package org-superstar
+   ;;   :config
 
-     ;; Set the following to "t" to make TODO items have a 'checkbox' icon,
-     ;; irrespective of their depth.
-     (setq org-superstar-special-todo-items nil)
+   ;;   ;; Set the following to "t" to make TODO items have a 'checkbox' icon,
+   ;;   ;; irrespective of their depth.
+   ;;   (setq org-superstar-special-todo-items nil)
 
-     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-     )
+   ;;   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+   ;;   )
 
-   (setq org-superstar-item-bullet-alist
-         '((?* . ?•)
-           (?+ . ?➤)
-           (?- . ?•)))
- #+end_src
-**** org-web-tools (INACTIVE)
-[[https://github.com/alphapapa/org-web-tools][GitHub - alphapapa/org-web-tools: View, capture, and archive Web pages in Org...]]
-[[https://blog.nawaz.org/posts/2023/Mar/solving-a-scraping-problem-with-emacs-and-org-mode/][Solving a Scraping Problem with Emacs and Org Mode]] (Blog post demonstrating org-web-tools)
- #+begin_src emacs-lisp
-   ;; Has problems with 29.1, revert to org-cliplink for now until package get's an upgrade.
-   ;; (use-package org-web-tools)
+   ;; (setq org-superstar-item-bullet-alist
+   ;;       '((?* . ?•)
+   ;;         (?+ . ?➤)
+   ;;         (?- . ?•)))
  #+end_src
 *** Attachment Management
 #+begin_src emacs-lisp
