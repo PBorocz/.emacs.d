@@ -47,8 +47,8 @@
 
   ;; Per gpt-3.5-turbo, disable the lisp debugger and associated stack frame for common errors.
   (setq debug-on-error  nil
-		debug-on-signal nil
-		debug-on-quit   nil)
+			debug-on-signal nil
+			debug-on-quit   nil)
 
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
@@ -62,11 +62,11 @@
 
   ;; Setup defaults across all buffers:
   (setq fill-column               96
-		frame-title-format        '("%f [%m]")
-		indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
-		truncate-lines            t   ; Start out with NO line truncation.
-		yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
-		)
+			frame-title-format        '("%f [%m]")
+			indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
+			truncate-lines            t   ; Start out with NO line truncation.
+			yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
+			)
 
   ;; We want y or n to be sufficient for yes/no prompts.
   ;; (defalias 'yes-or-no-p 'y-or-n-p) ;; Used for emacs <29
@@ -1021,7 +1021,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
     ;; While this one prompts for something to query on but also asks for directory and type as well..
     (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
-** COMMENT savehist
+** savehist
 #+begin_src emacs-lisp
   ;; 2024-01-31 Turn off to see if this solves performance/lockup issues.
   ;; (use-package savehist
@@ -1097,16 +1097,16 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
 *** gruvbox
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
-    :ensure t
-    :config
-    (load-theme 'gruvbox-dark-hard t)
-    (custom-set-faces
-      '(org-level-1 ((t (:height 1.20))))
-      '(org-level-2 ((t (:height 1.15))))
-      '(org-level-3 ((t (:height 1.10))))
-      '(org-document-title ((t (:height 1.5 :underline nil)))) ; Set the font size of the document title.
-      )
-    )
+	:ensure t
+	:config
+	(load-theme 'gruvbox-dark-hard t)
+	(custom-set-faces
+	 '(org-level-1 ((t (:height 1.15))))
+	 '(org-level-2 ((t (:height 1.10))))
+	 '(org-level-3 ((t (:height 1.05))))
+	 '(org-document-title ((t (:height 1.5 :underline nil)))) ; Set the font size of the document title.
+	 )
+	)
 #+end_src
 *** monokai
 #+begin_src emacs-lisp
@@ -1215,18 +1215,22 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
 ** vterm
 "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+begin_src emacs-lisp
+   (defun vterm-custom-font-size()
+	 (setq buffer-face-mode-face '(:weight light :height 160))
+	 (buffer-face-mode))
+
    (use-package vterm
-     :defer t
+	 :defer t
 
-     :config
-     (setq vterm-shell "/usr/local/bin/fish")
+	 :config
+	 (setq vterm-shell "/usr/local/bin/fish")
 
-     :hook
-     (vterm-mode . (lambda ()
-                     (setq-local show-trailing-whitespace nil)))
+	 :hook
+	 ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+	  (vterm-mode . vterm-custom-font-size))
 
-     :custom
-     (vterm-always-compile-module t))
+	 :custom
+	 (vterm-always-compile-module t))
 
    (global-set-key (kbd "<f12>")   'pb/vterm-current-directory)
    (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
