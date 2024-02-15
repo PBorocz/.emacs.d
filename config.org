@@ -47,8 +47,8 @@
 
   ;; Per gpt-3.5-turbo, disable the lisp debugger and associated stack frame for common errors.
   (setq debug-on-error  nil
-			debug-on-signal nil
-			debug-on-quit   nil)
+					debug-on-signal nil
+					debug-on-quit   nil)
 
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
@@ -62,11 +62,11 @@
 
   ;; Setup defaults across all buffers:
   (setq fill-column               96
-			frame-title-format        '("%f [%m]")
-			indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
-			truncate-lines            t   ; Start out with NO line truncation.
-			yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
-			)
+					frame-title-format        '("%f [%m]")
+					indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
+					truncate-lines            t   ; Start out with NO line truncation.
+					yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
+					)
 
   ;; We want y or n to be sufficient for yes/no prompts.
   ;; (defalias 'yes-or-no-p 'y-or-n-p) ;; Used for emacs <29
@@ -97,7 +97,7 @@
   ;; (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
   ;; 2023-12-25 Replace raw source code pro with nerd font variant for better doom-modeline display support.
-  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 #+end_src
@@ -693,67 +693,67 @@ https://github.com/rnkn/olivetti
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
-	:defer nil
+		:defer nil
 
-	:bind (:map org-mode-map
-			("C-M-<return>" . org-insert-subheading)
-			("C-c l"        . org-store-link)
-			("C-c L"        . org-cliplink)
-			("C-c a"        . org-agenda)
-			("C-c |"        . org-table-create-or-convert-from-region)
-			("C-c C-<"      . org-promote-subtree)
-			("C-c C->"      . org-demote-subtree)
-			("C-<right>"    . org-metaright)
-			("C-<left>"     . org-metaleft)
-			)
+		:bind (:map org-mode-map
+				("C-M-<return>" . org-insert-subheading)
+				("C-c l"        . org-store-link)
+				("C-c L"        . org-cliplink)
+				("C-c a"        . org-agenda)
+				("C-c |"        . org-table-create-or-convert-from-region)
+				("C-c C-<"      . org-promote-subtree)
+				("C-c C->"      . org-demote-subtree)
+				("C-<right>"    . org-metaright)
+				("C-<left>"     . org-metaleft)
+				)
 
-	:config
-	(add-hook 'text-mode-hook #'visual-line-mode)
-	(visual-line-mode 1)
+		:config
+		(add-hook 'text-mode-hook #'visual-line-mode)
+		(visual-line-mode 1)
 
-	;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
-	(org-link-set-parameters
-	 "copy"
-	 :follow (lambda (link) (kill-new link))
-	 :export (lambda (_ desc &rest _) desc))
+		;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
+		(org-link-set-parameters
+		 "copy"
+		 :follow (lambda (link) (kill-new link))
+		 :export (lambda (_ desc &rest _) desc))
 
-	:init
-	(setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
+		:init
+		(setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
 	  org-catch-invisible-edits 'show-and-error
-	  org-ellipsis              " ▼"  ;; …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+	  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
 	  org-startup-folded        t
 	  org-return-follows-link   t
 	  )
-	;; org-M-RET-may-split-line                 nil
-	;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
-	;; org-agenda-dim-blocked-tasks             'invisible
-	;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-	;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-	;; org-directory                            "~/Repository/00-09 System/01 Org"
-	;; org-enforce-todo-checkbox-dependencies   t
-	;; org-enforce-todo-dependencies            t
-	;; org-export-backends                      (quote (ascii html icalendar latex md odt))
-	;; org-hide-emphasis-markers                nil
-	;; org-hide-leading-stars                   nil
-	;; org-id-prefix                            "ID" ;; We don't want simply numbers!
-	;; org-image-actual-width                   '(300)
-	;; org-link-search-must-match-exact-heading nil
-	;; org-list-allow-alphabetical              t
-	;; org-src-fontify-natively                 t
-	;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
-	;; org-startup-indented                     t
-	;; org-startup-with-inline-images           t
-	;; org-use-fast-todo-selection              t
-	;; org-use-speed-commands                   nil
+		;; org-M-RET-may-split-line                 nil
+		;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
+		;; org-agenda-dim-blocked-tasks             'invisible
+		;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+		;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+		;; org-directory                            "~/Repository/00-09 System/01 Org"
+		;; org-enforce-todo-checkbox-dependencies   t
+		;; org-enforce-todo-dependencies            t
+		;; org-export-backends                      (quote (ascii html icalendar latex md odt))
+		;; org-hide-emphasis-markers                nil
+		;; org-hide-leading-stars                   nil
+		;; org-id-prefix                            "ID" ;; We don't want simply numbers!
+		;; org-image-actual-width                   '(300)
+		;; org-link-search-must-match-exact-heading nil
+		;; org-list-allow-alphabetical              t
+		;; org-src-fontify-natively                 t
+		;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
+		;; org-startup-indented                     t
+		;; org-startup-with-inline-images           t
+		;; org-use-fast-todo-selection              t
+		;; org-use-speed-commands                   nil
 
-	;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
-	;;                         (vm-imap . vm-visit-imap-folder-other-frame)
-	;;                         (gnus    . org-gnus-no-new-news)
-	;;                         (file    . find-file)  ;; Used to be find-file-other-window..
-	;;                         (wl      . wl-other-frame))
-	;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-	;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
-	)
+		;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
+		;;                         (vm-imap . vm-visit-imap-folder-other-frame)
+		;;                         (gnus    . org-gnus-no-new-news)
+		;;                         (file    . find-file)  ;; Used to be find-file-other-window..
+		;;                         (wl      . wl-other-frame))
+		;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+		;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
+		)
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
@@ -766,24 +766,24 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords '((sequence
-				 "TODO(t)"
-				 "WAIT(a)"
-				 "HOLD(h)"
-				 "WORK(w)"
-				 "|"
-				 "DONE(x)"
-				 )
-				)
-		)
+					 "TODO(t)"
+					 "WAIT(a)"
+					 "HOLD(h)"
+					 "WORK(w)"
+					 "|"
+					 "DONE(x)"
+					 )
+					)
+			)
 
   (setq org-todo-keyword-faces
-		'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+			'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
 	  ("WORK" . "light green")
 	  ("HOLD" . "systemBrownColor")
 	  ("WAIT" . "systemBrownColor")
 	  ("DONE" . "gray30")
 	  )
-		)
+			)
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   (setq org-fontify-todo-headline nil)
@@ -799,7 +799,7 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
-		'(
+			'(
 	  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
 	  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
 	  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
@@ -1048,6 +1048,17 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
+** substitute
+https://protesilaos.com/emacs/substitute
+#+begin_src emacs-lisp
+  (use-package substitute
+	:config
+	(require 'substitute)
+	(add-hook 'substitute-post-replace-functions #'substitute-report-operation)
+
+	:bind (("M-<f6>" . substitute-target-in-buffer))
+	)
+#+end_src
 ** super-save
 #+begin_src emacs-lisp
   ;; Auto-save buffers
@@ -1094,21 +1105,44 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setq default-major-mode 'text-mode)
 #+end_src
 ** theme(s)
-*** gruvbox
+*** modus-operandi
 #+begin_src emacs-lisp
-  (use-package gruvbox-theme
+  (use-package modus-themes
 	:ensure t
 	:config
-	(load-theme 'gruvbox-dark-hard t)
-	(custom-set-faces
-	 '(org-level-1 ((t (:height 1.15))))
-	 '(org-level-2 ((t (:height 1.10))))
-	 '(org-level-3 ((t (:height 1.05))))
-	 '(org-document-title ((t (:height 1.5 :underline nil)))) ; Set the font size of the document title.
-	 )
+	(setq modus-themes-mode-line '(accented borderless)
+	  modus-themes-bold-constructs t
+	  modus-themes-italic-constructs t
+	  modus-themes-fringes	'subtle
+	  modus-themes-tabs-accented t
+	  modus-themes-paren-match '(bold intense)
+	  modus-themes-prompts	'(bold intense)
+	  modus-themes-org-blocks 'tinted-background
+	  modus-themes-scale-headings t
+	  modus-themes-region '(bg-only)
+	  modus-themes-headings
+		  '((0 . (0.800))
+			(1 . (1.10))
+			(2 . (1.05)))
+	  )
+	(load-theme 'modus-operandi)
 	)
 #+end_src
-*** monokai
+*** COMMENT gruvbox
+#+begin_src emacs-lisp
+  ;; (use-package gruvbox-theme
+  ;;       :ensure t
+  ;;       :config
+  ;;       (load-theme 'gruvbox-dark-hard t)
+  ;;       (custom-set-faces
+  ;;        '(org-level-1 ((t (:height 1.15))))
+  ;;        '(org-level-2 ((t (:height 1.10))))
+  ;;        '(org-level-3 ((t (:height 1.05))))
+  ;;        '(org-document-title ((t (:height 1.5 :underline nil)))) ; Set the font size of the document title.
+  ;;        )
+  ;;       )
+#+end_src
+*** COMMENT monokai
 #+begin_src emacs-lisp
   ;; (use-package monokai
   ;;   :ensure nil
@@ -1119,7 +1153,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   ;;   (load-theme 'monokai nil)
   ;; )
 #+end_src
-*** Prot's [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
+*** COMMENT Prot's [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
 #+begin_src emacs-lisp
   ;; (use-package ef-themes
   ;;   :ensure nil
