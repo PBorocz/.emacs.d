@@ -520,33 +520,50 @@ https://github.com/jdtsmith/indent-bars
     )
 #+end_src
 ** magit
+*** local methods..
 #+begin_src emacs-lisp
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
+	(window-configuration-to-register :magit-fullscreen)
+	ad-do-it
+	(delete-other-windows))
 
   (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
-    (interactive)
-    (kill-buffer)
-    (jump-to-register :magit-fullscreen))
-
+	"Restores the previous window configuration and kills the magit buffer"
+	(interactive)
+	(kill-buffer)
+	(jump-to-register :magit-fullscreen))
+#+end_src
+*** magit
+#+begin_src emacs-lisp
   (use-package magit
-    :demand t
+	:demand t
 
-    :bind
-    ("C-x C-g" . magit-status)
+	:bind
+	("C-x C-g" . magit-status)
 
-    :config
-    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+	:config
+	(define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 
   (use-package ibuffer-git)
 
   (use-package magit-todos
-    :load-path "~/.emacs.d/site-lisp/magit-todos/"
-    )
+	:after magit
+	:config (magit-todos-mode 1)
+	:load-path "~/.emacs.d/site-lisp/magit-todos/"
+	)
+#+end_src
+*** magit-todos
+#+begin_src emacs-lisp
+  (use-package magit-todos
+	:after magit
+	:config (magit-todos-mode 1)
+	:load-path "~/.emacs.d/site-lisp/magit-todos/"
+	)
+#+end_src
+*** ibuffer-git
+#+begin_src emacs-lisp
+  (use-package ibuffer-git)
 #+end_src
 ** marginalia
 #+begin_src emacs-lisp
@@ -596,6 +613,7 @@ Specifically, GithubFlavoredMarkdown-mode
 #+end_src
 *** [[https://github.com/jessiehildebrandt/mood-line/blob/master/mood-line.el][mood-line]]
 Nice and simple, no extraneous minor-modes or weird font's necessary!
+https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
     :ensure t
@@ -603,7 +621,7 @@ Nice and simple, no extraneous minor-modes or weird font's necessary!
     :init
     (custom-set-faces
      '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
      )
 
     (mood-line-mode)
@@ -693,67 +711,68 @@ https://github.com/rnkn/olivetti
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
-		:defer nil
+	:defer nil
 
-		:bind (:map org-mode-map
-				("C-M-<return>" . org-insert-subheading)
-				("C-c l"        . org-store-link)
-				("C-c L"        . org-cliplink)
-				("C-c a"        . org-agenda)
-				("C-c |"        . org-table-create-or-convert-from-region)
-				("C-c C-<"      . org-promote-subtree)
-				("C-c C->"      . org-demote-subtree)
-				("C-<right>"    . org-metaright)
-				("C-<left>"     . org-metaleft)
-				)
+	:bind (:map org-mode-map
+			("C-M-<return>" . org-insert-subheading)
+			("C-c l"        . org-store-link)
+			("C-c L"        . org-cliplink)
+			("C-c a"        . org-agenda)
+			("C-c |"        . org-table-create-or-convert-from-region)
+			("C-c C-<"      . org-promote-subtree)
+			("C-c C->"      . org-demote-subtree)
+			("C-<right>"    . org-metaright)
+			("C-<left>"     . org-metaleft)
+			)
 
-		:config
-		(add-hook 'text-mode-hook #'visual-line-mode)
-		(visual-line-mode 1)
+	:config
+	(add-hook 'text-mode-hook #'visual-line-mode)
+	(visual-line-mode 1)
 
-		;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
-		(org-link-set-parameters
-		 "copy"
-		 :follow (lambda (link) (kill-new link))
-		 :export (lambda (_ desc &rest _) desc))
+	;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
+	(org-link-set-parameters
+	 "copy"
+	 :follow (lambda (link) (kill-new link))
+	 :export (lambda (_ desc &rest _) desc))
 
-		:init
-		(setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
+	:init
+	(setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
 	  org-catch-invisible-edits 'show-and-error
 	  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-	  org-startup-folded        t
+	  org-hide-leading-stars    t
 	  org-return-follows-link   t
+	  org-startup-folded        t
 	  )
-		;; org-M-RET-may-split-line                 nil
-		;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
-		;; org-agenda-dim-blocked-tasks             'invisible
-		;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-		;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-		;; org-directory                            "~/Repository/00-09 System/01 Org"
-		;; org-enforce-todo-checkbox-dependencies   t
-		;; org-enforce-todo-dependencies            t
-		;; org-export-backends                      (quote (ascii html icalendar latex md odt))
-		;; org-hide-emphasis-markers                nil
-		;; org-hide-leading-stars                   nil
-		;; org-id-prefix                            "ID" ;; We don't want simply numbers!
-		;; org-image-actual-width                   '(300)
-		;; org-link-search-must-match-exact-heading nil
-		;; org-list-allow-alphabetical              t
-		;; org-src-fontify-natively                 t
-		;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
-		;; org-startup-indented                     t
-		;; org-startup-with-inline-images           t
-		;; org-use-fast-todo-selection              t
-		;; org-use-speed-commands                   nil
+	;; org-M-RET-may-split-line                 nil
+	;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
+	;; org-agenda-dim-blocked-tasks             'invisible
+	;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
+	;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
+	;; org-directory                            "~/Repository/00-09 System/01 Org"
+	;; org-enforce-todo-checkbox-dependencies   t
+	;; org-enforce-todo-dependencies            t
+	;; org-export-backends                      (quote (ascii html icalendar latex md odt))
+	;; org-hide-emphasis-markers                nil
+	;; org-hide-leading-stars                   nil
+	;; org-id-prefix                            "ID" ;; We don't want simply numbers!
+	;; org-image-actual-width                   '(300)
+	;; org-link-search-must-match-exact-heading nil
+	;; org-list-allow-alphabetical              t
+	;; org-src-fontify-natively                 t
+	;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
+	;; org-startup-indented                     t
+	;; org-startup-with-inline-images           t
+	;; org-use-fast-todo-selection              t
+	;; org-use-speed-commands                   nil
 
-		;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
-		;;                         (vm-imap . vm-visit-imap-folder-other-frame)
-		;;                         (gnus    . org-gnus-no-new-news)
-		;;                         (file    . find-file)  ;; Used to be find-file-other-window..
-		;;                         (wl      . wl-other-frame))
-		;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-		;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
-		)
+	;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
+	;;                         (vm-imap . vm-visit-imap-folder-other-frame)
+	;;                         (gnus    . org-gnus-no-new-news)
+	;;                         (file    . find-file)  ;; Used to be find-file-other-window..
+	;;                         (wl      . wl-other-frame))
+	;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
+	;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
+	)
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
@@ -766,24 +785,24 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords '((sequence
-					 "TODO(t)"
-					 "WAIT(a)"
-					 "HOLD(h)"
-					 "WORK(w)"
-					 "|"
-					 "DONE(x)"
-					 )
-					)
-			)
+				 "TODO(t)"
+				 "WAIT(a)"
+				 "HOLD(h)"
+				 "WORK(w)"
+				 "|"
+				 "DONE(x)"
+				 )
+				)
+		)
 
   (setq org-todo-keyword-faces
-			'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+		'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
 	  ("WORK" . "light green")
 	  ("HOLD" . "systemBrownColor")
 	  ("WAIT" . "systemBrownColor")
 	  ("DONE" . "gray30")
 	  )
-			)
+		)
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   (setq org-fontify-todo-headline nil)
@@ -799,7 +818,7 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
-			'(
+		'(
 	  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
 	  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
 	  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
@@ -1068,32 +1087,6 @@ https://protesilaos.com/emacs/substitute
     (save-place-mode 1)
     )
 #+end_src
-** terminal-notifier
-#+begin_src emacs-lisp
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; Terminal notifier
-  ;; requires 'brew install terminal-notifier'
-
-  ;; (defvar terminal-notifier-command (executable-find "terminal-notifier") "/usr/local/bin/terminal-notifier")
-
-  ;; (defun terminal-notifier-notify (title message)
-  ;;   "Show a message with terminal-notifier-command."
-  ;;   (start-process "terminal-notifier"
-  ;;                  "terminal-notifier"
-  ;;                  terminal-notifier-command
-  ;;                  "-title" title
-  ;;                  "-message" message
-  ;;                  "-send" "org.gnu.Emacs"))
-
-  ;; (defun timed-notification (time msg)
-  ;;   (interactive "sNotification when (e.g: 2 minutes, 60 seconds, 3 days): \nsMessage: ")
-  ;;   (run-at-time time nil (lambda (msg) (terminal-notifier-notify "Emacs" msg)) msg))
-
-  ;; ;; (terminal-notifier-notify "Emacs notification" "Something amusing happened")
-
-  ;; (setq org-show-notification-handler
-  ;;       (lambda (msg) (timed-notification nil msg)))
-#+end_src
 ** text
 #+begin_src emacs-lisp
   (setq text-mode-hook
@@ -1110,23 +1103,116 @@ https://protesilaos.com/emacs/substitute
   (use-package modus-themes
 	:ensure t
 	:config
-	(setq modus-themes-mode-line '(accented borderless)
-	  modus-themes-bold-constructs t
+	;;
+	;; Use Prot's own configuration:
+	;; https://protesilaos.com/emacs/modus-themes#h:aabcada6-810d-4eee-b34a-d2a9c301824d
+	;;
+	(setq modus-themes-custom-auto-reload nil
+	  modus-themes-to-toggle '(modus-operandi modus-vivendi)
+	  modus-themes-mixed-fonts t
+	  modus-themes-variable-pitch-ui nil
 	  modus-themes-italic-constructs t
-	  modus-themes-fringes	'subtle
-	  modus-themes-tabs-accented t
-	  modus-themes-paren-match '(bold intense)
-	  modus-themes-prompts	'(bold intense)
-	  modus-themes-org-blocks 'tinted-background
-	  modus-themes-scale-headings t
-	  modus-themes-region '(bg-only)
-	  modus-themes-headings
-		  '((0 . (0.800))
-			(1 . (1.10))
-			(2 . (1.05)))
+	  modus-themes-bold-constructs t
+	  modus-themes-org-blocks 'gray-background
+	  modus-themes-completions '((t . (extrabold)))
+	  modus-themes-prompts nil
 	  )
+
+	(setq modus-themes-common-palette-overrides
+	  '((cursor magenta-cooler)
+
+		;; Make the fringe invisible.
+		(fringe unspecified)
+
+		;; Make line numbers less intense and add a shade of cyan
+		;; for the current line number.
+		(fg-line-number-inactive "gray50")
+		(fg-line-number-active cyan-cooler)
+		(bg-line-number-inactive unspecified)
+		(bg-line-number-active unspecified)
+
+		;; Make the current line of `hl-line-mode' a fine shade of
+		;; gray (though also see my `lin' package).
+		(bg-hl-line bg-dim)
+
+		;; Make the region have a cyan-green background with no
+		;; specific foreground (use foreground of underlying text).
+		;; "bg-sage" refers to Salvia officinalis, else the common
+		;; sage.
+		(bg-region bg-sage)
+		(fg-region unspecified)
+
+		;; Make matching parentheses a shade of magenta.  It
+		;; complements the region nicely.
+		(bg-paren-match bg-magenta-intense)
+
+		;; Make email citations faint and neutral, reducing the
+		;; default four colors to two; make mail headers cyan-blue.
+		(mail-cite-0 fg-dim)
+		(mail-cite-1 blue-faint)
+		(mail-cite-2 fg-dim)
+		(mail-cite-3 blue-faint)
+		(mail-part cyan-warmer)
+		(mail-recipient blue-warmer)
+		(mail-subject magenta-cooler)
+		(mail-other cyan-warmer)
+
+		;; Change dates to a set of more subtle combinations.
+		(date-deadline magenta-cooler)
+		(date-scheduled magenta)
+		(date-weekday fg-main)
+		(date-event fg-dim)
+		(date-now blue-faint)
+
+		;; Make tags (Org) less colorful and tables look the same as
+		;; the default foreground.
+		(prose-done cyan-cooler)
+		(prose-tag fg-dim)
+		(prose-table fg-main)
+
+		;; Make headings less colorful (though I never use deeply
+		;; nested headings).
+		(fg-heading-2 blue-faint)
+		(fg-heading-3 magenta-faint)
+		(fg-heading-4 blue-faint)
+		(fg-heading-5 magenta-faint)
+		(fg-heading-6 blue-faint)
+		(fg-heading-7 magenta-faint)
+		(fg-heading-8 blue-faint)
+
+		;; Make the active mode line a fine shade of lavender
+		;; (purple) and tone down the gray of the inactive mode
+		;; lines.
+		(bg-mode-line-active bg-lavender)
+		(border-mode-line-active bg-lavender)
+		(bg-mode-line-inactive bg-dim)
+		(border-mode-line-inactive bg-inactive)
+
+		;; Make the prompts a shade of magenta, to fit in nicely with
+		;; the overall blue-cyan-purple style of the other overrides.
+		;; Add a nuanced background as well.
+		(bg-prompt bg-magenta-nuanced)
+		(fg-prompt magenta-cooler)
+
+		;; Tweak some more constructs for stylistic constistency.
+		(name blue-warmer)
+		(identifier magenta-faint)
+		(keybind magenta-cooler)
+		(accent-0 magenta-cooler)
+		(accent-1 cyan-cooler)
+		(accent-2 blue-warmer)
+		(accent-3 red-cooler)
+		)
+	  )
+
+	;; Make the active mode line have a pseudo 3D effect (this assumes
+	;; you are using the default mode line and not an extra package).
+	(custom-set-faces
+	 '(mode-line ((t :box (:style released-button)))))
+
 	(load-theme 'modus-operandi)
 	)
+
 #+end_src
 *** COMMENT gruvbox
 #+begin_src emacs-lisp
@@ -1203,6 +1289,15 @@ https://protesilaos.com/emacs/substitute
 
     )
 #+end_src
+** unfill
+https://github.com/purcell/unfill
+ #+begin_src emacs-lisp
+   (use-package unfill
+	 :bind (
+		("M-Q" . unfill-paragraph)
+		)
+	 )
+#+end_src
 ** vertico & orderless
 #+begin_src emacs-lisp
   (use-package vertico
@@ -1250,7 +1345,7 @@ https://protesilaos.com/emacs/substitute
 "C-c C-t" to go into "buffer" mode (for copy/paste operations)
  #+begin_src emacs-lisp
    (defun vterm-custom-font-size()
-	 (setq buffer-face-mode-face '(:weight light :height 160))
+	 (setq buffer-face-mode-face '(:weight light :height 180))
 	 (buffer-face-mode))
 
    (use-package vterm
@@ -1349,7 +1444,7 @@ Live spell checking
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 * CUSTOM COMMANDS
-  These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!)
+  These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!).
 ** Center window (aka frame) on current monitor
 [[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
 #+begin_src emacs-lisp
@@ -1418,21 +1513,6 @@ Live spell checking
     (interactive)
     (if (= (point) (progn (back-to-indentation) (point)))
         (beginning-of-line)))
-#+end_src
-** Fill/unfill with M-q
-   http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
-#+begin_src emacs-lisp
-  (defun endless/fill-or-unfill ()
-    (interactive)
-    (let ((fill-column
-           (if (eq last-command 'endless/fill-or-unfill)
-               (progn (setq this-command nil)
-                      (point-max))
-             fill-column)))
-      (call-interactively #'fill-paragraph)))
-
-  (global-set-key [remap     fill-paragraph] #'endless/fill-or-unfill)
-  (global-set-key [remap org-fill-paragraph] #'endless/fill-or-unfill)
 #+end_src
 ** Smarter C-w (backward word kill)
 [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
