@@ -1,8 +1,9 @@
-;; Do this right up front to allow us to use VC-controlled configuration files later on in the startup process [as by the
-;; time we hit the same setting in the tangled config file (config.el), it's too late].
+;; Do this right up front to allow us to use VC-controlled configuration files (as they're
+;; soft-linked from another location) later on in the startup process [as by the time we hit the
+;; same setting in the tangled config file (config.el), it's too late].
 (setq vc-follow-symlinks t)
 
-  ;; Set up repositories
+;; Set up repositories
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("org"   . "https://orgmode.org/elpa/"))
@@ -38,15 +39,5 @@
 
 ;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
-(org-babel-load-file "~/.emacs.d/config.org")
-
 ;; -----------------------------------------------------------------------------
-
-;; How long did our startup take?
-(defun pb/_display-startup-time ()
-  (message
-   "Emacs loaded in %s with %d garbage collections."
-   (format "%.2f seconds" (float-time (time-subtract after-init-time before-init-time)))
-   gcs-done)
-  )
-(add-hook 'emacs-startup-hook #'pb/_display-startup-time)
+(org-babel-load-file "~/.emacs.d/config.org")

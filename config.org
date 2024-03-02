@@ -1,124 +1,84 @@
-#+title: My Emacs Configuration
+#+title: Emacs Configuration
 #+author: Peter Borocz
 #+email: peter.borocz@gmail.com
 #+options: num:nil
 
-* BASE CONFIGURATION
+* Packages
+Alphabetically list as it's easy to find things reasonably quickly and coming with any other grouping is fraught with ambiguities.
+** emacs
 #+begin_src emacs-lisp
-  (setq
-   auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
-   blink-cursor-interval                  0.3       ; Default is 0.5
-   create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
-   default-directory                      (concat (getenv  "HOME") "/")
-   font-lock-maximum-decoration           t
-   global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
-   inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-   inhibit-default-init                   t
-   inhibit-splash-screen                  t
-   initial-scratch-message                nil       ; Start scratch buffers empty..
-   make-backup-files                      nil       ; Stop creating backup~ files
-   ring-bell-function                     'ignore
-   search-highlight                       t
-   sentence-end-double-space              nil       ; Period single space ends sentence
-   switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-   use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
-   uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
-   uniquify-separator                     "/"
-   uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
-   uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
-   user-full-name                         "Peter Borocz"
-   vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-   visible-bell                           t
-   word-wrap                              nil
-   x-stretch-cursor                       t
-   )
-
-  ;; If we have to have it, set title-bar to something a bit nicer:
-  (setq frame-title-format '(buffer-file-name "%f" ("%b")))
-  ;; (setq frame-title-format '())
-  ;; (setq frame-title-format '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d"))))
+  (use-package emacs
+    :ensure nil
+    :init
+    (setq
+     auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
+     blink-cursor-interval                  0.3       ; Default is 0.5
+     blink-cursor-mode                      1
+     create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
+     column-number-mode                     t
+     default-directory                      (concat (getenv  "HOME") "/")
+     fill-column                            96
+     font-lock-maximum-decoration           t
+     frame-title-format                     '("%f" ("%b")) ; If we have to have it, set title-bar to something a bit nicer:
+     global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
+     global-font-lock-mode                  1
+     indent-tabs-mode                       nil ; Make sure spaces are used when indenting anything!
+     inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+     inhibit-default-init                   t
+     inhibit-splash-screen                  t
+     initial-scratch-message                nil       ; Start scratch buffers empty..
+     make-backup-files                      nil       ; Stop creating backup~ files
+     ring-bell-function                     'ignore
+     search-highlight                       t
+     sentence-end-double-space              nil       ; Period single space ends sentence
+     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
+     truncate-lines                         t   ; Start out with NO line truncation.
+     uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
+     uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
+     uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+     uniquify-separator                     "/"
+     use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
+     use-short-answers                      t ; Used for emacs >= 29.
+     user-full-name                         "Peter Borocz"
+     vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+     visible-bell                           t
+     word-wrap                              nil
+     x-stretch-cursor                       t
+     yank-excluded-properties              't ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
+     ))
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
   ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
   ;; per https://emacs.stackexchange.com/questions/70177/how-can-i-apply-toggle-debug-on-quit-ignore-debugger-entered-lisp-error/70180
   (add-to-list 'debug-ignored-errors 'minibuffer-quit)
 
-  ;; Per gpt-3.5-turbo, disable the lisp debugger and associated stack frame for common errors.
-  ;; (setq debug-on-error  nil
-  ;;       debug-on-signal nil
-  ;;       debug-on-quit   nil)
-
   ;; Define all aliases
   (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
-  ;; Delete selection mode
-  ;; 2023-12-02 Trying this out...
-  ;; 2024-01-17 Turning this off, too many times I'd have a selection and then *any* key would nuke it!
-  ;;            Put another way, I *like* the idea of simply using "DEL" to delete a selected region but it also deletes
-  ;;            as soon as any other text is typed (can't seem to find a way have splitting this behaviour)
-  ;; (delete-selection-mode 1)
-
-  ;; Setup defaults across all buffers:
-  (setq fill-column               96
-        frame-title-format        '("%f [%m]")
-        indent-tabs-mode          nil ; Make sure spaces are used when indenting anything!
-        truncate-lines            t   ; Start out with NO line truncation.
-        yank-excluded-properties 't   ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
-        )
-
   ;; We want y or n to be sufficient for yes/no prompts.
   ;; (defalias 'yes-or-no-p 'y-or-n-p) ;; Used for emacs <29
-  (setq use-short-answers t) ;; Used for emacs >= 29.
 
   ;; Don't let Emacs suspend by getting rid of pesky "\C-z" and "\C-x\C-z" annoying minimize
   (unbind-key "C-z")
   (unbind-key "M-z")
 
-  ;; abbrev-mode for typo corrections *AND* code shortcuts (/instead/ of yasnippets)
-  (setq abbrev-file-name "~/.emacs.d/.abbrev_defs")
-  (setq save-abbrevs 'silent) ;; save abbrevs when files are saved
-  (setq abbrev-mode t)        ;; abbrev-mode everywhere to address common typos.
-
   (global-auto-revert-mode 1) ;; refresh a buffer if changed on disk
-
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
-  ;; Font availability...
-
-  ;; 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
-  ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-  ;; 2023-09-03, going back to my old standby ;-(
-  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-  ;; 2023-12-24 Give a try to Astigmata from Jason Knight...nope.
-  ;; (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-
-  ;; 2023-12-25 Replace raw source code pro with nerd font variant for better doom-modeline display support.
-  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-  (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-#+end_src
-* PACKAGES & MODES
-** -built-ins-
-#+begin_src emacs-lisp
   (use-package paren
-    :ensure nil
-
+    :ensure nil				 ; Already part of emacs itself
     :init
     (setq show-paren-delay 0)  ; We want matching parens to show immediately
-
     :config
     (show-paren-mode t))
 
   (use-package time
-    :ensure nil
-
+    :ensure nil				 ; Already part of emacs itself
     :init
     (setq display-time-day-and-date  t
-	  display-time-24hr-format   t
-	  display-time-use-mail-icon t
-	  display-time-interval      10)
+          display-time-24hr-format   t
+          display-time-use-mail-icon t
+          display-time-interval      10)
 
     ;; :config
     ;; (display-time) ;; 2024-01-31 Turned off to address performance issues.
@@ -179,20 +139,6 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
-  ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
-  (defun _pb-dired-sort ()
-    (interactive)
-    (let (sort_by ls_arg)
-      (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
-      (cond
-       ((equal sort_by "Name") (setq ls_arg "-Alh "))
-       ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
-       ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
-       ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
-       (t (error "Sorry, that didn't work 🤦" )))
-      (dired-sort-other ls_arg )))
-
   (use-package dired
     :ensure nil
 
@@ -245,24 +191,28 @@ Highlight global-search-replace strings dynamically.
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
 
+  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
+  ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
+  (defun _pb-dired-sort ()
+    (interactive)
+    (let (sort_by ls_arg)
+      (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
+      (cond
+       ((equal sort_by "Name") (setq ls_arg "-Alh "))
+       ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
+       ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
+       ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
+       (t (error "Sorry, that didn't work 🤦" )))
+      (dired-sort-other ls_arg )))
 #+end_src
 *** dired-gitignore
+Toggle between showing just ".git-ted" files and all files.
 #+begin_src emacs-lisp
   (use-package dired-gitignore
     :ensure t
     :config
     (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
     )
-#+end_src
-** COMMENT editorconfig
-"EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
-However, I don't work with "multiple developers" much anymore, not necessary!
-[[https://editorconfig.org/][EditorConfig]]
-#+begin_src emacs-lisp
-  ;; (use-package editorconfig
-  ;;   :init
-  ;;   (editorconfig-mode 1)
-  ;;   )
 #+end_src
 ** eglot
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
@@ -271,37 +221,37 @@ However, I don't work with "multiple developers" much anymore, not necessary!
 #+begin_src emacs-lisp
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
-      :commands
-      (eglot eglot-ensure)
+    :commands
+    (eglot eglot-ensure)
 
-      :hook
-      ((python-ts-mode yaml-ts-mode) . eglot-ensure)
+    :hook
+    ((python-ts-mode yaml-ts-mode) . eglot-ensure)
 
-      :bind
-      (:map eglot-mode-map
-            ("C-c e a" . eglot-code-actions)
-            ("C-c e r" . eglot-rename)
-            ("C-c e f" . eglot-format)
-            ("C-c x r" . xref-find-references)
-            ("C-c x f" . xref-find-definitions)
-            ("C-c x a" . xref-find-apropos)
-            ("C-c f n" . flymake-goto-next-error)
-            ("C-c f p" . flymake-goto-prev-error)
-            ("C-c f d" . flymake-show-project-diagnostics))
+    :bind
+    (:map eglot-mode-map
+          ("C-c e a" . eglot-code-actions)
+          ("C-c e r" . eglot-rename)
+          ("C-c e f" . eglot-format)
+          ("C-c x r" . xref-find-references)
+          ("C-c x f" . xref-find-definitions)
+          ("C-c x a" . xref-find-apropos)
+          ("C-c f n" . flymake-goto-next-error)
+          ("C-c f p" . flymake-goto-prev-error)
+          ("C-c f d" . flymake-show-project-diagnostics))
 
-      :config
-      ;; Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
-      ;; However, modern machines can take on a lot more.
-      ;; Set it to 1MB which is equal to the limit defined in /proc/sys/fs/pipe-max-size/.
-      ;; Ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
-      ;; Ref: https://github.com/jwiegley/dot-emacs/blob/2b4c57963413cb80e8716f014f25eaf4850c369c/init.org#eglot
-      (setq read-process-output-max (* 1024 1024))
+    :config
+    ;; Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
+    ;; However, modern machines can take on a lot more.
+    ;; Set it to 1MB which is equal to the limit defined in /proc/sys/fs/pipe-max-size/.
+    ;; Ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
+    ;; Ref: https://github.com/jwiegley/dot-emacs/blob/2b4c57963413cb80e8716f014f25eaf4850c369c/init.org#eglot
+    (setq read-process-output-max (* 1024 1024))
 
-      :custom
-      (eglot-autoshutdown t)
-      (eglot-menu-string "eglot")
-      (eglot-ignored-server-capabilities '(:documentHighlightProvider))
-      )
+    :custom
+    (eglot-autoshutdown t)
+    (eglot-menu-string "eglot")
+    (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+    )
 
   (use-package pyvenv-auto
     :custom
@@ -319,18 +269,6 @@ However, I don't work with "multiple developers" much anymore, not necessary!
                                              fill-column    96
                                              )))
 #+end_src
-** COMMENT elm-mode
-On hiatus until/if I get back to doing elm development
-https://github.com/jcollard/elm-mode
-#+begin_src emacs-lisp
-  ;; (use-package elm-mode
-  ;;   :config
-  ;;   (setq elm-format-on-save t)
-
-  ;;   :init
-  ;;   (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
-  ;;   )
-#+end_src
 ** envrc
 [[https://github.com/purcell/envrc]]
 #+begin_src emacs-lisp
@@ -339,22 +277,63 @@ https://github.com/jcollard/elm-mode
     (envrc-global-mode)
     )
 #+end_src
-** COMMENT find-file-in-project
-~project-find-file~ works fine, no need to ffip for me.
-** fish-shell-mode
+** font
+Interactive font scaling:
+  - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
+  - For current buffer -> M-x text-scale-adjust
+
+ Which one is currently displayed?
+   - M-x describe-font <cr> <cr>
+
+ Set a new font interactively:
+   - M-x set-frame-font (Pick from list!)
 #+begin_src emacs-lisp
-  ;; Tried commenting this out as of 2023-07-30 as part of testing out 29.1 and going back to 28.2
-  ;; it doesn't seem to have any impact...leave it out??
-  ;; (use-package fish-mode)
+  ;; 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
+  ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
+  ;; 2023-09-03, going back to my old standby ;-(
+  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+
+  ;; 2023-12-24 Give a try to Astigmata from Jason Knight...nope.
+  ;; (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
+  ;; 2023-12-25 Replace raw source code pro with nerd font variant for better doom-modeline display support.
+  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
+  ;; For interactive use when we move between monitor and laptop displays without restarting (and below for auto-setting)
+  (defun pb/font-size-monitor ()
+    "Set font obo 4K monitor."
+    (interactive)
+    (set-frame-font (format pb/var-fixedwidth-font 22))
+    )
+
+  (defun pb/font-size-laptop ()
+    "Set font obo laptop display."
+    (interactive)
+    (set-frame-font (format pb/var-fixedwidth-font 14))
+    )
+
+  (setq ns-use-thin-smoothing t)
+  (if (and (display-graphic-p)
+           (>= (x-display-pixel-width) 3840))
+      (progn
+        (pb/font-size-monitor)
+        )
+    (progn
+      (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
+        (pb/font-size-laptop)
+        )
+      )
+    )
 #+end_src
 ** format-all
-hat-tip to [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
+Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
   (use-package format-all
 
     :preface
     (defun pb/format-code ()
-      "Auto-format whole buffer."
       (interactive)
       (if (derived-mode-p 'prolog-mode)
           (prolog-indent-buffer)
@@ -365,19 +344,6 @@ hat-tip to [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
     (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
     )
 #+end_src
-** git
- #+begin_src emacs-lisp
-   (use-package git-timemachine)
-
-   (use-package git-gutter
-     :init
-     (global-git-gutter-mode +1)
-
-     :config
-     (setq git-gutter:disabled-modes '(org-mode image-mode))
-
-     )
- #+end_src
 ** gpt
 https://github.com/karthink/gptel
  #+begin_src emacs-lisp
@@ -385,7 +351,7 @@ https://github.com/karthink/gptel
      :init
      (setq gptel-model "gpt-4"))
  #+end_src
-** graphviz/dot-mode
+** graphviz-dot-mode
 #+begin_src emacs-lisp
   (use-package graphviz-dot-mode
     :config
@@ -427,7 +393,6 @@ Aggressively (but reluctantly) delete white-space.
 #+begin_src emacs-lisp
   (use-package smart-hungry-delete
     :ensure t
-
     :bind (
            ([remap delete-char]                   . smart-hungry-delete-forward-char)
            ([remap org-delete-char]               . smart-hungry-delete-forward-char)
@@ -451,48 +416,39 @@ Use a single-window (part. for Magit) and then close.
     (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
     )
 #+end_src
-** lin
-[[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
-#+begin_src emacs-lisp
-  (use-package lin
-    :ensure t
-    :config
-    (lin-global-mode 1)
-    )
-#+end_src
-** magit
-*** local methods..
-#+begin_src emacs-lisp
-  ;; Full screen magit-status
-  (defadvice magit-status (around magit-fullscreen activate)
-	(window-configuration-to-register :magit-fullscreen)
-	ad-do-it
-	(delete-other-windows))
-
-  (defun magit-quit-session ()
-	"Restores the previous window configuration and kills the magit buffer"
-	(interactive)
-	(kill-buffer)
-	(jump-to-register :magit-fullscreen))
-#+end_src
+** magit & git
 *** magit
 #+begin_src emacs-lisp
   (use-package magit
-	:demand t
+    :demand t
 
-	:bind
-	("C-x C-g" . magit-status)
+    :bind
+    ("C-x C-g" . magit-status)
 
-	:config
-	(define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+    :config
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
 
   (use-package ibuffer-git)
 
   (use-package magit-todos
-	:after magit
-	:config (magit-todos-mode 1)
-	:load-path "~/.emacs.d/site-lisp/magit-todos/"
-	)
+    :after magit
+    :config (magit-todos-mode 1)
+    :load-path "~/.emacs.d/site-lisp/magit-todos/"
+    )
+
+  ;; Full screen magit-status
+  (defadvice magit-status (around magit-fullscreen activate)
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
+
+  (defun magit-quit-session ()
+    "Restores the previous window configuration and kills the magit buffer"
+    (interactive)
+    (kill-buffer)
+    (jump-to-register :magit-fullscreen))
+
+
 #+end_src
 *** magit-todos
 #+begin_src emacs-lisp
@@ -502,27 +458,24 @@ Use a single-window (part. for Magit) and then close.
 	:load-path "~/.emacs.d/site-lisp/magit-todos/"
 	)
 #+end_src
+*** git-timemachine
+ #+begin_src emacs-lisp
+   (use-package git-timemachine)
+ #+end_src
+*** git-gutter
+ #+begin_src emacs-lisp
+   (use-package git-gutter
+     :init
+     (global-git-gutter-mode +1)
+
+     :config
+     (setq git-gutter:disabled-modes '(org-mode image-mode))
+
+     )
+ #+end_src
 *** ibuffer-git
 #+begin_src emacs-lisp
   (use-package ibuffer-git)
-#+end_src
-** marginalia
-#+begin_src emacs-lisp
-  ;; Enable rich annotations using the Marginalia package
-  (use-package marginalia
-    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-    ;; available in the *Completions* buffer, add it to the
-    ;; `completion-list-mode-map'.
-    :bind (:map minibuffer-local-map
-           ("M-A" . marginalia-cycle))
-
-    ;; The :init section is always executed.
-    :init
-
-    ;; Marginalia must be actived in the :init section of use-package such that
-    ;; the mode gets enabled right away. Note that this forces loading the
-    ;; package.
-    (marginalia-mode))
 #+end_src
 ** markdown
 Specifically, GithubFlavoredMarkdown-mode
@@ -544,17 +497,8 @@ Specifically, GithubFlavoredMarkdown-mode
   (defun pb/markdown-config ()
     (local-set-key (kbd "M-q") 'ignore))
 #+end_src
-** mode-line(s)
-*** nerd-icons
-#+begin_src emacs-lisp
-  (use-package nerd-icons
-    :custom
-    (nerd-icons-font-family "Symbols Nerd Font Mono")
-    )
-#+end_src
-*** [[https://github.com/jessiehildebrandt/mood-line/blob/master/mood-line.el][mood-line]]
-Nice and simple, no extraneous minor-modes or weird font's necessary!
-https://github.com/jessiehildebrandt/mood-line
+** mood-line [mode-line]
+Nice and simple: https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
 	:ensure t
@@ -564,75 +508,8 @@ https://github.com/jessiehildebrandt/mood-line
 	 '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
 	 '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
 	 )
-
 	(mood-line-mode)
 	)
-#+end_src
-*** ARCHIVED (tried but discounted for one reason or another)
-**** telephone-line
-**** [[https://github.com/TheBB/spaceline][spaceline]]
-[[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
-#+begin_src emacs-lisp
-  (use-package spaceline
-    :disabled
-    :init
-    (spaceline-emacs-theme)
-
-    :config
-    (spaceline-toggle-minor-modes-off)
-    )
-#+end_src
-**** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
-#+begin_src emacs-lisp
-  (use-package smart-mode-line
-    :disabled
-    :ensure t
-    :init
-    (sml/setup)
-    )
-#+end_src
-**** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
-[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
-http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-    :disabled
-    :ensure t
-
-    :init
-    (setq
-     display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
-     doom-modeline-column-zero-based nil
-     doom-modeline-height 1
-
-     doom-modeline-position-column-format '("C%c")
-     doom-modeline-position-column-line-format '("%l - %c")
-     doom-modeline-position-line-format '("L%l")
-     doom-modeline-vcs-max-length 20
-
-     modeline-position-column-format '("C%c")
-     modeline-position-column-line-format '("%l - %c")
-     modeline-position-line-format '("L%l")
-
-     inhibit-compacting-font-caches t
-     nerd-icons-scale-factor 1.0
-     )
-    (custom-set-faces
-     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
-     )
-
-    :hook
-    (after-init . doom-modeline-mode)
-    )
-#+end_src
-** move-text
-Specifically, GithubFlavoredMarkdown-mode
-#+begin_src emacs-lisp
-  (use-package move-text
-    :init
-    (move-text-default-bindings)
-    )
 #+end_src
 ** olivetti
 https://github.com/rnkn/olivetti
@@ -646,25 +523,27 @@ https://github.com/rnkn/olivetti
     )
 #+end_src
 ** org
-*** Base Package Definition
+*** org
 #+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
+    :ensure nil
+
     :defer nil
 
     :bind (:map org-mode-map
-		("C-M-<return>" . org-insert-subheading)
-		("C-c l"        . org-store-link)
-		("C-c L"        . org-cliplink)
-		("C-c a"        . org-agenda)
-		("C-c |"        . org-table-create-or-convert-from-region)
-		("C-c C-<"      . org-promote-subtree)
-		("C-c C->"      . org-demote-subtree)
-		("C-<right>"    . org-metaright)
-		("C-<left>"     . org-metaleft)
-		)
+                ("C-M-<return>" . org-insert-subheading)
+                ("C-c l"        . org-store-link)
+                ("C-c L"        . org-cliplink)
+                ("C-c a"        . org-agenda)
+                ("C-c |"        . org-table-create-or-convert-from-region)
+                ("C-c C-<"      . org-promote-subtree)
+                ("C-c C->"      . org-demote-subtree)
+                ("C-<right>"    . org-metaright)
+                ("C-<left>"     . org-metaleft)
+                )
 
     :config
     (add-hook 'text-mode-hook #'visual-line-mode)
@@ -677,43 +556,14 @@ https://github.com/rnkn/olivetti
      :export (lambda (_ desc &rest _) desc))
 
     :init
-    (setq fill-column           96 ;; Org won't use the global fill-column, set here explicitly?
-	  org-catch-invisible-edits 'show-and-error
-	  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-	  org-hide-leading-stars    t
-	  org-return-follows-link   t
-	  org-startup-folded        t
-	  org-startup-indented      t
-	  )
-    ;; org-M-RET-may-split-line                 nil
-    ;; org-adapt-indentation                    nil ;; 2024-02-07 Try out nil instead of t
-    ;; org-agenda-dim-blocked-tasks             'invisible
-    ;; org-agenda-files                         (directory-files-recursively "~/Repository/00-09 System/01 Org/" "\\.org$")
-    ;; org-default-notes-file                   (concat org-directory  "~/Repository/00-09 System/01 Org/gtd.org")
-    ;; org-directory                            "~/Repository/00-09 System/01 Org"
-    ;; org-enforce-todo-checkbox-dependencies   t
-    ;; org-enforce-todo-dependencies            t
-    ;; org-export-backends                      (quote (ascii html icalendar latex md odt))
-    ;; org-hide-emphasis-markers                nil
-    ;; org-hide-leading-stars                   nil
-    ;; org-id-prefix                            "ID" ;; We don't want simply numbers!
-    ;; org-image-actual-width                   '(300)
-    ;; org-link-search-must-match-exact-heading nil
-    ;; org-list-allow-alphabetical              t
-    ;; org-src-fontify-natively                 t
-    ;; org-src-window-setup                     'current-window ;; https://irreal.org/blog/?p=8824
-    ;; org-startup-indented                     t
-    ;; org-startup-with-inline-images           t
-    ;; org-use-fast-todo-selection              t
-    ;; org-use-speed-commands                   nil
-
-    ;;  org-link-frame-setup '((vm      . vm-visit-folder-other-frame)
-    ;;                         (vm-imap . vm-visit-imap-folder-other-frame)
-    ;;                         (gnus    . org-gnus-no-new-news)
-    ;;                         (file    . find-file)  ;; Used to be find-file-other-window..
-    ;;                         (wl      . wl-other-frame))
-    ;;  ;; https://blog.aaronbieber.com/2017/03/19/organizing-notes-with-refile.html
-    ;;  org-refile-targets '((org-agenda-files :maxlevel . 2))
+    (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
+          org-catch-invisible-edits 'show-and-error
+          org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+          org-hide-leading-stars    t
+          org-return-follows-link   t
+          org-startup-folded        t
+          org-startup-indented      t
+          )
     )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -727,24 +577,21 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords '((sequence
-			     "TODO(t)"
-			     "WAIT(a)"
-			     "HOLD(h)"
-			     "WORK(w)"
-			     "|"
-			     "DONE(x)"
-			     )
-			    )
-	)
+                             "TODO(t)"
+                             "WAIT(a)"
+                             "HOLD(h)"
+                             "WORK(w)"
+                             "|"
+                             "DONE(x)"
+                             )))
 
   (setq org-todo-keyword-faces
-	'(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
-	  ("WORK" . "light green")
-	  ("HOLD" . "systemBrownColor")
-	  ("WAIT" . "systemBrownColor")
-	  ("DONE" . "gray30")
-	  )
-	)
+        '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+          ("WORK" . "light green")
+          ("HOLD" . "systemBrownColor")
+          ("WAIT" . "systemBrownColor")
+          ("DONE" . "gray30")
+          ))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   (setq org-fontify-todo-headline nil)
@@ -760,14 +607,17 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
-	'(
-	  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-	  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-	  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-	  ))
+        '(
+          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+          ))
+
+  ;; Insert date-time stamp like org but everywhere.
+  (global-set-key (kbd "C-c .") 'org-time-stamp)
+  
 #+end_src
-*** Supplemental Org Packages
-**** babel
+*** babel
 #+begin_src emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -779,25 +629,25 @@ https://github.com/rnkn/olivetti
      ))
   (setq org-confirm-babel-evaluate nil)
 #+end_src
-**** org-modern-indent
+*** org-modern-indent
  #+begin_src emacs-lisp
    ;; (use-package org-modern-indent
    ;;   :load-path "~/.emacs.d/site-lisp/org-modern-indent"
    ;;   :config
    ;;   (add-hook 'org-mode-hook #'org-modern-indent-mode 128))
  #+end_src
-**** org-appear
+*** org-appear
  #+begin_src emacs-lisp
    (use-package org-appear
        :hook (org-mode . org-appear-mode))
  #+end_src
-**** org-cliplink
+*** org-cliplink
 Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
  #+begin_src emacs-lisp
    (use-package org-cliplink
      :after 'org)
  #+end_src
-**** org-superstar
+*** org-superstar
 Nice(r) bullets (replaces org-bullets)
  #+begin_src emacs-lisp
    (use-package org-superstar
@@ -810,26 +660,6 @@ Nice(r) bullets (replaces org-bullets)
            (?+ . ?➤)
            (?- . ?•)))
  #+end_src
-** outli
-#+begin_src emacs-lisp
-  (use-package outli
-    :load-path "~/.emacs.d/site-lisp/outli"
-
-    :bind (:map outli-mode-map ; convenience key to get back to containing heading
-                ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
-
-    :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
-                                    (emacs-lisp-mode ";; " ?* nil nil)
-                                    ))
-
-    :hook ((prog-mode python-mode text-mode) . outli-mode)) ; or whichever modes you prefer
-#+end_src
-** page-break-lines
-[[https://github.com/purcell/page-break-lines][Display a nice line for ^L's.]]
-#+begin_src emacs-lisp
-  (use-package page-break-lines
-    :init (global-page-break-lines-mode))
-#+end_src
 ** pbcopy
 Allow interaction with MacOS clipboard and kill/yank ring in emacs.
 #+begin_src emacs-lisp
@@ -900,19 +730,19 @@ Allow interaction with MacOS clipboard and kill/yank ring in emacs.
     :load-path "~/.emacs.d/site-lisp/pulsar/"
 
     :config
-    (setq pulsar-delay 0.08)
-    (setq pulsar-face 'pulsar-yellow)
+    (setq pulsar-delay  0.10
+          pulsar-face  'pulsar-yellow
+          pulsar-pulse nil)
+
     (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
       (add-hook hook #'pulsar-mode))
+
     (add-hook 'next-error-hook #'pulsar-pulse-line)
 
     ;; Don't use global mode as it looks ugly trying to pulse my complex vterm fish prompt ;-(
     ;; (pulsar-global-mode 1)
     )
 #+end_src
-** COMMENT python (pet)
-As of now, not sure when this would be necessary, everything *I* need to do works!
-[[https://github.com/wyuenho/emacs-pet][GitHub - wyuenho/emacs-pet: Tracks down the correct Python tooling executable...]]
 ** rainbow-delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
@@ -975,38 +805,29 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** substitute
-https://protesilaos.com/emacs/substitute
-#+begin_src emacs-lisp
-  (use-package substitute
-	:config
-	(require 'substitute)
-	(add-hook 'substitute-post-replace-functions #'substitute-report-operation)
-
-	:bind (("M-<f6>" . substitute-target-in-buffer))
-	)
-#+end_src
 ** super-save
+[[https://github.com/bbatsov/super-save][GitHub - bbatsov/super-save: Save Emacs buffers when they lose focus]]]
+"super-save auto-saves your buffers, when certain events happen - e.g.
+you switch between buffers, an Emacs frame loses focus, etc. You can
+think of it as both something that augments and replaces the standard
+auto-save-mode.
 #+begin_src emacs-lisp
-  ;; Auto-save buffers
   (use-package super-save
     :ensure t
     :config
-    (save-place-mode 1)
+    (super-save-mode 1)
     )
 #+end_src
-** text
+** text-mode
 #+begin_src emacs-lisp
   (setq text-mode-hook
         '(lambda ()
            (auto-fill-mode 0)
            (setq tab-width 4)
-           ;;(flyspell-mode) ;; Turned off 2024-01-31 to see if this solves performance/lockup issues.
            ))
   (setq default-major-mode 'text-mode)
 #+end_src
-** theme(s)
-*** gruvbox
+** theme (gruvbox)
 #+begin_src emacs-lisp
     (use-package gruvbox-theme
       :ensure t
@@ -1024,7 +845,353 @@ https://protesilaos.com/emacs/substitute
    '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
   )
 #+end_src
-*** COMMENT modus-operandi
+** toml-mode
+#+begin_src emacs-lisp
+  (use-package toml-mode
+    :defer t)
+#+end_src
+** tree-sitter
+- As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
+  (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
+#+begin_src emacs-lisp
+  (setq treesit-language-source-alist
+        '(
+          (bash       "https://github.com/tree-sitter/tree-sitter-bash")
+          (cmake      "https://github.com/uyha/tree-sitter-cmake")
+          (css        "https://github.com/tree-sitter/tree-sitter-css")
+          (html       "https://github.com/tree-sitter/tree-sitter-html")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json       "https://github.com/tree-sitter/tree-sitter-json")
+          (make       "https://github.com/alemuller/tree-sitter-make")
+          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+          (python     "https://github.com/tree-sitter/tree-sitter-python")
+          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
+        )
+
+  (use-package treesit-auto
+    :demand t
+
+    :config
+    (global-treesit-auto-mode)
+
+    )
+#+end_src
+** unfill
+https://github.com/purcell/unfill
+ #+begin_src emacs-lisp
+   (use-package unfill
+	 :bind (
+		("M-Q" . unfill-paragraph)
+		)
+	 )
+#+end_src
+** vertico & orderless
+#+begin_src emacs-lisp
+  (use-package vertico
+	:ensure t
+
+	:init
+	(vertico-mode)
+
+	:custom
+	(vertico-cycle         t)
+	(vertico-scroll-margin 0)
+	(vertico-count         10)
+	)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  ;; (setq vertico-cycle t)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+		'(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  (setq read-extended-command-predicate #'command-completion-default-include-p)
+
+#+end_src
+** volatile-highlights
+ #+begin_src emacs-lisp
+   (use-package volatile-highlights
+     :custom
+     (volatile-highlights-mode t)
+     )
+#+end_src
+** vterm
+"C-c C-t" to go into "buffer" mode (for copy/paste operations)
+ #+begin_src emacs-lisp
+
+   (use-package vterm
+     :ensure t
+     :defer t
+
+     :config
+     (setq vterm-shell "/usr/local/bin/fish")
+
+     :hook
+     ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+      (vterm-mode . vterm-custom-font-size))
+
+     :custom
+     (vterm-always-compile-module t))
+
+   (defun vterm-custom-font-size()
+     (setq buffer-face-mode-face '(:weight light :height 180))
+     (buffer-face-mode))
+
+   (defun pb/vterm-current-directory ()
+     "Create a terminal buffer from the current dired location"
+     (interactive)
+     (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
+       (vterm (concat "@" shell-name))
+       )
+     )
+
+   (defun pb/vterm-by-name ()
+     "Create a terminal buffer based on name provided."
+     (interactive)
+     (let ((shell-name (read-string "Shell name: ")))
+       (vterm (concat "@" shell-name))
+       )
+     )
+
+   (global-set-key (kbd   "<f12>") 'pb/vterm-current-directory)
+   (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
+#+end_src
+** vlf
+#+begin_src emacs-lisp
+  (use-package vlf)
+#+end_src
+** web/mmm-mode
+#+begin_src emacs-lisp
+  (use-package mmm-mode
+	:ensure t
+	:config
+	(setq mmm-global-mode 'auto)
+
+	(use-package mmm-jinja2
+	  :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
+	  :init
+	  (setq mmm-global-mode 'maybe
+		mmm-parse-when-idle 't)
+
+	  )
+
+	(use-package web-mode
+	  :config
+	  (setq web-mode-engines-alist '(("django" . "\\.html$"))
+		web-mode-engines-alist '(("django" . "\\.htmx$")))
+	  )
+
+	:config
+	(add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
+	(add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
+	(add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
+	(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
+
+	(mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
+	(mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
+	)
+
+  ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
+  (defun pb-web-mode-hook ()
+	(setq web-mode-markup-indent-offset 2)
+	(setq web-mode-css-indent-offset    2)
+	(setq web-mode-code-indent-offset   2)
+	(setq web-mode-indent-style         2)
+	)
+  (add-hook 'web-mode-hook 'pb-web-mode-hook)
+#+end_src
+** yaml-mode
+#+begin_src emacs-lisp
+  (use-package yaml-pro
+     :defer t
+     :hook
+     (yaml-mode . yaml-pro-ts-mode))
+#+end_src
+** yasnippet
+While the majority of the time, I don't rely on snippets, there are a
+very select /few/ that I consider worthwhile, thus, keep use of
+yasnippets for now (but make sure they don't expand within comments!)
+#+begin_src emacs-lisp
+  ;; Don't do snippet expansion within comments/docstrings for py:
+  ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
+  (defun pb/yas-no-expand-in-comment_string ()
+    (setq yas-buffer-local-condition
+          '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
+               '(require-snippet-condition . force-in-comment)
+             t)))
+
+  (use-package yasnippet
+      :config
+
+      ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
+      (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+
+      ;; Use the method above to keep snippets only when we're writing actual code.
+      ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+
+      (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
+      (add-hook 'python-base-mode-hook #'yas-minor-mode)
+      (add-hook 'prog-mode-hook        #'pb/yas-no-expand-in-comment_string)
+
+      (yas-global-mode 1)
+      (yas-reload-all)
+      )
+#+end_src
+** zoom
+[[https://github.com/cyrus-and/zoom][GitHub - cyrus-and/zoom: Fixed and automatic balanced window layout for Emacs]]
+#+begin_src emacs-lisp
+  (use-package zoom
+      :config
+      (zoom-mode 1)
+      )
+#+end_src
+** zygospore
+Toggles between "current" buffer to fullscreen and existing buffer layout (and back again)
+#+begin_src emacs-lisp
+  (use-package zygospore
+    :load-path "~/.emacs.d/site-lisp/zygospore.el/"
+    )
+  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
+
+#+end_src
+** ARCHIVED
+*** COMMENT editorconfig
+"EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
+However, I don't work with "multiple developers" much anymore, not necessary!
+[[https://editorconfig.org/][EditorConfig]]
+#+begin_src emacs-lisp
+  ;; (use-package editorconfig
+  ;;   :init
+  ;;   (editorconfig-mode 1)
+  ;;   )
+#+end_src
+*** COMMENT elm-mode
+On hiatus until/if I get back to doing elm development
+https://github.com/jcollard/elm-mode
+#+begin_src emacs-lisp
+  ;; (use-package elm-mode
+  ;;   :config
+  ;;   (setq elm-format-on-save t)
+
+  ;;   :init
+  ;;   (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
+  ;;   )
+#+end_src
+*** COMMENT find-file-in-project
+~project-find-file~ works fine, no need to ffip for me.
+*** COMMENT lin
+[[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
+#+begin_src emacs-lisp
+  ;; (use-package lin
+  ;;   :ensure t
+  ;;   :config
+  ;;   (lin-global-mode 1)
+  ;;   )
+#+end_src
+*** COMMENT mode-lines
+Tried and discarded for one reason or another.
+**** COMMENT telephone-line
+**** COMMENT [[https://github.com/TheBB/spaceline][spaceline]]
+[[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
+#+begin_src emacs-lisp
+  ;; (use-package spaceline
+  ;;   :disabled
+  ;;   :init
+  ;;   (spaceline-emacs-theme)
+  ;;   :config
+  ;;   (spaceline-toggle-minor-modes-off)
+  ;;   )
+#+end_src
+**** COMMENT [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
+#+begin_src emacs-lisp
+  ;; (use-package smart-mode-line
+  ;;   :disabled
+  ;;   :ensure t
+  ;;   :init
+  ;;   (sml/setup)
+  ;;   )
+#+end_src
+**** COMMENT [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
+[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
+http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
+#+begin_src emacs-lisp
+  ;; (use-package doom-modeline
+  ;;   :disabled
+  ;;   :ensure t
+
+  ;;   :init
+  ;;   (setq
+  ;;    display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
+  ;;    doom-modeline-column-zero-based nil
+  ;;    doom-modeline-height 1
+
+  ;;    doom-modeline-position-column-format '("C%c")
+  ;;    doom-modeline-position-column-line-format '("%l - %c")
+  ;;    doom-modeline-position-line-format '("L%l")
+  ;;    doom-modeline-vcs-max-length 20
+
+  ;;    modeline-position-column-format '("C%c")
+  ;;    modeline-position-column-line-format '("%l - %c")
+  ;;    modeline-position-line-format '("L%l")
+
+  ;;    inhibit-compacting-font-caches t
+  ;;    nerd-icons-scale-factor 1.0
+  ;;    )
+  ;;   (custom-set-faces
+  ;;    '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+  ;;    '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+  ;;    )
+
+  ;;   :hook
+  ;;   (after-init . doom-modeline-mode)
+  ;;   )
+#+end_src
+*** COMMENT move-text
+#+begin_src emacs-lisp
+  ;; (use-package move-text
+  ;;   :init
+  ;;   (move-text-default-bindings)
+  ;;   )
+#+end_src
+*** COMMENT outli
+Never could get this to work :-(
+#+begin_src emacs-lisp
+  ;; (use-package outli
+  ;;   :load-path "~/.emacs.d/site-lisp/outli"
+  ;;   :bind (:map outli-mode-map ; convenience key to get back to containing heading
+  ;;               ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
+  ;;   :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
+  ;;                                   (emacs-lisp-mode ";; " ?* nil nil)
+  ;;                                   ))
+  ;;   :hook ((prog-mode python-mode text-mode) . outli-mode)) ; or whichever modes you prefer
+#+end_src
+
+*** COMMENT page-break-lines
+[[https://github.com/purcell/page-break-lines][Display a nice line for ^L's.]]
+#+begin_src emacs-lisp
+  ;; (use-package page-break-lines
+  ;;   :init (global-page-break-lines-mode))
+#+end_src
+*** COMMENT python (pet)
+As of now, not sure when this would be necessary, everything *I* need to do works!
+[[https://github.com/wyuenho/emacs-pet][GitHub - wyuenho/emacs-pet: Tracks down the correct Python tooling executable...]]
+*** COMMENT substitute
+https://protesilaos.com/emacs/substitute
+#+begin_src emacs-lisp
+  ;; (use-package substitute
+  ;;       :config
+  ;;       (require 'substitute)
+  ;;       (add-hook 'substitute-post-replace-functions #'substitute-report-operation)
+
+  ;;       :bind (("M-<f6>" . substitute-target-in-buffer))
+  ;;       )
+#+end_src
+*** COMMENT theme: modus-operandi
 #+begin_src emacs-lisp
   ;; (use-package modus-themes
   ;;   :ensure t
@@ -1140,7 +1307,7 @@ https://protesilaos.com/emacs/substitute
   ;;   )
 
 #+end_src
-*** COMMENT monokai
+*** COMMENT theme: monokai
 #+begin_src emacs-lisp
   ;; (use-package monokai
   ;;   :ensure nil
@@ -1151,7 +1318,7 @@ https://protesilaos.com/emacs/substitute
   ;;   (load-theme 'monokai nil)
   ;; )
 #+end_src
-*** COMMENT Prot's [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
+*** COMMENT theme: [[https://protesilaos.com/emacs/ef-themes][ef-autumn]] (prot)
 #+begin_src emacs-lisp
   ;; (use-package ef-themes
   ;;   :ensure nil
@@ -1169,194 +1336,7 @@ https://protesilaos.com/emacs/substitute
   ;;   (load-theme 'ef-autumn)
   ;; )
 #+end_src
-** toml-mode
-#+begin_src emacs-lisp
-  (use-package toml-mode
-    :defer t)
-#+end_src
-** tree-sitter
-- As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
-  (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
-#+begin_src emacs-lisp
-  (setq treesit-language-source-alist
-        '(
-          (bash       "https://github.com/tree-sitter/tree-sitter-bash")
-          (cmake      "https://github.com/uyha/tree-sitter-cmake")
-          (css        "https://github.com/tree-sitter/tree-sitter-css")
-          (html       "https://github.com/tree-sitter/tree-sitter-html")
-          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-          (json       "https://github.com/tree-sitter/tree-sitter-json")
-          (make       "https://github.com/alemuller/tree-sitter-make")
-          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
-          (python     "https://github.com/tree-sitter/tree-sitter-python")
-          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
-          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
-        )
-
-  (use-package treesit-auto
-    :demand t
-
-    :config
-    (global-treesit-auto-mode)
-
-    )
-#+end_src
-** unfill
-https://github.com/purcell/unfill
- #+begin_src emacs-lisp
-   (use-package unfill
-	 :bind (
-		("M-Q" . unfill-paragraph)
-		)
-	 )
-#+end_src
-** vertico & orderless
-#+begin_src emacs-lisp
-  (use-package vertico
-	:ensure t
-
-	:init
-	(vertico-mode)
-
-	:custom
-	(vertico-cycle         t)
-	(vertico-scroll-margin 0)
-	(vertico-count         10)
-	)
-
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-  ;; (setq vertico-cycle t)
-
-  ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties
-		'(read-only t cursor-intangible t face minibuffer-prompt))
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  ;; Vertico commands are hidden in normal buffers.
-  (setq read-extended-command-predicate #'command-completion-default-include-p)
-
-#+end_src
-** volatile-highlights
- #+begin_src emacs-lisp
-   (use-package volatile-highlights
-     :custom
-     (volatile-highlights-mode t)
-     )
-#+end_src
-** vterm
-"C-c C-t" to go into "buffer" mode (for copy/paste operations)
- #+begin_src emacs-lisp
-   (defun vterm-custom-font-size()
-	 (setq buffer-face-mode-face '(:weight light :height 180))
-	 (buffer-face-mode))
-
-   (use-package vterm
-	 :defer t
-
-	 :config
-	 (setq vterm-shell "/usr/local/bin/fish")
-
-	 :hook
-	 ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-	  (vterm-mode . vterm-custom-font-size))
-
-	 :custom
-	 (vterm-always-compile-module t))
-
-   (global-set-key (kbd   "<f12>") 'pb/vterm-current-directory)
-   (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
-#+end_src
-** vlf
-#+begin_src emacs-lisp
-  (use-package vlf)
-#+end_src
-** web/mmm-mode
-#+begin_src emacs-lisp
-  (use-package mmm-mode
-	:ensure t
-	:config
-	(setq mmm-global-mode 'auto)
-
-	(use-package mmm-jinja2
-	  :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
-	  :init
-	  (setq mmm-global-mode 'maybe
-		mmm-parse-when-idle 't)
-
-	  )
-
-	(use-package web-mode
-	  :config
-	  (setq web-mode-engines-alist '(("django" . "\\.html$"))
-		web-mode-engines-alist '(("django" . "\\.htmx$")))
-	  )
-
-	:config
-	(add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
-	(add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
-	(add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
-	(add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
-
-	(mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
-	(mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
-	)
-
-  ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
-  (defun pb-web-mode-hook ()
-	(setq web-mode-markup-indent-offset 2)
-	(setq web-mode-css-indent-offset    2)
-	(setq web-mode-code-indent-offset   2)
-	(setq web-mode-indent-style         2)
-	)
-  (add-hook 'web-mode-hook 'pb-web-mode-hook)
-#+end_src
-** yaml-mode
-#+begin_src emacs-lisp
-  (use-package yaml-pro
-     :defer t
-     :hook
-     (yaml-mode . yaml-pro-ts-mode))
-#+end_src
-** yasnippet
-While the majority of the time, I don't rely on snippets, there are a
-very select /few/ that I consider worthwhile, thus, keep use of
-yasnippets for now (but make sure they don't expand within comments!)
-#+begin_src emacs-lisp
-  ;; Don't do snippet expansion within comments/docstrings for py:
-  ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
-  (defun yas-no-expand-in-comment/string ()
-    (setq yas-buffer-local-condition
-          '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
-               '(require-snippet-condition . force-in-comment)
-             t)))
-
-  (use-package yasnippet
-      :config
-
-      ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
-      (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
-
-      ;; Use the method above to keep snippets only when we're writing actual code.
-      ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
-
-      (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
-      (add-hook 'python-base-mode-hook #'yas-minor-mode)
-      (add-hook 'prog-mode-hook        #'yas-no-expand-in-comment/string)
-
-      (yas-global-mode 1)
-      (yas-reload-all)
-      )
-#+end_src
-** zoom
-[[https://github.com/cyrus-and/zoom][GitHub - cyrus-and/zoom: Fixed and automatic balanced window layout for Emacs]]
-#+begin_src emacs-lisp
-  (use-package zoom
-      :config
-      (zoom-mode 1)
-      )
-#+end_src
-* LOCAL TOOLS
+* Local Tools
 These require a local/manual installation (ie. outside emacs)
 ** aspell
 Live spell checking
@@ -1364,36 +1344,8 @@ Live spell checking
   (setq ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
-* CUSTOM COMMANDS
+* Custom Commands
   These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!).
-** Center window (aka frame) on current monitor
-[[https://christiantietze.de/posts/2022/04/emacs-center-window-current-monitor-simplified/]]
-#+begin_src emacs-lisp
-  (defun pb/recenter (&optional frame)
-    "Center FRAME on the screen. FRAME can be a frame name, a terminal name, or a frame. If FRAME is omitted or nil, use currently selected frame."
-    (interactive)
-    (unless (eq 'maximised (frame-parameter nil 'fullscreen))
-      (modify-frame-parameters
-       frame '((user-position . t) (top . 0.5) (left . 0.5)))))
-#+end_src
-** Create new vterm/shell buffer (2 ways):
-#+begin_src emacs-lisp
-  (defun pb/vterm-current-directory ()
-	"Create a terminal buffer from the current dired location"
-	(interactive)
-	(let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
-	  (vterm (concat "@" shell-name))
-	  )
-	)
-
-  (defun pb/vterm-by-name ()
-	"Create a terminal buffer based on name provided."
-	(interactive)
-	(let ((shell-name (read-string "Shell name: ")))
-	  (vterm (concat "@" shell-name))
-	  )
-	)
-#+end_src
 ** Change case of text
    [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
 #+begin_src emacs-lisp
@@ -1427,15 +1379,21 @@ Live spell checking
         (downcase-region p1 p2) (put this-command 'state "all lower")) )
       )
     )
+
+  ;; Turn these off so they don't interfere with our custom method
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region   'disabled nil)
+
   (global-set-key (kbd "M-l") 'pb/toggle-letter-case) ;; Overrides existing mapping
 #+end_src
 ** Ctrl-A behaviour enhancement
-   C-a now goes to logical beginning of line before going to physical beginning of one.
+C-a now goes to logical beginning of line before going to physical beginning of one.
 #+begin_src emacs-lisp
   (defun pb/key-back-to-indentation-or-beginning ()
     (interactive)
     (if (= (point) (progn (back-to-indentation) (point)))
         (beginning-of-line)))
+  (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 #+end_src
 ** Smarter C-w (backward word kill)
 [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
@@ -1465,13 +1423,12 @@ Live spell checking
   ;; Override existing keymapping
   (global-set-key (kbd "M-@") 'pb/mark-word)
 #+end_src
-** Toggle Window Split
+** Toggle window split
 https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (defun pb/toggle-split-direction ()
     "Toggle window split from vertical to horizontal or vice-versa.
      Credit: https://github.com/olivertaylor/dotfiles/blob/master/emacs/init.el"
-
     (interactive)
     (if (> (length (window-list)) 2)
         (error "Sorry, can only toggle split direction with 2 windows.")
@@ -1484,6 +1441,8 @@ https://macowners.club/posts/custom-functions-5-navigation/
           (other-window 1)
           (switch-to-buffer (other-buffer)))))
     )
+  
+  (global-set-key (kbd "C-x O") 'pb/toggle-split-direction)
 #+end_src
 ** Kill this buffer
 [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
@@ -1495,11 +1454,6 @@ https://macowners.club/posts/custom-functions-5-navigation/
     (kill-buffer (current-buffer)))
 
   (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
-#+end_src
-** Line join
-http://whattheemacsd.com/key-bindings.el-03.html]]
-#+begin_src emacs-lisp
-  (global-set-key (kbd "C-c j") (lambda () (interactive) (join-line -1)))
 #+end_src
 ** Use project-file-find instead of file-find:
 #+begin_src emacs-lisp
@@ -1619,10 +1573,9 @@ http://whattheemacsd.com/key-bindings.el-03.html]]
     ;; insert to toggle `overwrite-mode'
     (global-set-key [help] #'overwrite-mode))
 #+end_src
-* STARTUP
+* Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
-** Base Key Mappings
-*** Function Keys
+** Custom key mappings
 #+begin_src emacs-lisp
   (global-set-key (kbd "<f1>")   'goto-line)
   (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
@@ -1635,29 +1588,13 @@ Stuff we do these after everything else has been setup so we have commands avail
   (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
   ;; <f10> still available! (but has an existing emacs assignment)
   ;; <f11> still available! (but used by MacOS to hide all windows and display desktop.)
-  ;; <f12> Used to open a new vterm
-#+end_src
-*** Other Custom Key Mappings
-#+begin_src emacs-lisp
-  ;; Zygospore is installed from package-list-packages (can't seem to use-package it?), enable it here.
-  ;; C-x 1 toggles between "current" buffer to fullscreen and existing buffer layout.
-  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
-
-  ;; Toggle window split
-  (global-set-key (kbd "C-x O") 'pb/toggle-split-direction)
-
-  ;; Better "beginning of line"
-  (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
+  ;; <f12> Used to open a new vterm (either directly or as C-<f12> for a named terminal buffer)
 
   ;; Swap windows (useful for org on left, dired on right (built-in as of 26.1)
   ;; (C-x C-o used to be "delete-blank-lines but i never use that)
   (global-set-key (kbd "C-x C-o") 'window-swap-states)
-
-  ;; Insert date-time stamp like org but everywhere.
-  (global-set-key (kbd "C-c .") 'org-time-stamp)
 #+end_src
-
-** Files *to* have open when we start
+** Files to have open when we start
 #+begin_src emacs-lisp
   (find-file "~/.emacs.d/config.org")
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
@@ -1667,47 +1604,6 @@ Stuff we do these after everything else has been setup so we have commands avail
 
   ;; Start with this displayed on startup:
   (find-file "~/Repository/00-09 System/01 Org/projects.org")
-#+end_src
-** Font Settings
-Interactive font scaling:
-  - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
-  - For current buffer -> M-x text-scale-adjust
-
- Which one is currently displayed?
-   - M-x describe-font <cr> <cr>
-
- Set a new font interactively:
-   - M-x set-frame-font (Pick from list!)
-#+begin_src emacs-lisp
-  ;; Define this individually for interactive use when we move between environments without restarting:
-  (defun pb/font-size-monitor ()
-    "Set 4K monitor font."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 22))
-    )
-
-  (defun pb/font-size-laptop ()
-    "Set laptop font."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 14))
-    )
-
-  (setq ns-use-thin-smoothing t)
-  (if (and (display-graphic-p)
-           (>= (x-display-pixel-width) 3840))
-      (progn
-        (pb/font-size-monitor)
-        ;; (set-frame-width  (selected-frame) 293) ;; Note that these are a function of
-        ;; (set-frame-height (selected-frame)  75) ;; the fontsize listed above!
-        )
-    (progn
-      (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
-        (pb/font-size-laptop)
-        ;; (set-frame-width  (selected-frame) 142) ;; Note that these are a function of
-        ;; (set-frame-height (selected-frame)  42) ;; the fontsize listed above!
-        )
-      )
-    )
 #+end_src
 * History (for sh_ts and giggles)
 |------------+-------------------------------------------------------------------|
@@ -1729,4 +1625,5 @@ Interactive font scaling:
 | 2021.11.28 | Moved to PARA file organisation for all main directories.         |
 | 2022.03.15 | Moved to support numbered file repository structure.              |
 | 2022.11.21 | Part of emacs bankruptcy and move to clean use-package approach.  |
+| 2024.03.02 | Cleanup of old/unused packages and store archived "history".      |
 |------------+-------------------------------------------------------------------|
