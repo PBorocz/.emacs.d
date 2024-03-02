@@ -38,8 +38,7 @@
 
 ;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
-(require 'org)
-(org-babel-load-file (expand-file-name (concat user-emacs-directory "config.org")))
+(org-babel-load-file "~/.emacs.d/config.org")
 
 ;; -----------------------------------------------------------------------------
 
