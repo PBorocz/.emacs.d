@@ -1,6 +1,0 @@
-# -*- mode: snippet; require-final-newline: nil -*-
-# name: import pdb
-# key: ipdb
-# group: debug
-# --
-import ipdb
