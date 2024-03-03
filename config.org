@@ -19,7 +19,7 @@ Alphabetically list as it's easy to find things reasonably quickly and coming wi
      default-directory                      (concat (getenv  "HOME") "/")
      fill-column                            96
      font-lock-maximum-decoration           t
-     frame-title-format                     '("%f" ("%b")) ; If we have to have it, set title-bar to something a bit nicer:
+     frame-title-format                     '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d")))
      global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
      global-font-lock-mode                  1
      indent-tabs-mode                       nil ; Make sure spaces are used when indenting anything!
@@ -277,7 +277,7 @@ Toggle between showing just ".git-ted" files and all files.
     (envrc-global-mode)
     )
 #+end_src
-** font
+** fonts
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
   - For current buffer -> M-x text-scale-adjust
@@ -287,21 +287,18 @@ Interactive font scaling:
 
  Set a new font interactively:
    - M-x set-frame-font (Pick from list!)
+
+ History of fonts actually tried for more than one day!:
+ - (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ - (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+   
 #+begin_src emacs-lisp
-  ;; 2023-08-04, ran across this font on the Dash/Plotly site and liked it (in particular, the "drop" on the f!)
-  ;; (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-  ;; 2023-09-03, going back to my old standby ;-(
-  ;; (defvar pb/var-fixedwidth-font "-*-Source Code Pro-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-  ;; 2023-12-24 Give a try to Astigmata from Jason Knight...nope.
-  ;; (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-
-  ;; 2023-12-25 Replace raw source code pro with nerd font variant for better doom-modeline display support.
-  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-  ;; For interactive use when we move between monitor and laptop displays without restarting (and below for auto-setting)
+  ;; Tools for interactive use when moving between monitor and laptop displays without restarting
+  ;; (and used below to auto-set font size on startup)
   (defun pb/font-size-monitor ()
     "Set font obo 4K monitor."
     (interactive)
@@ -331,17 +328,20 @@ Interactive font scaling:
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
   (use-package format-all
+    :commands
+    (format-all-mode format-all-region-or-buffer)
 
-    :preface
-    (defun pb/format-code ()
-      (interactive)
-      (if (derived-mode-p 'prolog-mode)
-          (prolog-indent-buffer)
-        (format-all-buffer)))
-
+    :hook
+    ((python-mode python-ts-mode) . (lambda ()
+                                      (setq format-all-formatters '(("Python" ruff)))))
+  
     :config
-    (global-set-key (kbd "M-F") #'pb/format-code)
-    (add-hook 'prog-mode-hook #'format-all-ensure-formatter)
+    (format-all-ensure-formatter)
+  
+    (setq-default format-all-formatters '(("Python" ruff)))
+  
+    (global-set-key (kbd "M-F") #'format-all-buffer)
+
     )
 #+end_src
 ** gpt
