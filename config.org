@@ -4,7 +4,8 @@
 #+options: num:nil
 
 * Packages
-Alphabetically list as it's easy to find things reasonably quickly and coming with any other grouping is fraught with ambiguities.
+Alphabetically list as it's easy to find things reasonably quickly and
+coming with any other grouping is fraught with ambiguities.
 ** emacs
 #+begin_src emacs-lisp
   (use-package emacs
@@ -93,6 +94,13 @@ Highlight global-search-replace strings dynamically.
     )
   (global-set-key (kbd   "<f6>") 'anzu-query-replace)
   (global-set-key (kbd "C-<f6>") 'anzu-query-replace-regexp)
+#+end_src
+** aspell
+Live spell checking.
+NOTE!: This requires a local/manual installation (ie. outside emacs)!
+#+begin_src emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 ** calendar
 #+begin_src emacs-lisp
@@ -778,14 +786,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
     ;; While this one prompts for something to query on but also asks for directory and type as well..
     (global-set-key (kbd "C-<f5>") 'rg-literal)
 #+end_src
-** savehist
-#+begin_src emacs-lisp
-  ;; 2024-01-31 Turn off to see if this solves performance/lockup issues.
-  ;; (use-package savehist
-  ;;   :init
-  ;;   (savehist-mode))
-#+end_src
-** save place
+** saveplace
 #+begin_src emacs-lisp
   (use-package saveplace
     :config
@@ -806,11 +807,11 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
 ** super-save
-[[https://github.com/bbatsov/super-save][GitHub - bbatsov/super-save: Save Emacs buffers when they lose focus]]]
-"super-save auto-saves your buffers, when certain events happen - e.g.
-you switch between buffers, an Emacs frame loses focus, etc. You can
-think of it as both something that augments and replaces the standard
-auto-save-mode.
+[[https://github.com/bbatsov/super-save][GitHub - bbatsov/super-save: Save Emacs buffers when they lose focus]]:
+Best description is from package site itself: "super-save auto-saves
+your buffers, when certain events happen - e.g. you switch between
+buffers, an Emacs frame loses focus, etc. You can think of it as both
+something that augments and replaces the standard auto-save-mode."
 #+begin_src emacs-lisp
   (use-package super-save
     :ensure t
@@ -881,10 +882,7 @@ auto-save-mode.
 https://github.com/purcell/unfill
  #+begin_src emacs-lisp
    (use-package unfill
-	 :bind (
-		("M-Q" . unfill-paragraph)
-		)
-	 )
+     :bind (("M-Q" . unfill-paragraph)))
 #+end_src
 ** vertico & orderless
 #+begin_src emacs-lisp
@@ -960,10 +958,6 @@ https://github.com/purcell/unfill
 
    (global-set-key (kbd   "<f12>") 'pb/vterm-current-directory)
    (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
-#+end_src
-** vlf
-#+begin_src emacs-lisp
-  (use-package vlf)
 #+end_src
 ** web/mmm-mode
 #+begin_src emacs-lisp
@@ -1059,7 +1053,7 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 
 #+end_src
-** ARCHIVED
+** COMMENT ARCHIVED
 *** COMMENT editorconfig
 "EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
 However, I don't work with "multiple developers" much anymore, not necessary!
@@ -1336,18 +1330,12 @@ https://protesilaos.com/emacs/substitute
   ;;   (load-theme 'ef-autumn)
   ;; )
 #+end_src
-* Local Tools
-These require a local/manual installation (ie. outside emacs)
-** aspell
-Live spell checking
-#+begin_src emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
-#+end_src
 * Custom Commands
-  These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!).
+  These are custom commands I used on regular basis (almost all of
+  which are cribbed from others, credit given as much as possible!).
+  Listed in no particular order:
 ** Change case of text
-   [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
+[[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
 #+begin_src emacs-lisp
   (defun pb/toggle-letter-case ()
     "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
@@ -1386,8 +1374,8 @@ Live spell checking
 
   (global-set-key (kbd "M-l") 'pb/toggle-letter-case) ;; Overrides existing mapping
 #+end_src
-** Ctrl-A behaviour enhancement
-C-a now goes to logical beginning of line before going to physical beginning of one.
+** Ctrl-a behaviour enhancement
+Ctrl-a goes to *logical beginning* of line first before a second invocation takes point to *physical* beginning.
 #+begin_src emacs-lisp
   (defun pb/key-back-to-indentation-or-beginning ()
     (interactive)
@@ -1404,9 +1392,7 @@ C-a now goes to logical beginning of line before going to physical beginning of 
     (if (region-active-p)
         (kill-region (region-beginning) (region-end))
       (backward-kill-word 1)))
-
   (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
-
 #+end_src
 ** Better mark-word
 [[https://www.emacs.dyerdwelling.family/emacs/20231209092556-emacs--redefining-mark-paragraph-and-mark-word/]]
@@ -1490,38 +1476,8 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
 #+end_src
-** Switch over to lower-case org-mode properties (once per org-file)
-   #+begin_src emacs-lisp
-     (defun pb/lower-case-org-keywords ()
-       "Lower case Org keywords and block identifiers.
-
-     Example: \"#+TITLE\" -> \"#+title\"
-              \"#+BEGIN_EXAMPLE\" -> \"#+begin_example\"
-
-     Directly from very bottom of:
-     https://github.com/howardabrams/hamacs/blob/main/ha-org-word-processor.org"
-
-       (interactive)
-       (save-excursion
-         (goto-char (point-min))
-         (let ((case-fold-search nil)
-               (count 0)
-               ;; All keywords can be found with this expression:
-               ;; (org-keyword-re "\\(?1:#\\+[A-Z_]+\\(?:_[[:alpha:]]+\\)*\\)\\(?:[ :=~’”]\\|$\\)")
-               ;; Match examples: "#+foo bar", "#+foo:", "=#+foo=", "~#+foo~",
-               ;;                 "‘#+foo’", "“#+foo”", ",#+foo bar",
-               ;;                 "#+FOO_bar<eol>", "#+FOO<eol>".
-               ;;
-               ;; Perhap I want the #+begin_src and whatnot:
-               (org-keyword-re (rx line-start (optional (zero-or-more space))
-                                   "#+" (group (or "BEGIN" "END") "_" (one-or-more alpha)))))
-           (while (re-search-forward org-keyword-re nil :noerror)
-             (setq count (1+ count))
-             (replace-match (downcase (match-string-no-properties 1)) :fixedcase nil nil 1))
-           (message "Lower-cased %d matches" count))))
-   #+end_src
 ** Text/Font scaling interactively
-   [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
+[[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
 #+begin_src emacs-lisp
   (defun set-font-everywhere (font-spec &optional all-frames)
     (when (null (assq 'font default-frame-alist))
@@ -1562,7 +1518,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 
 #+end_src
 ** Use Insert key to toggle overwrite/insert
-   [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
+[[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
 #+begin_src emacs-lisp
   (when (eq system-type 'darwin)
     ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
@@ -1575,17 +1531,20 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+end_src
 * Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
-** Custom key mappings
+** Function Keys Mappings
+Some of these are baked into my fingers from more than three decades
+of (anymore remember SPF on IBM Mainframes or the Brief editor on the
+first IBM PC's?)...thus, we won't be changing these often.
 #+begin_src emacs-lisp
-  (global-set-key (kbd "<f1>")   'goto-line)
-  (global-set-key (kbd "<f2>")   'toggle-truncate-lines)
-  (global-set-key (kbd "<f3>")   'align-regexp)
+  (global-set-key (kbd "<f1>") 'goto-line)
+  (global-set-key (kbd "<f2>") 'toggle-truncate-lines)
+  (global-set-key (kbd "<f3>") 'align-regexp)
   ;; <f4> still available!
-  ;; <f5> Used for search
-  ;; <f6> Used for search-replace
-  (global-set-key (kbd "<f7>")   'kmacro-start-macro) ; Keyboard macro shortcuts (based on mid-80's Brief editor mappings ;-)
-  (global-set-key (kbd "<f8>")   'kmacro-end-macro)
-  (global-set-key (kbd "<f9>")   'call-last-kbd-macro)
+  ;; <f5> Defined above (used for rg search)
+  ;; <f6> Defined above (used for search-replace)
+  (global-set-key (kbd "<f7>") 'kmacro-start-macro) ; Keyboard macro shortcuts
+  (global-set-key (kbd "<f8>") 'kmacro-end-macro)
+  (global-set-key (kbd "<f9>") 'call-last-kbd-macro)
   ;; <f10> still available! (but has an existing emacs assignment)
   ;; <f11> still available! (but used by MacOS to hide all windows and display desktop.)
   ;; <f12> Used to open a new vterm (either directly or as C-<f12> for a named terminal buffer)
