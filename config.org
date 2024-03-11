@@ -5,7 +5,7 @@
 
 * Packages
 Alphabetically list as it's easy to find things reasonably quickly and
-coming with any other grouping is fraught with ambiguities.
+coming up with any other grouping is too fraught with ambiguities.
 ** emacs
 #+begin_src emacs-lisp
   (use-package emacs
@@ -159,9 +159,9 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
      )
 
     :config
-    (define-key dired-mode-map (kbd "s") '_pb-dired-sort)
-    (define-key dired-mode-map (kbd "e") 'pb/dired-toggle-read-only) ; Inline filename editing!
+    (define-key dired-mode-map (kbd "e") 'dired-toggle-read-only) ; Inline filename editing!
     (define-key dired-mode-map (kbd "E") 'pb/dired-find-file-same-window)
+    (define-key dired-mode-map (kbd "s") 'pb/dired-sort)
     (define-key dired-mode-map (kbd ".") 'dired-up-directory)
 
     (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
@@ -188,7 +188,7 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
 
   ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
   ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
-  (defun _pb-dired-sort ()
+  (defun pb/dired-sort ()
     (interactive)
     (let (sort_by ls_arg)
       (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
@@ -199,8 +199,6 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
        ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
        (t (error "Sorry, that didn't work 🤦" )))
       (dired-sort-other ls_arg )))
-
-
 #+end_src
 *** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
@@ -210,6 +208,14 @@ Toggle between showing just ".git-ted" files and all files.
     :config
     (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
     )
+#+end_src
+*** dired-subtree
+#+begin_src emacs-lisp
+  (use-package dired-subtree :ensure t
+    :after dired
+    :config
+    (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+    (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 #+end_src
 ** eglot
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
@@ -906,7 +912,10 @@ https://github.com/purcell/unfill
    (use-package unfill
      :bind (("M-Q" . unfill-paragraph)))
 #+end_src
-** vertico (and orderless)
+** vertico
+Resources:
+- [[https://youtu.be/J0OaRy85MOo?feature=shared][Streamline Your Emacs Completions with Vertico - YouTube]]
+- [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
 #+begin_src emacs-lisp
   (use-package vertico
     :ensure t
@@ -925,16 +934,6 @@ https://github.com/purcell/unfill
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
   (setq read-extended-command-predicate #'command-completion-default-include-p)
-
-  ;; Taken directly from vertico docs:
-  (use-package orderless  ;; Optionally use the `orderless' completion style.
-    :init
-    ;; Configure a custom style dispatcher (see the Consult wiki)
-    ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-    (setq completion-styles '(orderless basic)
-          completion-category-defaults nil
-          completion-category-overrides '((file (styles partial-completion)))))
 #+end_src
 ** volatile-highlights
  #+begin_src emacs-lisp
@@ -1121,8 +1120,8 @@ https://github.com/jcollard/elm-mode
 #+end_src
 *** mode-lines
 Tried and discarded for one reason or another.
-**** COMMENT telephone-line
-**** COMMENT [[https://github.com/TheBB/spaceline][spaceline]]
+**** telephone-line
+**** [[https://github.com/TheBB/spaceline][spaceline]]
 [[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
   (use-package spaceline
@@ -1133,7 +1132,7 @@ Tried and discarded for one reason or another.
     (spaceline-toggle-minor-modes-off)
     )
 #+end_src
-**** COMMENT [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
+**** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
 #+begin_src emacs-lisp
   (use-package smart-mode-line
     :disabled
@@ -1142,7 +1141,7 @@ Tried and discarded for one reason or another.
     (sml/setup)
     )
 #+end_src
-**** COMMENT [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
+**** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
@@ -1184,6 +1183,29 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
     (move-text-default-bindings)
     )
 #+end_src
+*** orderless
+As of <2024-03-09 Sat>, can't seem to get to grips with this...
+Resources:
+- [[https://youtu.be/J0OaRy85MOo?feature=shared][Streamline Your Emacs Completions with Vertico - YouTube]]
+- [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
+#+begin_src emacs-lisp
+  ;; Taken directly from vertico docs and amended with: https://kristofferbalintona.me/posts/202202211546/
+  (use-package orderless  ;; Optionally use the `orderless' completion style.
+    :init
+    (setq completion-styles '(;; orderless-literal
+                              orderless-prefixes
+                              orderless-initialism
+                              orderless-regexp
+                              ;; orderless-flex ; Basically fuzzy finding
+                              ;; orderless-strict-leading-initialism
+                              ;; orderless-strict-initialism
+                              ;; orderless-strict-full-initialism
+                              ;; orderless-without-literal ; Recommended for dispatches instead
+                              )
+          completion-category-defaults nil
+          completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
 *** outli
 Never could get this to work :-(
 #+begin_src emacs-lisp
