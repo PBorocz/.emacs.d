@@ -9,16 +9,18 @@
       package-enable-at-startup t
       inhibit-startup-message   t)
 
-(set-window-scroll-bars (minibuffer-window) nil nil)
-(set-default-coding-systems 'utf-8)
-
 (menu-bar-mode         -1)
 (scroll-bar-mode       -1)
 (tool-bar-mode         -1)
 (tooltip-mode          -1)
 
-;; Theme setting
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+;; Setting background color here to prevent color flash as the theme gets activated.
+(setq default-frame-alist '((background-color        . "#1d2021") ;; Same background color as our theme
+			    (ns-appearance           . dark)
+			    (ns-transparent-titlebar . t)))
+
+(set-window-scroll-bars (minibuffer-window) nil nil)
+(set-default-coding-systems 'utf-8)
 
 ;; Make the initial buffer load faster by setting its mode to fundamental-mode
 (setq initial-major-mode 'fundamental-mode)

@@ -405,17 +405,12 @@ https://github.com/karthink/gptel
    (use-package gptel
      :ensure t
      :load-path "~/.emacs.d/site-lisp/gptel/"
-
-     :config
-     (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-
      :custom
-     (gptel-make-anthropic "Claude"
-                           :stream t
-                           :key (pb/get-anthropic-api-key))
-
-     ;; (setq-default gptel-model "gpt-4")
-     (setq-default gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
+     (gptel-model "gpt-4")
+     (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
+     ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
+     ;; :config
+     ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
      )
  #+end_src
 ** graphviz-dot-mode
@@ -718,6 +713,23 @@ https://github.com/rnkn/olivetti
  #+begin_src emacs-lisp
    (use-package org-appear
        :hook (org-mode . org-appear-mode))
+ #+end_src
+*** org-linker
+[[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][GitHub - jcguu95/org-linker.el: Attaching Files in Org-Mode Using UUIDs. Flex...]]
+ #+begin_src emacs-lisp
+   (defun pb/org-linker/generate-id ()
+     "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
+     (let ((current-date (format-time-string "%Y%m%d"))
+           (id (replace-regexp-in-string "[[:space:]\n]*$" ""
+                                           (shell-command-to-string "openssl rand -hex 6"))))
+       (format "%s-%s" current-date id)))
+
+   (require 'org-linker "~/.emacs.d/site-lisp/org-linker.el/org-linker.el")
+   (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
+         org-linker/file-size               999999
+         org-linker/uuid-generator-function 'pb/org-linker/generate-id
+         org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
+         )
  #+end_src
 *** org-cliplink
 Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
@@ -1654,7 +1666,7 @@ first IBM PC's?)...thus, we won't be changing these often.
   (global-set-key (kbd "C-x C-o") 'window-swap-states)
 #+end_src
 ** Files to have open when we start
-Yes Ken, What's the [[https://johnnydecimal.com/][Johny Decimal System]] for a thousand.
+"Yes Ken, what IS the [[https://johnnydecimal.com/][Johny Decimal System]] for a thousand..."
 #+begin_src emacs-lisp
   (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
   (find-file "~/Repository/00-09 System/01 Org/history.org")
