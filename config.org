@@ -396,11 +396,11 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     :config
     (load-theme 'gruvbox-dark-hard t)
     (custom-set-faces
-     '(org-level-1		((t (:height 1.15))))
-     '(org-level-2		((t (:height 1.10))))
-     '(org-level-3		((t (:height 1.05))))
-     '(org-level-4		((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-     '(org-level-5		((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
+     '(org-level-1			((t (:height 1.15))))
+     '(org-level-2			((t (:height 1.10))))
+     '(org-level-3			((t (:height 1.05))))
+     '(org-level-4			((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
+     '(org-level-5			((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
      '(font-lock-doc-face		((t (:foreground "#666666" :height 0.9))))
      '(font-lock-comment-face	((t (:foreground "#666666" :height 0.9))))
      '(org-document-title		((t (:height 1.5 :underline nil))))
@@ -449,8 +449,8 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
 #+begin_src emacs-lisp
   (use-package consult
     :bind
-    ("C-x b"   . consult-buffer) ;; orig. switch-to-buffer
-    ("C-s"     . consult-line)   ;; orig. isearch
+    ("C-x b" . consult-buffer) ;; originally 'switch-to-buffer'
+    ("M-s"   . consult-line)   ;; keep C-s for regular isearch so we can search within a line..
     )
 #+end_src
 *** marginalia
@@ -665,18 +665,19 @@ https://github.com/rnkn/olivetti
 
     :init
     (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
-      org-catch-invisible-edits 'show-and-error
-      org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-      org-hide-leading-stars    t
-      org-return-follows-link   t
-      org-startup-folded        t
-      org-startup-indented      t
-      )
+          org-catch-invisible-edits 'show-and-error
+          org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+          org-hide-leading-stars    t
+          org-return-follows-link   t
+          org-startup-folded        t
+          org-startup-indented      t
+          org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
+  )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
-  ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on C-c C-o.
+  ;; Allow for links like [[file:~/dev/foo][Code]] to open a dired on Return (or C-c C-o)
   ;; https://emacs.stackexchange.com/questions/10426/org-mode-link-to-open-directory-in-dired
   (add-to-list 'org-file-apps '(directory . emacs))
 
@@ -1132,6 +1133,7 @@ https://github.com/karthink/gptel
     :command "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/.venv/bin/flask"
     :args    '("run" "--debug" "-h" "localhost" "-p" "5001")
     :env     '(("DB_ENV" "local"))
+    :ready-message "Ready..."
     )
 
   (prodigy-define-service
@@ -1140,6 +1142,7 @@ https://github.com/karthink/gptel
     :command "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/.venv/bin/flask"
     :args    '("run" "--debug" "-h" "localhost" "-p" "5001")
     :env     '(("DB_ENV" "production"))
+    :ready-message "Ready..."
     )
 #+end_src
 *** rg (aka ripgrep)
