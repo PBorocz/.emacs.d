@@ -9,10 +9,11 @@ Grouped by general area and then alphabetically.
 *** emacs
 #+begin_src emacs-lisp
   (use-package emacs
-    :ensure nil
     :init
     (setq
      auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
+     blink-cursor-blinks                    5
+     blink-cursor-delay                     0.0
      blink-cursor-interval                  0.3       ; Default is 0.5
      blink-cursor-mode                      1
      create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
@@ -26,7 +27,7 @@ Grouped by general area and then alphabetically.
      frame-title-format                     '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d")))
      global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
      global-font-lock-mode                  1
-     indent-tabs-mode                       nil ; Make sure spaces are used when indenting anything!
+     indent-tabs-mode                       nil       ; Make sure spaces are used when indenting anything!
      inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
      inhibit-default-init                   t
      inhibit-splash-screen                  t
@@ -35,20 +36,20 @@ Grouped by general area and then alphabetically.
      ring-bell-function                     'ignore
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
-     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager Switching Buffers
-     truncate-lines                         t   ; Start out with NO line truncation.
+     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
+     truncate-lines                         t         ; Start out with NO line truncation.
      uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
      uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
      uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
      uniquify-separator                     "/"
      use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
-     use-short-answers                      t ; Used for emacs >= 29.
+     use-short-answers                      t         ; Used for emacs >= 29.
      user-full-name                         "Peter Borocz"
      vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
      visible-bell                           t
      word-wrap                              nil
      x-stretch-cursor                       t
-     yank-excluded-properties              't ; Clipboard yank is pasting graphics from microsoft instead of text. Strip all properties!
+     yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
@@ -113,7 +114,7 @@ Highlight global-search-replace strings dynamically.
 
     :config
     (add-hook 'dired-mode-hook
-          (lambda () (setq truncate-lines nil)))
+          (lambda () (setq truncate-lines t)))
 
     :bind
     (("C-x C-d" . dired-jump)
