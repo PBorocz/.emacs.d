@@ -673,7 +673,6 @@ https://github.com/rnkn/olivetti
           org-startup-indented      t
           org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
-  )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
