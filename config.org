@@ -1185,7 +1185,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
      "Create a terminal buffer from the current dired location"
      (interactive)
      (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
-       (vterm (concat "@" shell-name))
+       (vterm (concat "vt > " shell-name))
        )
      )
 
