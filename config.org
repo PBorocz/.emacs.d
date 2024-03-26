@@ -4,7 +4,7 @@
 #+options: num:nil
 
 * Packages
-Grouped by general area and then alphabetically.
+Grouped by general area (roughly) and then alphabetically within each area.
 ** Base Editing Environment
 *** emacs
 #+begin_src emacs-lisp
@@ -1193,7 +1193,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
      "Create a terminal buffer based on name provided."
      (interactive)
      (let ((shell-name (read-string "Shell name: ")))
-       (vterm (concat "@" shell-name))
+       (vterm (concat "vt > " shell-name))
        )
      )
 #+end_src
@@ -1309,7 +1309,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 ** Use project-file-find instead of file-find:
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-f")   (lambda () (interactive) (project-find-file)))
-  (global-set-key (kbd "C-M-x C-f") (lambda () (interactive) (find-file)))
+  (global-set-key (kbd "C-x C-S-f") (lambda () (interactive) (find-file)))
 #+end_src
 ** Scroll page without moving cursor
 #+begin_src emacs-lisp
