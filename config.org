@@ -330,7 +330,7 @@ Interactive font scaling:
       )
     )
 #+end_src
-*** mood-line [mode-line]
+*** mode-line
 Nice and simple: https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
@@ -390,21 +390,21 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     :hook (prog-mode)
     )
 #+end_src
-*** theme (gruvbox)
+*** theme
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
     :ensure t
     :config
     (load-theme 'gruvbox-dark-hard t)
     (custom-set-faces
-     '(org-level-1			((t (:height 1.15))))
-     '(org-level-2			((t (:height 1.10))))
-     '(org-level-3			((t (:height 1.05))))
-     '(org-level-4			((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-     '(org-level-5			((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-     '(font-lock-doc-face		((t (:foreground "#666666" :height 0.9))))
-     '(font-lock-comment-face	((t (:foreground "#666666" :height 0.9))))
-     '(org-document-title		((t (:height 1.5 :underline nil))))
+     '(org-level-1            ((t (:height 1.15))))
+     '(org-level-2            ((t (:height 1.10))))
+     '(org-level-3            ((t (:height 1.05))))
+     '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
+     '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
+     '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
+     '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
+     '(org-document-title     ((t (:height 1.5 :underline nil))))
      )
     )
 #+end_src
@@ -484,10 +484,10 @@ Resources:
     (defun +orderless--consult-suffix ()
       "Regexp which matches the end of string with Consult tofu support."
       (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-      (format "[%c-%c]*$"
-          consult--tofu-char
-          (+ consult--tofu-char consult--tofu-range -1))
-    "$"))
+          (format "[%c-%c]*$"
+                  consult--tofu-char
+                  (+ consult--tofu-char consult--tofu-range -1))
+        "$"))
 
     ;; Recognizes the following patterns:
     ;; * .ext (file extension)
@@ -496,12 +496,12 @@ Resources:
       (cond
        ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
        ((string-suffix-p "$" word)
-    `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
+        `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
        ;; File extensions
        ((and (or minibuffer-completing-file-name
-         (derived-mode-p 'eshell-mode))
-         (string-match-p "\\`\\.." word))
-    `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
+                 (derived-mode-p 'eshell-mode))
+             (string-match-p "\\`\\.." word))
+        `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
     ;; Define orderless style with initialism by default
     (orderless-define-completion-style +orderless-with-initialism
@@ -531,21 +531,21 @@ Resources:
     ;; 4. (setq completion-styles '(substring orderless basic))
     ;; Combine substring, orderless and basic.
     ;;
-    (setq completion-styles '(orderless basic)
-      completion-category-defaults nil
-      ;;; Enable partial-completion for files.
-      ;;; Either give orderless precedence or partial-completion.
-      ;;; Note that completion-category-overrides is not really an override,
-      ;;; but rather prepended to the default completion-styles.
-      ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-      completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-                      ;; enable initialism by default for symbols
-                      (command (styles +orderless-with-initialism))
-                      (variable (styles +orderless-with-initialism))
-                      (symbol (styles +orderless-with-initialism)))
-      orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-      orderless-style-dispatchers (list #'+orderless-consult-dispatch
-                        #'orderless-affix-dispatch)))
+    (setq completion-styles '(substring orderless basic)
+          completion-category-defaults nil
+          ;; Enable partial-completion for files.
+          ;; Either give orderless precedence or partial-completion.
+          ;; Note that completion-category-overrides is not really an override,
+          ;; but rather prepended to the default completion-styles.
+          ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+          completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                          ;; enable initialism by default for symbols
+                                          (command (styles +orderless-with-initialism))
+                                          (variable (styles +orderless-with-initialism))
+                                          (symbol (styles +orderless-with-initialism)))
+          orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+          orderless-style-dispatchers (list #'+orderless-consult-dispatch
+                                            #'orderless-affix-dispatch)))
 #+end_src
 *** vertico
 Resources:
@@ -813,13 +813,13 @@ Nice(r) bullets (replaces org-bullets)
     :config
     (setq mmm-global-mode 'auto)
 
-    (use-package mmm-jinja2
-      :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
-      :init
-      (setq mmm-global-mode 'maybe
-        mmm-parse-when-idle 't)
-
-      )
+    ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
+    ;; (use-package mmm-jinja2
+    ;;   :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
+    ;;   :init
+    ;;   (setq mmm-global-mode 'maybe
+    ;;     mmm-parse-when-idle 't)
+    ;;   )
 
     (use-package web-mode
       :config
@@ -1039,6 +1039,38 @@ Use a single-window (part. for Magit) and then close.
 #+begin_src emacs-lisp
   (use-package ibuffer-git)
 #+end_src
+** External Tools & Services
+*** aspell
+Live spell checking.
+NOTE!: This requires a local/manual installation (ie. outside emacs)!
+#+begin_src emacs-lisp
+  (setq ispell-program-name "/usr/local/bin/aspell")
+  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
+#+end_src
+*** gptel
+https://github.com/karthink/gptel
+ #+begin_src emacs-lisp
+   (require 'auth-source)
+   (defun pb/get-anthropic-api-key ()
+     "Retrieve the API key for api.anthropic.com from .authinfo."
+     (require 'auth-source)
+     (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+                  :secret)))
+       (if secret
+       secret
+     (error "No API key found for api.anthropic.com in .authinfo"))))
+
+   (use-package gptel
+     :ensure t
+     :load-path "~/.emacs.d/site-lisp/gptel/"
+     :custom
+     (gptel-model "gpt-4")
+     (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
+     ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
+     ;; :config
+     ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+     )
+ #+end_src
 *** postgresql
 #+begin_src emacs-lisp
   (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
@@ -1089,38 +1121,6 @@ Use a single-window (part. for Magit) and then close.
     (interactive)
     (wrapper-sql-connect 'postgres 'foo))
 #+end_src
-** External Tools & Services
-*** aspell
-Live spell checking.
-NOTE!: This requires a local/manual installation (ie. outside emacs)!
-#+begin_src emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
-  (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
-#+end_src
-*** gptel
-https://github.com/karthink/gptel
- #+begin_src emacs-lisp
-   (require 'auth-source)
-   (defun pb/get-anthropic-api-key ()
-     "Retrieve the API key for api.anthropic.com from .authinfo."
-     (require 'auth-source)
-     (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-                  :secret)))
-       (if secret
-       secret
-     (error "No API key found for api.anthropic.com in .authinfo"))))
-
-   (use-package gptel
-     :ensure t
-     :load-path "~/.emacs.d/site-lisp/gptel/"
-     :custom
-     (gptel-model "gpt-4")
-     (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
-     ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
-     ;; :config
-     ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-     )
- #+end_src
 *** prodigy
 [[https://www.jds.work/emacs-prodigy/][Managing Local Services in Emacs with Prodigy | JDs Work]] ([[https://github.com/rejeep/prodigy.el][GitHub - rejeep/prodigy.el]])
 #+begin_src emacs-lisp
@@ -1128,31 +1128,28 @@ https://github.com/karthink/gptel
     :ensure t)
 
   (prodigy-define-service
-    :name    "OptimusLudos-Server-Local"
-    :cwd     "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
-    :command "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/.venv/bin/flask"
-    :args    '("run" "--debug" "-h" "localhost" "-p" "5001")
-    :env     '(("DB_ENV" "local"))
+    :name          "OptimusLudos-Server-LocalDatabase"
+    :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
+    :command       "~/.local/bin/poe"
+    :args          '("dev_run_local")
     :ready-message "Ready..."
     )
 
   (prodigy-define-service
-    :name    "OptimusLudos-Server-Production"
-    :cwd     "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
-    :command "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos/.venv/bin/flask"
-    :args    '("run" "--debug" "-h" "localhost" "-p" "5001")
-    :env     '(("DB_ENV" "production"))
+    :name          "OptimusLudos-Server-ProductionDatabase"
+    :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
+    :command       "~/.local/bin/poe"
+    :args          '("dev_run_production")
     :ready-message "Ready..."
     )
 #+end_src
-*** rg (aka ripgrep)
-Use wgrep-save-all-buffers to save once changes have been committed after editing rg results buffer.
+*** ripgrep/rg
+Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been committed after editing rg results buffer.
 #+begin_src emacs-lisp
   (use-package rg
     :config
     (rg-enable-menu))
 #+end_src
-
 *** shell
 #+begin_src emacs-lisp
   (setq explicit-shell-file-name "/usr/local/bin/fish")
@@ -1164,9 +1161,8 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
 *** vterm
-"C-c C-t" to go into "buffer" mode (for copy/paste operations)
+Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
-
    (use-package vterm
      :defer t
      :config
@@ -1178,6 +1174,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
      (vterm-always-compile-module t))
 
    (defun vterm-custom-font-size()
+     "Sue me...I like to see more text in my terminal windows"
      (setq buffer-face-mode-face '(:weight light :height 180))
      (buffer-face-mode))
 
@@ -1185,7 +1182,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
      "Create a terminal buffer from the current dired location"
      (interactive)
      (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
-       (vterm (concat "vt > " shell-name))
+       (vterm (concat "@" shell-name))
        )
      )
 
@@ -1193,7 +1190,7 @@ Use wgrep-save-all-buffers to save once changes have been committed after editin
      "Create a terminal buffer based on name provided."
      (interactive)
      (let ((shell-name (read-string "Shell name: ")))
-       (vterm (concat "vt > " shell-name))
+       (vterm (concat "@" shell-name))
        )
      )
 #+end_src
