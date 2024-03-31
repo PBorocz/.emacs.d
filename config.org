@@ -471,7 +471,6 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
     (marginalia-mode))
 #+end_src
 *** orderless
-As of <2024-03-09 Sat>, can't seem to get to grips with this...
 Resources:
 - [[https://youtu.be/J0OaRy85MOo?feature=shared][Streamline Your Emacs Completions with Vertico - YouTube]]
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
