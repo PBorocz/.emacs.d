@@ -811,6 +811,10 @@ Nice(r) bullets (replaces org-bullets)
     :ensure t
     :config
     (setq mmm-global-mode 'auto)
+    (add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
 
     ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
     ;; (use-package mmm-jinja2
@@ -822,18 +826,13 @@ Nice(r) bullets (replaces org-bullets)
 
     (use-package web-mode
       :config
-      (setq web-mode-engines-alist '(("django" . "\\.html$"))
-        web-mode-engines-alist '(("django" . "\\.htmx$")))
-      )
+      (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
+      (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
+    )
 
-    :config
-    (add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
-
-    (mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
-    (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
+    ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
+    ;; (mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
+    ;; (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
     )
 
   ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
@@ -971,7 +970,8 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
     ("C-x C-g" . magit-status)
 
     :config
-    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session))
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+    (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
   (use-package ibuffer-git)
 
@@ -1137,6 +1137,22 @@ https://github.com/karthink/gptel
   (prodigy-define-service
     :name          "OptimusLudos-Server-ProductionDatabase"
     :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
+    :command       "~/.local/bin/poe"
+    :args          '("dev_run_production")
+    :ready-message "Ready..."
+    )
+
+  (prodigy-define-service
+    :name          "CoctioniLibri-Server-LocalDatabase"
+    :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
+    :command       "~/.local/bin/poe"
+    :args          '("dev_run_local")
+    :ready-message "Ready..."
+    )
+
+  (prodigy-define-service
+    :name          "CoctioniLibri-Server-ProductionDatabase"
+    :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
     :command       "~/.local/bin/poe"
     :args          '("dev_run_production")
     :ready-message "Ready..."
