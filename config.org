@@ -9,48 +9,48 @@ Grouped by general area (roughly) and then alphabetically within each area.
 *** emacs
 #+begin_src emacs-lisp
   (use-package emacs
-    :init
-    (setq
-     auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
-     blink-cursor-blinks                    5
-     blink-cursor-delay                     0.0
-     blink-cursor-interval                  0.3       ; Default is 0.5
-     blink-cursor-mode                      1
-     create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
-     column-number-mode                     t
-     debug-on-error                         nil
-     debug-on-signal                        nil
-     debug-on-quit                          nil
-     default-directory                      (concat (getenv  "HOME") "/")
-     fill-column                            96
-     font-lock-maximum-decoration           t
-     frame-title-format                     '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d")))
-     global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
-     global-font-lock-mode                  1
-     indent-tabs-mode                       nil       ; Make sure spaces are used when indenting anything!
-     inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
-     inhibit-default-init                   t
-     inhibit-splash-screen                  t
-     initial-scratch-message                nil       ; Start scratch buffers empty..
-     make-backup-files                      nil       ; Stop creating backup~ files
-     ring-bell-function                     'ignore
-     search-highlight                       t
-     sentence-end-double-space              nil       ; Period single space ends sentence
-     switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
-     truncate-lines                         t         ; Start out with NO line truncation.
-     uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
-     uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
-     uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
-     uniquify-separator                     "/"
-     use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
-     use-short-answers                      t         ; Used for emacs >= 29.
-     user-full-name                         "Peter Borocz"
-     vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
-     visible-bell                           t
-     word-wrap                              nil
-     x-stretch-cursor                       t
-     yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
-     ))
+        :init
+        (setq
+         auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
+         blink-cursor-blinks                    5
+         blink-cursor-delay                     0.0
+         blink-cursor-interval                  0.3       ; Default is 0.5
+         blink-cursor-mode                      1
+         create-lockfiles                       nil       ; We don’t need lockfiles since were ONLY single-user!
+         column-number-mode                     t
+         debug-on-error                         nil
+         debug-on-signal                        nil
+         debug-on-quit                          nil
+         default-directory                      (concat (getenv  "HOME") "/")
+         fill-column                            96
+         font-lock-maximum-decoration           t
+         frame-title-format                     '("%b " (:eval (format-time-string "%H:%M - %Y-%m-%d")))
+         global-auto-revert-non-file-buffers    t         ; Revert Dired and other buffers on changes
+         global-font-lock-mode                  1
+         indent-tabs-mode                       nil       ; Make sure spaces are used when indenting anything!
+         inhibit-compacting-font-caches         t         ; https://github.com/sabof/org-bullets/issues/11#issuecomment-439228372
+         inhibit-default-init                   t
+         inhibit-splash-screen                  t
+         initial-scratch-message                nil       ; Start scratch buffers empty..
+         make-backup-files                      nil       ; Stop creating backup~ files
+         ring-bell-function                     'ignore
+         search-highlight                       t
+         sentence-end-double-space              nil       ; Period single space ends sentence
+         switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
+         truncate-lines                         t         ; Start out with NO line truncation.
+         uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
+         uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
+         uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
+         uniquify-separator                     "/"
+         use-dialog-box                         nil       ; Don't popup UI dialogs when prompting
+         use-short-answers                      t         ; Used for emacs >= 29.
+         user-full-name                         "Peter Borocz"
+         vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
+         visible-bell                           t
+         word-wrap                              nil
+         x-stretch-cursor                       t
+         yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
+         ))
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
   ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
@@ -71,31 +71,30 @@ Grouped by general area (roughly) and then alphabetically within each area.
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
   (use-package paren
-    :defer t
-    :ensure nil ; Already part of emacs itself
-    :init
-    (setq show-paren-delay 0)  ; We want matching parens to show immediately
-    :config
-    (show-paren-mode t))
+        :defer t
+        :init
+        (setq show-paren-delay 0)  ; We want matching parens to show immediately
+        :config
+        (show-paren-mode t))
 #+end_src
 *** anzu (nicer search-replace)
 Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
   (use-package anzu
-    :config
-    (global-anzu-mode)
-    )
+        :straight t
+        :config
+        (global-anzu-mode)
+        )
 #+end_src
 *** hungry-deletes (aggressively delete white-space)
 [[https://github.com/hrehfeld/emacs-smart-hungry-delete]]
 #+begin_src emacs-lisp
   (use-package smart-hungry-delete
-    :ensure t
-    :bind (([remap delete-char]                   . smart-hungry-delete-forward-char)
-       ([remap org-delete-char]               . smart-hungry-delete-forward-char)
-       ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-       ([remap delete-backward-char]          . smart-hungry-delete-backward-char))
-    :init (smart-hungry-delete-add-default-hooks))
+        :bind (([remap delete-char]                   . smart-hungry-delete-forward-char)
+           ([remap org-delete-char]               . smart-hungry-delete-forward-char)
+           ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
+           ([remap delete-backward-char]          . smart-hungry-delete-backward-char))
+        :init (smart-hungry-delete-add-default-hooks))
 #+end_src
 *** dired (customise by dired display)
 [[https://github.com/MatthewZMD/.emacs.d]]
@@ -104,45 +103,45 @@ Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
   ;; Want ability to open a file in the same window as dired (ie. replacing dired with the file).
   (defun pb/dired-find-file-same-window ()
-    "Open file in the same window."
-    (interactive)
-    (find-file (dired-get-file-for-visit)))
+        "Open file in the same window."
+        (interactive)
+        (find-file (dired-get-file-for-visit)))
 
 
   (use-package dired
-    :ensure nil
+        :straight (:type built-in)
 
-    :config
-    (add-hook 'dired-mode-hook
-          (lambda () (setq truncate-lines t)))
+        :config
+        (add-hook 'dired-mode-hook
+                  (lambda () (setq truncate-lines t)))
 
-    :bind
-    (("C-x C-d" . dired-jump)
-     ("C-x j"   . dired-jump-other-window)
-     )
+        :bind
+        (("C-x C-d" . dired-jump)
+         ("C-x j"   . dired-jump-other-window)
+         )
 
-    :config
-    (define-key dired-mode-map (kbd "e") 'dired-toggle-read-only) ; Inline filename editing!
-    (define-key dired-mode-map (kbd "E") 'pb/dired-find-file-same-window)
-    (define-key dired-mode-map (kbd "s") 'pb/dired-sort)
-    (define-key dired-mode-map (kbd ".") 'dired-up-directory)
+        :config
+        (define-key dired-mode-map (kbd "e") 'dired-toggle-read-only) ; Inline filename editing!
+        (define-key dired-mode-map (kbd "E") 'pb/dired-find-file-same-window)
+        (define-key dired-mode-map (kbd "s") 'pb/dired-sort)
+        (define-key dired-mode-map (kbd ".") 'dired-up-directory)
 
-    (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
-      delete-by-moving-to-trash           t
-      dired-dwim-target                   t
-      dired-hide-details-mode             nil
-      dired-listing-switches              "-Al" ;; and see below for dired-sort.
-      dired-recursive-copies              'always
-      dired-recursive-deletes             'always
-      dired-use-ls-dired                  t
-      global-auto-revert-non-file-buffers t
-      insert-directory-program            "/usr/local/bin/gls"
-      wdired-allow-to-change-permissions  t
-      )
-    )
+        (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
+          delete-by-moving-to-trash           t
+          dired-dwim-target                   t
+          dired-hide-details-mode             nil
+          dired-listing-switches              "-Al" ;; and see below for dired-sort.
+          dired-recursive-copies              'always
+          dired-recursive-deletes             'always
+          dired-use-ls-dired                  t
+          global-auto-revert-non-file-buffers t
+          insert-directory-program            "/usr/local/bin/gls"
+          wdired-allow-to-change-permissions  t
+          )
+        )
 
   (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
+        (setq dired-use-ls-dired nil))
   ;;
   ;; Color our dired display by type of file/directory
   ;; https://github.com/purcell/diredfl
@@ -152,59 +151,58 @@ Highlight global-search-replace strings dynamically.
   ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
   ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
   (defun pb/dired-sort ()
-    (interactive)
-    (let (sort_by ls_arg)
-      (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
-      (cond
-       ((equal sort_by "Name") (setq ls_arg "-Alh "))
-       ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
-       ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
-       ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
-       (t (error "Sorry, that didn't work 🤦" )))
-      (dired-sort-other ls_arg )))
+        (interactive)
+        (let (sort_by ls_arg)
+          (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
+          (cond
+           ((equal sort_by "Name") (setq ls_arg "-Alh "))
+           ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
+           ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
+           ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
+           (t (error "Sorry, that didn't work 🤦" )))
+          (dired-sort-other ls_arg )))
 #+end_src
 **** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
 #+begin_src emacs-lisp
   (use-package dired-gitignore
-    :ensure t
-    :config
-    (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
-    )
+        :config
+        (define-key dired-mode-map (kbd "H") #'dired-gitignore-global-mode) ;; into your startup files. Then you will hide and show the gitignored files in a dired buffer by hitting the H key.
+        )
 #+end_src
 **** dired-subtree
 #+begin_src emacs-lisp
-  (use-package dired-subtree :ensure t
-    :after dired
-    :config
-    (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
-    (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+  (use-package dired-subtree
+        :after dired
+        :config
+        (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
+        (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
 #+end_src
 *** helpful (better help commands)
 Improve quality of most-used C-h methods.
 #+begin_src emacs-lisp
   (use-package helpful
-    :demand t
-    :bind
-    ;; Note that the built-in `describe-function' includes both functions
-    ;; and macros. `helpful-function' is functions only, so we provide
-    ;; `helpful-callable' as a drop-in replacement.
-    ("C-h f" . helpful-callable)
-    ("C-h v" . helpful-variable)
-    ("C-h k" . helpful-key)
-    ("C-h x" . helpful-command)
+        :demand t
+        :bind
+        ;; Note that the built-in `describe-function' includes both functions
+        ;; and macros. `helpful-function' is functions only, so we provide
+        ;; `helpful-callable' as a drop-in replacement.
+        ("C-h f" . helpful-callable)
+        ("C-h v" . helpful-variable)
+        ("C-h k" . helpful-key)
+        ("C-h x" . helpful-command)
 
-    ;; I also recommend the following keybindings to get the most out of helpful:
-    ;; Lookup the current symbol at point. C-c C-d is a common keybinding
-    ;; for this in lisp modes.
-    ("C-c C-d" . helpful-at-point)
+        ;; I also recommend the following keybindings to get the most out of helpful:
+        ;; Lookup the current symbol at point. C-c C-d is a common keybinding
+        ;; for this in lisp modes.
+        ("C-c C-d" . helpful-at-point)
 
-    ;; Look up *F*unctions (excludes macros).
-    ;;
-    ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
-    ;; already links to the manual, if a function is referenced there.
-    ("C-h F"  . helpful-function)
-    )
+        ;; Look up *F*unctions (excludes macros).
+        ;;
+        ;; By default, C-h F is bound to `Info-goto-emacs-command-node'. Helpful
+        ;; already links to the manual, if a function is referenced there.
+        ("C-h F"  . helpful-function)
+        )
 
 #+end_src
 *** pbcopy (allow interaction with MacOS clipboard and kill/yank ring)
@@ -214,12 +212,12 @@ Improve quality of most-used C-h methods.
 *** saveplace (save last-editing location)
 #+begin_src emacs-lisp
   (use-package saveplace
-    :config
-    (setq-default save-place t)
+        :config
+        (setq-default save-place t)
 
-    :init
-    (save-place-mode 1)
-    )
+        :init
+        (save-place-mode 1)
+        )
 #+end_src
 *** super-save (save on buffer switch)
 [[https://github.com/bbatsov/super-save][GitHub - bbatsov/super-save: Save Emacs buffers when they lose focus]]:
@@ -229,32 +227,31 @@ buffers, an Emacs frame loses focus, etc. You can think of it as both
 something that augments and replaces the standard auto-save-mode."
 #+begin_src emacs-lisp
   (use-package super-save
-    :ensure t
-    :config
-    (super-save-mode 1)
-    )
+        :config
+        (super-save-mode 1)
+        )
 #+end_src
 *** unfill
 https://github.com/purcell/unfill
  #+begin_src emacs-lisp
    (use-package unfill
-     :bind (("M-Q" . unfill-paragraph)))
+         :bind (("M-Q" . unfill-paragraph)))
 #+end_src
 *** COMMENT volatile-highlights
  #+begin_src emacs-lisp
    (use-package volatile-highlights
-     :custom
-     (volatile-highlights-mode t)
-     )
+         :custom
+         (volatile-highlights-mode t)
+         )
 #+end_src
 *** whitespace-cleanup
 #+begin_src emacs-lisp
   (use-package whitespace-cleanup-mode
-    :init
-    (setq whitespace-cleanup-mode-only-if-initially-clean nil)
-    :config
-    (global-whitespace-cleanup-mode 1)
-    )
+        :init
+        (setq whitespace-cleanup-mode-only-if-initially-clean nil)
+        :config
+        (global-whitespace-cleanup-mode 1)
+        )
 #+end_src
 *** yasnippet
 While the majority of the time, I don't rely on snippets, there are a
@@ -264,23 +261,23 @@ yasnippets for now (but make sure they don't expand within comments!)
   ;; Don't do snippet expansion within comments/docstrings for py:
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
   (defun pb/yas-no-expand-in-comment_string ()
-    (setq yas-buffer-local-condition
-      '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
-           '(require-snippet-condition . force-in-comment)
-         t)))
+        (setq yas-buffer-local-condition
+          '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
+                   '(require-snippet-condition . force-in-comment)
+                 t)))
 
   (use-package yasnippet
-     :config
-      ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
-      (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
-      ;; Use the method above to keep snippets only when we're writing actual code.
-      ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
-      (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
-      (add-hook 'python-base-mode-hook #'yas-minor-mode)
-      (add-hook 'prog-mode-hook        #'pb/yas-no-expand-in-comment_string)
-      (yas-global-mode 1)
-      (yas-reload-all)
-      )
+         :config
+          ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
+          (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+          ;; Use the method above to keep snippets only when we're writing actual code.
+          ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
+          (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
+          (add-hook 'python-base-mode-hook #'yas-minor-mode)
+          (add-hook 'prog-mode-hook        #'pb/yas-no-expand-in-comment_string)
+          (yas-global-mode 1)
+          (yas-reload-all)
+          )
 #+end_src
 ** Display
 *** fonts
@@ -306,107 +303,105 @@ Interactive font scaling:
   ;; Tools for interactive use when moving between monitor and laptop displays without restarting
   ;; (and used below to auto-set font size on startup)
   (defun pb/font-size-monitor ()
-    "Set font obo 4K monitor."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 22))
-    )
+        "Set font obo 4K monitor."
+        (interactive)
+        (set-frame-font (format pb/var-fixedwidth-font 20))
+        )
 
   (defun pb/font-size-laptop ()
-    "Set font obo laptop display."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 14))
-    )
+        "Set font obo laptop display."
+        (interactive)
+        (set-frame-font (format pb/var-fixedwidth-font 14))
+        )
 
   (setq ns-use-thin-smoothing t)
   (if (and (display-graphic-p)
-       (>= (x-display-pixel-width) 3840))
-      (progn
-    (pb/font-size-monitor)
-    )
-    (progn
-      (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
-    (pb/font-size-laptop)
-    )
-      )
-    )
+           (>= (x-display-pixel-width) 3840))
+          (progn
+        (pb/font-size-monitor)
+        )
+        (progn
+          (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
+        (pb/font-size-laptop)
+        )
+          )
+        )
 #+end_src
 *** mode-line
 Nice and simple: https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
-    :ensure t
-
-    :init
-    (custom-set-faces
-     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
-     )
-    (mood-line-mode)
-    )
+        :init
+        (custom-set-faces
+         '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+         '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
+         )
+        (mood-line-mode)
+        )
 #+end_src
 *** nerd-icons-ibuffer
 Displays nerd-icons for iBuffer types...yes, somewhat indulgent but I'm worth it ;-)
 #+begin_src emacs-lisp
   (use-package nerd-icons-ibuffer
-    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+        :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 *** pulsar
 [[https://protesilaos.com/emacs/pulsar]]
 #+begin_src emacs-lisp
   (use-package pulsar
-    :load-path "~/.emacs.d/site-lisp/pulsar/"
-    :config
-    (setq pulsar-delay  0.10
-      pulsar-face  'pulsar-yellow
-      pulsar-pulse nil)
+        :straight (pulsar :type git :host github :repo "protesilaos/pulsar")
+        :config
+          (setq pulsar-delay  0.10
+          pulsar-face  'pulsar-yellow
+          pulsar-pulse nil)
 
-    (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
-      (add-hook hook #'pulsar-mode))
+        (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
+          (add-hook hook #'pulsar-mode))
 
-    (add-hook 'next-error-hook #'pulsar-pulse-line)
+        (add-hook 'next-error-hook #'pulsar-pulse-line)
 
-    ;; ps. don't use on a global basis as it looks ugly trying to pulse my complex vterm fish prompt ;-(
-    (pulsar-global-mode 1)
-    )
+        ;; ps. don't use on a global basis as it looks ugly trying to pulse my complex vterm fish prompt ;-(
+        (pulsar-global-mode 1)
+        )
 #+end_src
 *** rainbow-delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
-    :config
-    (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-            :foreground 'unspecified
-            :inherit 'error)
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+        :config
+        (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                        :foreground 'unspecified
+                        :inherit 'error)
+        (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   (use-package prog-mode
-    :ensure nil
-    :hook ((prog-mode . rainbow-delimiters-mode)))
+        :straight (:type built-in)
+
+        :hook ((prog-mode . rainbow-delimiters-mode)))
  #+end_src
 *** rainbow-mode
 Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
 #+begin_src emacs-lisp
   (use-package rainbow-mode
-    :demand t
-    :hook (prog-mode)
-    )
+        :demand t
+        :hook (prog-mode)
+        )
 #+end_src
 *** theme
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
-    :ensure t
-    :config
-    (load-theme 'gruvbox-dark-hard t)
-    (custom-set-faces
-     '(org-level-1            ((t (:height 1.15))))
-     '(org-level-2            ((t (:height 1.10))))
-     '(org-level-3            ((t (:height 1.05))))
-     '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-     '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-     '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
-     '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
-     '(org-document-title     ((t (:height 1.5 :underline nil))))
-     )
-    )
+        :config
+        (load-theme 'gruvbox-dark-hard t)
+        (custom-set-faces
+         '(org-level-1            ((t (:height 1.15))))
+         '(org-level-2            ((t (:height 1.10))))
+         '(org-level-3            ((t (:height 1.05))))
+         '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
+         '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
+         '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
+         '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
+         '(org-document-title     ((t (:height 1.5 :underline nil))))
+         )
+        )
 #+end_src
 ** Window Management
 *** Bindings
@@ -419,14 +414,14 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 [[https://github.com/cyrus-and/zoom][GitHub - cyrus-and/zoom: Fixed and automatic balanced window layout for Emacs]]
 #+begin_src emacs-lisp
   (use-package zoom
-    :config
-    (zoom-mode 1))
+        :config
+        (zoom-mode 1))
 #+end_src
 *** zygospore
 Toggles between "current" buffer to fullscreen and existing buffer layout (and back again)
 #+begin_src emacs-lisp
   (use-package zygospore
-    :load-path "~/.emacs.d/site-lisp/zygospore.el/")
+        :load-path "~/.emacs.d/site-lisp/zygospore.el/")
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
 ** Completion Framework
@@ -434,41 +429,41 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
 #+begin_src emacs-lisp
   (use-package company
-    :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
-    :init
-    (setq company-idle-delay 0.1
-      company-minimum-prefix-length 1)
+        :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
+        :init
+        (setq company-idle-delay 0.1
+          company-minimum-prefix-length 1)
 
-    :bind (:map company-active-map
-       ("C-n" . company-select-next)
-       ("C-p" . company-select-previous))
+        :bind (:map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous))
 
-    :config
-    (global-company-mode))
+        :config
+        (global-company-mode))
 #+end_src
 *** consult
 #+begin_src emacs-lisp
   (use-package consult
-    :bind
-    ("C-x b" . consult-buffer) ;; originally 'switch-to-buffer'
-    ("M-s"   . consult-line)   ;; keep C-s for regular isearch so we can search within a line..
-    )
+        :bind
+        ("C-x b" . consult-buffer) ;; originally 'switch-to-buffer'
+        ("M-s"   . consult-line)   ;; keep C-s for regular isearch so we can search within a line..
+        )
 #+end_src
 *** marginalia
 #+begin_src emacs-lisp
   ;; Enable rich annotations using the Marginalia package
   (use-package marginalia
-    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-    ;; available in the *Completions* buffer, add it to the
-    ;; `completion-list-mode-map'.
-    :bind (:map minibuffer-local-map
-       ("M-A" . marginalia-cycle))
+        ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+        ;; available in the *Completions* buffer, add it to the
+        ;; `completion-list-mode-map'.
+        :bind (:map minibuffer-local-map
+           ("M-A" . marginalia-cycle))
 
-    ;; The :init section is always executed.
-    :init
-    ;; Marginalia must be activated in the :init section of use-package such that
-    ;; the mode gets enabled right away. Note that this forces loading the package.
-    (marginalia-mode))
+        ;; The :init section is always executed.
+        :init
+        ;; Marginalia must be activated in the :init section of use-package such that
+        ;; the mode gets enabled right away. Note that this forces loading the package.
+        (marginalia-mode))
 #+end_src
 *** orderless
 Resources:
@@ -477,74 +472,74 @@ Resources:
 #+begin_src emacs-lisp
   ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
   (use-package orderless
-    :demand t
-    :config
+        :demand t
+        :config
 
-    (defun +orderless--consult-suffix ()
-      "Regexp which matches the end of string with Consult tofu support."
-      (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
-          (format "[%c-%c]*$"
-                  consult--tofu-char
-                  (+ consult--tofu-char consult--tofu-range -1))
-        "$"))
+        (defun +orderless--consult-suffix ()
+          "Regexp which matches the end of string with Consult tofu support."
+          (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+                  (format "[%c-%c]*$"
+                                  consult--tofu-char
+                                  (+ consult--tofu-char consult--tofu-range -1))
+                "$"))
 
-    ;; Recognizes the following patterns:
-    ;; * .ext (file extension)
-    ;; * regexp$ (regexp matching at end)
-    (defun +orderless-consult-dispatch (word _index _total)
-      (cond
-       ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-       ((string-suffix-p "$" word)
-        `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
-       ;; File extensions
-       ((and (or minibuffer-completing-file-name
-                 (derived-mode-p 'eshell-mode))
-             (string-match-p "\\`\\.." word))
-        `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
+        ;; Recognizes the following patterns:
+        ;; * .ext (file extension)
+        ;; * regexp$ (regexp matching at end)
+        (defun +orderless-consult-dispatch (word _index _total)
+          (cond
+           ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+           ((string-suffix-p "$" word)
+                `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
+           ;; File extensions
+           ((and (or minibuffer-completing-file-name
+                                 (derived-mode-p 'eshell-mode))
+                         (string-match-p "\\`\\.." word))
+                `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
-    ;; Define orderless style with initialism by default
-    (orderless-define-completion-style +orderless-with-initialism
-      (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+        ;; Define orderless style with initialism by default
+        (orderless-define-completion-style +orderless-with-initialism
+          (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
 
-    ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
-    ;; There are many details to consider, but the following configurations all work well.
-    ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
-    ;; special styles for special completion categories, e.g., partial-completion for files.
-    ;;
-    ;; 1. (setq completion-styles '(orderless))
-    ;; This configuration results in a very coherent completion experience,
-    ;; since orderless is used always and exclusively. But it may not work
-    ;; in all scenarios. Prefix expansion with TAB is not possible.
-    ;;
-    ;; 2. (setq completion-styles '(substring orderless))
-    ;; By trying substring before orderless, TAB expansion is possible.
-    ;; The downside is that you can observe the switch from substring to orderless
-    ;; during completion, less coherent.
-    ;;
-    ;; 3. (setq completion-styles '(orderless basic))
-    ;; Certain dynamic completion tables (completion-table-dynamic)
-    ;; do not work properly with orderless. One can add basic as a fallback.
-    ;; Basic will only be used when orderless fails, which happens only for
-    ;; these special tables.
-    ;;
-    ;; 4. (setq completion-styles '(substring orderless basic))
-    ;; Combine substring, orderless and basic.
-    ;;
-    (setq completion-styles '(substring orderless basic)
-          completion-category-defaults nil
-          ;; Enable partial-completion for files.
-          ;; Either give orderless precedence or partial-completion.
-          ;; Note that completion-category-overrides is not really an override,
-          ;; but rather prepended to the default completion-styles.
-          ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-          completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-                                          ;; enable initialism by default for symbols
-                                          (command (styles +orderless-with-initialism))
-                                          (variable (styles +orderless-with-initialism))
-                                          (symbol (styles +orderless-with-initialism)))
-          orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-          orderless-style-dispatchers (list #'+orderless-consult-dispatch
-                                            #'orderless-affix-dispatch)))
+        ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
+        ;; There are many details to consider, but the following configurations all work well.
+        ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
+        ;; special styles for special completion categories, e.g., partial-completion for files.
+        ;;
+        ;; 1. (setq completion-styles '(orderless))
+        ;; This configuration results in a very coherent completion experience,
+        ;; since orderless is used always and exclusively. But it may not work
+        ;; in all scenarios. Prefix expansion with TAB is not possible.
+        ;;
+        ;; 2. (setq completion-styles '(substring orderless))
+        ;; By trying substring before orderless, TAB expansion is possible.
+        ;; The downside is that you can observe the switch from substring to orderless
+        ;; during completion, less coherent.
+        ;;
+        ;; 3. (setq completion-styles '(orderless basic))
+        ;; Certain dynamic completion tables (completion-table-dynamic)
+        ;; do not work properly with orderless. One can add basic as a fallback.
+        ;; Basic will only be used when orderless fails, which happens only for
+        ;; these special tables.
+        ;;
+        ;; 4. (setq completion-styles '(substring orderless basic))
+        ;; Combine substring, orderless and basic.
+        ;;
+        (setq completion-styles '(substring orderless basic)
+                  completion-category-defaults nil
+                  ;; Enable partial-completion for files.
+                  ;; Either give orderless precedence or partial-completion.
+                  ;; Note that completion-category-overrides is not really an override,
+                  ;; but rather prepended to the default completion-styles.
+                  ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+                  completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+                                                                                  ;; enable initialism by default for symbols
+                                                                                  (command (styles +orderless-with-initialism))
+                                                                                  (variable (styles +orderless-with-initialism))
+                                                                                  (symbol (styles +orderless-with-initialism)))
+                  orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+                  orderless-style-dispatchers (list #'+orderless-consult-dispatch
+                                                                                        #'orderless-affix-dispatch)))
 #+end_src
 *** vertico
 Resources:
@@ -552,15 +547,14 @@ Resources:
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
 #+begin_src emacs-lisp
   (use-package vertico
-    :ensure t
-    :config
-    (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-      vertico-scroll-margin 0
-      vertico-resize        nil
-      vertico-count         15)
-    :init
-    (vertico-mode)
-    )
+        :config
+        (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+          vertico-scroll-margin 0
+          vertico-resize        nil
+          vertico-count         15)
+        :init
+        (vertico-mode)
+        )
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
@@ -574,61 +568,61 @@ Resources:
 *** css
 #+begin_src emacs-lisp
   (use-package css-mode
-    :custom
-    (css-indent-offset 2))
+        :custom
+        (css-indent-offset 2))
 #+end_src
 *** csv
 #+begin_src emacs-lisp
   (use-package csv-mode
-    :init
-    (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
-    (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
+        :init
+        (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
+        (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
   )
 #+end_src
 *** graphviz-dot-mode
 #+begin_src emacs-lisp
   (use-package graphviz-dot-mode
-    :config
-    (setq graphviz-dot-indent-width 4))
+        :config
+        (setq graphviz-dot-indent-width 4))
 #+end_src
 *** justfile
 #+begin_src emacs-lisp
   (use-package just-mode
-    :config
-    (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
-    )
+        :config
+        (add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
+        )
 #+end_src
 *** markdown
 **** markdown
 Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
   (use-package markdown-mode
-    :mode ("*\\.md\\'" . gfm-mode)
+        :mode ("*\\.md\\'" . gfm-mode)
 
-    :init
-    (setq
-     markdown-command      "multimarkdown"
-     markdown-open-command "/usr/local/bin/mark") ;; Opens application -> Marked2
+        :init
+        (setq
+         markdown-command      "multimarkdown"
+         markdown-open-command "/usr/local/bin/mark") ;; Opens application -> Marked2
 
-    :config
-    (add-hook 'markdown-mode-hook 'visual-line-mode)
-    (add-hook 'markdown-mode-hook 'pb/markdown-config)
-    ;;(add-hook 'markdown-mode-hook 'pb/variable-width-face-mode)
-    )
+        :config
+        (add-hook 'markdown-mode-hook 'visual-line-mode)
+        (add-hook 'markdown-mode-hook 'pb/markdown-config)
+        ;;(add-hook 'markdown-mode-hook 'pb/variable-width-face-mode)
+        )
 
   (defun pb/markdown-config ()
-    (local-set-key (kbd "M-q") 'ignore))
+        (local-set-key (kbd "M-q") 'ignore))
 #+end_src
 **** olivetti
 https://github.com/rnkn/olivetti
 #+begin_src emacs-lisp
   (use-package olivetti
-    :init
-    (setq olivetti-body-width 0.66)
+        :init
+        (setq olivetti-body-width 0.66)
 
-    :hook
-    ((markdown-mode . olivetti-mode))
-    )
+        :hook
+        ((markdown-mode . olivetti-mode))
+        )
 #+end_src
 *** org
 **** org
@@ -637,42 +631,39 @@ https://github.com/rnkn/olivetti
   ;; Packages
   ;; -----------------------------------------------------------------------------
   (use-package org
-    :ensure nil
+        :straight (:type built-in)
+        :bind (:map org-mode-map
+                ("C-M-<return>" . org-insert-subheading)
+                ("C-c l"        . org-store-link)
+                ("C-c L"        . org-cliplink)
+                ("C-c a"        . org-agenda)
+                ("C-c |"        . org-table-create-or-convert-from-region)
+                ("C-c C-<"      . org-promote-subtree)
+                ("C-c C->"      . org-demote-subtree)
+                ("C-<right>"    . org-metaright)
+                ("C-<left>"     . org-metaleft)
+                )
 
-    :defer nil
+        :config
+        (add-hook 'text-mode-hook #'visual-line-mode)
+        (visual-line-mode 1)
 
-    :bind (:map org-mode-map
-        ("C-M-<return>" . org-insert-subheading)
-        ("C-c l"        . org-store-link)
-        ("C-c L"        . org-cliplink)
-        ("C-c a"        . org-agenda)
-        ("C-c |"        . org-table-create-or-convert-from-region)
-        ("C-c C-<"      . org-promote-subtree)
-        ("C-c C->"      . org-demote-subtree)
-        ("C-<right>"    . org-metaright)
-        ("C-<left>"     . org-metaleft)
+        ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
+        (org-link-set-parameters
+         "copy"
+         :follow (lambda (link) (kill-new link))
+         :export (lambda (_ desc &rest _) desc))
+
+        :init
+        (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
+                  org-catch-invisible-edits 'show-and-error
+                  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+                  org-hide-leading-stars    t
+                  org-return-follows-link   t
+                  org-startup-folded        t
+                  org-startup-indented      t
+                  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
         )
-
-    :config
-    (add-hook 'text-mode-hook #'visual-line-mode)
-    (visual-line-mode 1)
-
-    ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
-    (org-link-set-parameters
-     "copy"
-     :follow (lambda (link) (kill-new link))
-     :export (lambda (_ desc &rest _) desc))
-
-    :init
-    (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
-          org-catch-invisible-edits 'show-and-error
-          org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-          org-hide-leading-stars    t
-          org-return-follows-link   t
-          org-startup-folded        t
-          org-startup-indented      t
-          org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
-    )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 
@@ -685,21 +676,21 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords '((sequence
-                 "TODO(t)"
-                 "WAIT(a)"
-                 "HOLD(h)"
-                 "WORK(w)"
-                 "|"
-                 "DONE(x)"
-                 )))
+                                 "TODO(t)"
+                                 "WAIT(a)"
+                                 "HOLD(h)"
+                                 "WORK(w)"
+                                 "|"
+                                 "DONE(x)"
+                                 )))
 
   (setq org-todo-keyword-faces
-    '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
-      ("WORK" . "light green")
-      ("HOLD" . "systemBrownColor")
-      ("WAIT" . "systemBrownColor")
-      ("DONE" . "gray30")
-      ))
+        '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+          ("WORK" . "light green")
+          ("HOLD" . "systemBrownColor")
+          ("WAIT" . "systemBrownColor")
+          ("DONE" . "gray30")
+          ))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   (setq org-fontify-todo-headline nil)
@@ -715,11 +706,11 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setq org-capture-templates
-    '(
-      ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-      ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-      ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-      ))
+        '(
+          ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+          ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+          ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+          ))
 
   ;; Insert date-time stamp like org but everywhere.
   (global-set-key (kbd "C-c .") 'org-time-stamp)
@@ -730,69 +721,71 @@ https://github.com/rnkn/olivetti
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-     (js         . t)
-     (python     . t)
-     (shell      . t)
-     (sqlite     . t)
-     ))
+         (js         . t)
+         (python     . t)
+         (shell      . t)
+         (sqlite     . t)
+         ))
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 **** org-appear
  #+begin_src emacs-lisp
    (use-package org-appear
-       :hook (org-mode . org-appear-mode))
+         :hook
+         (org-mode . org-appear-mode)
+         )
  #+end_src
 **** org-linker
 [[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][GitHub - jcguu95/org-linker.el: Attaching Files in Org-Mode Using UUIDs. Flex...]]
  #+begin_src emacs-lisp
    (defun pb/org-linker/generate-id ()
-     "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
-     (let ((current-date (format-time-string "%Y%m%d"))
-       (id (replace-regexp-in-string "[[:space:]\n]*$" ""
-                       (shell-command-to-string "openssl rand -hex 6"))))
-       (format "%s-%s" current-date id)))
+         "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
+         (let ((current-date (format-time-string "%Y%m%d"))
+           (id (replace-regexp-in-string "[[:space:]\n]*$" ""
+                                           (shell-command-to-string "openssl rand -hex 6"))))
+           (format "%s-%s" current-date id)))
 
    (require 'org-linker "~/.emacs.d/site-lisp/org-linker.el/org-linker.el")
    (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
-     org-linker/file-size               999999
-     org-linker/uuid-generator-function 'pb/org-linker/generate-id
-     org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
-     )
+         org-linker/file-size               999999
+         org-linker/uuid-generator-function 'pb/org-linker/generate-id
+         org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
+         )
  #+end_src
 **** org-cliplink
 Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
  #+begin_src emacs-lisp
    (use-package org-cliplink
-     :after 'org)
+         :after 'org)
  #+end_src
 **** org-superstar
 Nice(r) bullets (replaces org-bullets)
  #+begin_src emacs-lisp
    (use-package org-superstar
-     :config
-     (setq org-superstar-special-todo-items t) ;; Set our TODO items to have a 'checkbox' icon
-     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+         :config
+         (setq org-superstar-special-todo-items t) ;; Set our TODO items to have a 'checkbox' icon
+         (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 
    (setq org-superstar-item-bullet-alist
-     '((?* . ?•)
-       (?+ . ?➤)
-       (?- . ?•)))
+         '((?* . ?•)
+           (?+ . ?➤)
+           (?- . ?•)))
  #+end_src
 *** pdf
 #+begin_src emacs-lisp
   (use-package pdf-tools
-    :config
-    (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
-    )
+        :config
+        (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+        )
   (pdf-tools-install)
 #+end_src
 *** text-mode
 #+begin_src emacs-lisp
   (setq text-mode-hook
-    '(lambda ()
-       (auto-fill-mode 0)
-       (setq tab-width 4)
-       ))
+        '(lambda ()
+           (auto-fill-mode 0)
+           (setq tab-width 4)
+           ))
   (setq default-major-mode 'text-mode)
 #+end_src
 *** toml-mode
@@ -802,46 +795,45 @@ Nice(r) bullets (replaces org-bullets)
 *** yaml-mode
 #+begin_src emacs-lisp
   (use-package yaml-pro
-     :hook
-     (yaml-mode . yaml-pro-ts-mode))
+         :hook
+         (yaml-mode . yaml-pro-ts-mode))
 #+end_src
 *** web/mmm-mode
 #+begin_src emacs-lisp
   (use-package mmm-mode
-    :ensure t
-    :config
-    (setq mmm-global-mode 'auto)
-    (add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
+        :config
+        (setq mmm-global-mode 'auto)
+        (add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
+        (add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
+        (add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
+        (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
 
-    ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
-    ;; (use-package mmm-jinja2
-    ;;   :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
-    ;;   :init
-    ;;   (setq mmm-global-mode 'maybe
-    ;;     mmm-parse-when-idle 't)
-    ;;   )
+        ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
+        ;; (use-package mmm-jinja2
+        ;;   :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
+        ;;   :init
+        ;;   (setq mmm-global-mode 'maybe
+        ;;     mmm-parse-when-idle 't)
+        ;;   )
 
-    (use-package web-mode
-      :config
-      (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
-      (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
-    )
+        (use-package web-mode
+          :config
+          (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
+          (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
+        )
 
-    ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
-    ;; (mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
-    ;; (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
-    )
+        ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
+        ;; (mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
+        ;; (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
+        )
 
   ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
   (defun pb-web-mode-hook ()
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-css-indent-offset    2)
-    (setq web-mode-code-indent-offset   2)
-    (setq web-mode-indent-style         2)
-    )
+        (setq web-mode-markup-indent-offset 2)
+        (setq web-mode-css-indent-offset    2)
+        (setq web-mode-code-indent-offset   2)
+        (setq web-mode-indent-style         2)
+        )
   (add-hook 'web-mode-hook 'pb-web-mode-hook)
 #+end_src
 *** tree-sitter
@@ -849,24 +841,24 @@ Nice(r) bullets (replaces org-bullets)
   (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
 #+begin_src emacs-lisp
   (setq treesit-language-source-alist
-    '(
-      (bash       "https://github.com/tree-sitter/tree-sitter-bash")
-      (cmake      "https://github.com/uyha/tree-sitter-cmake")
-      (css        "https://github.com/tree-sitter/tree-sitter-css")
-      (html       "https://github.com/tree-sitter/tree-sitter-html")
-      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-      (json       "https://github.com/tree-sitter/tree-sitter-json")
-      (make       "https://github.com/alemuller/tree-sitter-make")
-      (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
-      (python     "https://github.com/tree-sitter/tree-sitter-python")
-      (toml       "https://github.com/tree-sitter/tree-sitter-toml")
-      (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
-    )
+        '(
+          (bash       "https://github.com/tree-sitter/tree-sitter-bash")
+          (cmake      "https://github.com/uyha/tree-sitter-cmake")
+          (css        "https://github.com/tree-sitter/tree-sitter-css")
+          (html       "https://github.com/tree-sitter/tree-sitter-html")
+          (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+          (json       "https://github.com/tree-sitter/tree-sitter-json")
+          (make       "https://github.com/alemuller/tree-sitter-make")
+          (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+          (python     "https://github.com/tree-sitter/tree-sitter-python")
+          (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+          (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
+        )
 
   (use-package treesit-auto
-    :config
-    (global-treesit-auto-mode)
-    )
+        :config
+        (global-treesit-auto-mode)
+        )
 #+end_src
 ** Code Development
 *** eglot
@@ -877,125 +869,125 @@ Nice(r) bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package eglot
-    :commands
-    (eglot eglot-ensure)
+        :commands
+        (eglot eglot-ensure)
 
-    :hook
-    ((python-ts-mode yaml-ts-mode) . eglot-ensure)
+        :hook
+        ((python-ts-mode yaml-ts-mode) . eglot-ensure)
 
-    :bind
-    (:map eglot-mode-map
-      ("C-c e a" . eglot-code-actions)
-      ("C-c e f" . eglot-format)
-      ("C-c e r" . eglot-rename)
-      ("C-c f d" . flymake-show-project-diagnostics)
-      ("C-c f n" . flymake-goto-next-error)
-      ("C-c f p" . flymake-goto-prev-error)
-      ("C-c x a" . xref-find-apropos)
-      ("C-c x f" . xref-find-definitions)
-      ("C-c x r" . xref-find-references))
+        :bind
+        (:map eglot-mode-map
+          ("C-c e a" . eglot-code-actions)
+          ("C-c e f" . eglot-format)
+          ("C-c e r" . eglot-rename)
+          ("C-c f d" . flymake-show-project-diagnostics)
+          ("C-c f n" . flymake-goto-next-error)
+          ("C-c f p" . flymake-goto-prev-error)
+          ("C-c x a" . xref-find-apropos)
+          ("C-c x f" . xref-find-definitions)
+          ("C-c x r" . xref-find-references))
 
-    :config
-    ;; "Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
-    ;; However, modern machines can take on a lot more. Set it to 1MB which is equal to the limit
-    ;; defined in /proc/sys/fs/pipe-max-size/."
-    ;;
-    ;; Refs:
-    ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6 Ref:
-    ;; https://github.com/jwiegley/dot-emacs/blob/2b4c57963413cb80e8716f014f25eaf4850c369c/init.org#eglot
-    (setq read-process-output-max (* 1024 1024))
+        :config
+        ;; "Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
+        ;; However, modern machines can take on a lot more. Set it to 1MB which is equal to the limit
+        ;; defined in /proc/sys/fs/pipe-max-size/."
+        ;;
+        ;; Refs:
+        ;; https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6 Ref:
+        ;; https://github.com/jwiegley/dot-emacs/blob/2b4c57963413cb80e8716f014f25eaf4850c369c/init.org#eglot
+        (setq read-process-output-max (* 1024 1024))
 
-    :custom
-    (eglot-autoshutdown t)
-    (eglot-menu-string "eglot")
-    (eglot-ignored-server-capabilities '(:documentHighlightProvider))
-    )
+        :custom
+        (eglot-autoshutdown t)
+        (eglot-menu-string "eglot")
+        (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+        )
 
   (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-         '(python-ts-mode . ("~/.local/bin/ruff-lsp"))))
+        (add-to-list 'eglot-server-programs
+                 '(python-ts-mode . ("~/.local/bin/ruff-lsp"))))
 
 #+end_src
 **** pyvenv-auto
 #+begin_src emacs-lisp
   ;; ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package pyvenv-auto
-    :custom
-    (pyvenv-auto-mode t))
+        :custom
+        (pyvenv-auto-mode t))
 #+end_src
 **** treesit-auto
 [[https://github.com/renzmann/treesit-auto][GitHub - renzmann/treesit-auto: Automatic installation, usage, and fallback f...]]
 #+begin_src emacs-lisp
   (use-package treesit-auto
-    :config
-    (global-treesit-auto-mode)
-    (setq treesit-auto-install t)
-    )
+        :config
+        (global-treesit-auto-mode)
+        (setq treesit-auto-install t)
+        )
 #+end_src
 *** envrc
 [[https://github.com/purcell/envrc]]
 #+begin_src emacs-lisp
   (use-package envrc
-    :config
-    (envrc-global-mode)
-    )
+        :config
+        (envrc-global-mode)
+        )
 #+end_src
 *** format-all
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
   (use-package format-all
-    :commands
-    (format-all-mode format-all-region-or-buffer)
+        :commands
+        (format-all-mode format-all-region-or-buffer)
 
-    :hook
-    ((python-mode python-ts-mode) . (lambda ()
-                      (setq format-all-formatters '(("Python" ruff)))))
+        :hook
+        ((python-mode python-ts-mode) . (lambda ()
+                                          (setq format-all-formatters '(("Python" ruff)))))
 
-    :config
-    (format-all-ensure-formatter)
+        :config
+        (format-all-ensure-formatter)
 
-    (setq-default format-all-formatters '(("Python" ruff)))
+        (setq-default format-all-formatters '(("Python" ruff)))
 
-    (global-set-key (kbd "M-F") #'format-all-buffer)
+        (global-set-key (kbd "M-F") #'format-all-buffer)
 
-    )
+        )
 #+end_src
 *** magit & git
 **** magit
 #+begin_src emacs-lisp
   (use-package magit
-    :demand t
+        :demand t
 
-    :bind
-    ("C-x C-g" . magit-status)
+        :bind
+        ("C-x C-g" . magit-status)
 
-    :config
-    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-    (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+        :config
+        (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+        (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
   (use-package ibuffer-git)
 
   (use-package magit-todos
-    :after magit
+        :after magit
 
-    :config
-    (setq magit-show-long-lines-warning nil)
-    (magit-todos-mode 1)
+        :config
+        (setq magit-show-long-lines-warning nil)
+        (magit-todos-mode 1)
 
-    :load-path "~/.emacs.d/site-lisp/magit-todos/"
-    )
+        :load-path "~/.emacs.d/site-lisp/magit-todos/"
+        )
 
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
-    (window-configuration-to-register :magit-fullscreen)
-    ad-do-it
-    (delete-other-windows))
+        (window-configuration-to-register :magit-fullscreen)
+        ad-do-it
+        (delete-other-windows))
 
   (defun magit-quit-session ()
-    "Restores the previous window configuration and kills the magit buffer"
-    (interactive)
-    (kill-buffer)
-    (jump-to-register :magit-fullscreen))
+        "Restores the previous window configuration and kills the magit buffer"
+        (interactive)
+        (kill-buffer)
+        (jump-to-register :magit-fullscreen))
 
 
 #+end_src
@@ -1003,21 +995,21 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 Use the wonderful delta diff tool in magit diff display.
 #+begin_src emacs-lisp
   (use-package magit-delta
-    :hook (magit-mode . magit-delta-mode))
+        :hook (magit-mode . magit-delta-mode))
 #+end_src
 **** magit-todos
 #+begin_src emacs-lisp
   (use-package magit-todos
-    :after magit
-    :config (magit-todos-mode 1)
-    :load-path "~/.emacs.d/site-lisp/magit-todos/"
-    )
+        :after magit
+        :config (magit-todos-mode 1)
+        :load-path "~/.emacs.d/site-lisp/magit-todos/"
+        )
 #+end_src
 **** full-frame
 Use a single-window (part. for Magit) and then close.
 #+begin_src emacs-lisp
   (use-package fullframe
-    :config (fullframe magit-status magit-mode-quit-window))
+        :config (fullframe magit-status magit-mode-quit-window))
 #+end_src
 **** git-timemachine
  #+begin_src emacs-lisp
@@ -1026,13 +1018,13 @@ Use a single-window (part. for Magit) and then close.
 **** git-gutter
  #+begin_src emacs-lisp
    (use-package git-gutter
-     :init
-     (global-git-gutter-mode +1)
+         :init
+         (global-git-gutter-mode +1)
 
-     :config
-     (setq git-gutter:disabled-modes '(org-mode image-mode))
+         :config
+         (setq git-gutter:disabled-modes '(org-mode image-mode))
 
-     )
+         )
  #+end_src
 **** ibuffer-git
 #+begin_src emacs-lisp
@@ -1051,24 +1043,23 @@ https://github.com/karthink/gptel
  #+begin_src emacs-lisp
    (require 'auth-source)
    (defun pb/get-anthropic-api-key ()
-     "Retrieve the API key for api.anthropic.com from .authinfo."
-     (require 'auth-source)
-     (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-                  :secret)))
-       (if secret
-       secret
-     (error "No API key found for api.anthropic.com in .authinfo"))))
+         "Retrieve the API key for api.anthropic.com from .authinfo."
+         (require 'auth-source)
+         (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+                                  :secret)))
+           (if secret
+           secret
+         (error "No API key found for api.anthropic.com in .authinfo"))))
 
    (use-package gptel
-     :ensure t
-     :load-path "~/.emacs.d/site-lisp/gptel/"
-     :custom
-     (gptel-model "gpt-4")
-     (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
-     ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
-     ;; :config
-     ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-     )
+         :load-path "~/.emacs.d/site-lisp/gptel/"
+         :custom
+         (gptel-model "gpt-4")
+         (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
+         ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
+         ;; :config
+         ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+         )
  #+end_src
 *** postgresql
 #+begin_src emacs-lisp
@@ -1079,91 +1070,90 @@ https://github.com/karthink/gptel
   ; Execute this after opening up SQL to get a scratch
   ; buffer from which to submit sql with C-c C-b
   (defun pgsql-scratch ()
-    (interactive)
-    (switch-to-buffer "*scratch*")
-    (sql-mode)
-    (sql-set-product "postgres")
-    (sql-set-sqli-buffer)
-    (sql-rename-buffer)
-    )
+        (interactive)
+        (switch-to-buffer "*scratch*")
+        (sql-mode)
+        (sql-set-product "postgres")
+        (sql-set-sqli-buffer)
+        (sql-rename-buffer)
+        )
 
   (defun upcase-sql-keywords ()
-    (interactive)
-    (save-excursion
-      (dolist (keywords sql-mode-postgres-font-lock-keywords)
-    (goto-char (point-min))
-    (while (re-search-forward (car keywords) nil t)
-      (goto-char (+ 1 (match-beginning 0)))
-      (when (eql font-lock-keyword-face (face-at-point))
-        (backward-char)
-        (upcase-word 1)
-        (forward-char))))))
+        (interactive)
+        (save-excursion
+          (dolist (keywords sql-mode-postgres-font-lock-keywords)
+        (goto-char (point-min))
+        (while (re-search-forward (car keywords) nil t)
+          (goto-char (+ 1 (match-beginning 0)))
+          (when (eql font-lock-keyword-face (face-at-point))
+                (backward-char)
+                (upcase-word 1)
+                (forward-char))))))
 
   (setq sql-connection-alist
-      '(
-    (foo
-    (sql-product 'postgres)
-    (sql-port 5432)
-    (sql-server "localhost")
-    (sql-user "--sorry, getme from environment--")
-    (sql-password "--sorry, getme from environment also--")
-    (sql-database "db-foo"))
-       )
-      )
+          '(
+        (foo
+        (sql-product 'postgres)
+        (sql-port 5432)
+        (sql-server "localhost")
+        (sql-user "--sorry, getme from environment--")
+        (sql-password "--sorry, getme from environment also--")
+        (sql-database "db-foo"))
+           )
+          )
 
   (defun wrapper-sql-connect (product connection)
-    (setq sql-product product)
-    (sql-connect connection))
+        (setq sql-product product)
+        (sql-connect connection))
 
   ; Startup wrappers
   (defun sql-environment-foo ()
-    (interactive)
-    (wrapper-sql-connect 'postgres 'foo))
+        (interactive)
+        (wrapper-sql-connect 'postgres 'foo))
 #+end_src
 *** prodigy
 [[https://www.jds.work/emacs-prodigy/][Managing Local Services in Emacs with Prodigy | JDs Work]] ([[https://github.com/rejeep/prodigy.el][GitHub - rejeep/prodigy.el]])
 #+begin_src emacs-lisp
-  (use-package prodigy
-    :ensure t)
+  (use-package prodigy)
 
   (prodigy-define-service
-    :name          "OptimusLudos-Server-LocalDatabase"
-    :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
-    :command       "~/.local/bin/poe"
-    :args          '("dev_run_local")
-    :ready-message "Ready..."
-    )
+        :name          "OptimusLudos-Server-LocalDatabase"
+        :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
+        :command       "~/.local/bin/poe"
+        :args          '("dev_run_local")
+        :ready-message "Ready..."
+        )
 
   (prodigy-define-service
-    :name          "OptimusLudos-Server-ProductionDatabase"
-    :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
-    :command       "~/.local/bin/poe"
-    :args          '("dev_run_production")
-    :ready-message "Ready..."
-    )
+        :name          "OptimusLudos-Server-ProductionDatabase"
+        :cwd           "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"
+        :command       "~/.local/bin/poe"
+        :args          '("dev_run_production")
+        :ready-message "Ready..."
+        )
 
   (prodigy-define-service
-    :name          "CoctioniLibri-Server-LocalDatabase"
-    :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
-    :command       "~/.local/bin/poe"
-    :args          '("dev_run_local")
-    :ready-message "Ready..."
-    )
+        :name          "CoctioniLibri-Server-LocalDatabase"
+        :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
+        :command       "~/.local/bin/poe"
+        :args          '("dev_run_local")
+        :ready-message "Ready..."
+        )
 
   (prodigy-define-service
-    :name          "CoctioniLibri-Server-ProductionDatabase"
-    :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
-    :command       "~/.local/bin/poe"
-    :args          '("dev_run_production")
-    :ready-message "Ready..."
-    )
+        :name          "CoctioniLibri-Server-ProductionDatabase"
+        :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
+        :command       "~/.local/bin/poe"
+        :args          '("dev_run_production")
+        :ready-message "Ready..."
+        )
 #+end_src
 *** ripgrep/rg
 Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been committed after editing rg results buffer.
 #+begin_src emacs-lisp
   (use-package rg
-    :config
-    (rg-enable-menu))
+        :config
+        (rg-enable-menu))
 #+end_src
 *** shell
 #+begin_src emacs-lisp
@@ -1179,71 +1169,71 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
    (use-package vterm
-     :defer t
-     :config
-     (setq vterm-shell "/usr/local/bin/fish")
-     :hook
-     ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-      (vterm-mode . vterm-custom-font-size))
-     :custom
-     (vterm-always-compile-module t))
+         :defer t
+         :config
+         (setq vterm-shell "/usr/local/bin/fish")
+         :hook
+         ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+          (vterm-mode . vterm-custom-font-size))
+         :custom
+         (vterm-always-compile-module t))
 
    (defun vterm-custom-font-size()
-     "Sue me...I like to see more text in my terminal windows"
-     (setq buffer-face-mode-face '(:weight light :height 180))
-     (buffer-face-mode))
+         "Sue me...I like to see more text in my terminal windows."
+         (setq buffer-face-mode-face '(:weight light :height 180))
+         (buffer-face-mode))
 
    (defun pb/vterm-current-directory ()
-     "Create a terminal buffer from the current dired location"
-     (interactive)
-     (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
-       (vterm (concat "@" shell-name))
-       )
-     )
+         "Create a terminal buffer from the current directory."
+         (interactive)
+         (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
+           (vterm (concat "@" shell-name))
+           )
+         )
 
    (defun pb/vterm-by-name ()
-     "Create a terminal buffer based on name provided."
-     (interactive)
-     (let ((shell-name (read-string "Shell name: ")))
-       (vterm (concat "@" shell-name))
-       )
-     )
+         "Create a terminal buffer based on name provided."
+         (interactive)
+         (let ((shell-name (read-string "Shell name: ")))
+           (vterm (concat "@" shell-name))
+           )
+         )
 #+end_src
 * Custom Commands
-  These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!). Listed in no particular order:
+These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!). Listed in no particular order:
 ** Change case of text
 [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
 #+begin_src emacs-lisp
   (defun pb/toggle-letter-case ()
-    "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
-    (interactive)
-    (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
-      (if (region-active-p)
-      (setq p1 (region-beginning) p2 (region-end))
-    (let ((bds (bounds-of-thing-at-point 'word) ) )
-      (setq p1 (car bds) p2 (cdr bds)) ) )
+        "Toggle the letter case of current word or text selection, toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
+        (interactive)
+        (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
+          (if (region-active-p)
+          (setq p1 (region-beginning) p2 (region-end))
+        (let ((bds (bounds-of-thing-at-point 'word) ) )
+          (setq p1 (car bds) p2 (cdr bds)) ) )
 
-      (when (not (eq last-command this-command))
-    (save-excursion
-      (goto-char p1)
-      (cond
-       ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
-       ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
-       ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
-       ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
-       ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
-       (t (put this-command 'state "all lower") ) ) )
-    )
+          (when (not (eq last-command this-command))
+        (save-excursion
+          (goto-char p1)
+          (cond
+           ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
+           ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
+           ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
+           ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
+           ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
+           (t (put this-command 'state "all lower") ) ) )
+        )
 
-      (cond
-       ((string= "all lower" (get this-command 'state))
-    (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
-       ((string= "init caps" (get this-command 'state))
-    (upcase-region p1 p2) (put this-command 'state "all caps"))
-       ((string= "all caps" (get this-command 'state))
-    (downcase-region p1 p2) (put this-command 'state "all lower")) )
-      )
-    )
+          (cond
+           ((string= "all lower" (get this-command 'state))
+        (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
+           ((string= "init caps" (get this-command 'state))
+        (upcase-region p1 p2) (put this-command 'state "all caps"))
+           ((string= "all caps" (get this-command 'state))
+        (downcase-region p1 p2) (put this-command 'state "all lower")) )
+          )
+        )
 
   ;; Turn these off so they don't interfere with our custom method
   (put 'downcase-region 'disabled nil)
@@ -1255,9 +1245,9 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
 Ctrl-a goes to *logical beginning* of line first before a second invocation takes point to *physical* beginning.
 #+begin_src emacs-lisp
   (defun pb/key-back-to-indentation-or-beginning ()
-    (interactive)
-    (if (= (point) (progn (back-to-indentation) (point)))
-    (beginning-of-line)))
+        (interactive)
+        (if (= (point) (progn (back-to-indentation) (point)))
+        (beginning-of-line)))
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 #+end_src
 ** Smarter C-w (backward word kill)
@@ -1265,23 +1255,23 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
 #+begin_src emacs-lisp
   ;; Here's a better C-w (kill region if active, otherwise kill backward word)
   (defun pb/kill-region-or-backward-word ()
-    (interactive)
-    (if (region-active-p)
-    (kill-region (region-beginning) (region-end))
-      (backward-kill-word 1)))
+        (interactive)
+        (if (region-active-p)
+        (kill-region (region-beginning) (region-end))
+          (backward-kill-word 1)))
   (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
 #+end_src
 ** Better mark-word
 [[https://www.emacs.dyerdwelling.family/emacs/20231209092556-emacs--redefining-mark-paragraph-and-mark-word/]]
 #+begin_src emacs-lisp
   (defun pb/mark-word()
-    "redefinition of mark-word"
-    (interactive)
-    (if (not (looking-at "\\<"))
-      (backward-word))
-    (push-mark)
-    (forward-word)
-    (setq mark-active t))
+        "redefinition of mark-word"
+        (interactive)
+        (if (not (looking-at "\\<"))
+          (backward-word))
+        (push-mark)
+        (forward-word)
+        (setq mark-active t))
 
   ;; Override existing keymapping
   (global-set-key (kbd "M-@") 'pb/mark-word)
@@ -1290,20 +1280,20 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
 https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (defun pb/toggle-split-direction ()
-    "Toggle window split from vertical to horizontal or vice-versa.
-     Credit: https://github.com/olivertaylor/dotfiles/blob/master/emacs/init.el"
-    (interactive)
-    (if (> (length (window-list)) 2)
-    (error "Sorry, can only toggle split direction with 2 windows.")
-      (let ((was-full-height (window-full-height-p)))
-    (delete-other-windows)
-    (if was-full-height
-        (split-window-vertically)
-      (split-window-horizontally))
-    (save-selected-window
-      (other-window 1)
-      (switch-to-buffer (other-buffer)))))
-    )
+        "Toggle window split from vertical to horizontal or vice-versa.
+         Credit: https://github.com/olivertaylor/dotfiles/blob/master/emacs/init.el"
+        (interactive)
+        (if (> (length (window-list)) 2)
+        (error "Sorry, can only toggle split direction with 2 windows.")
+          (let ((was-full-height (window-full-height-p)))
+        (delete-other-windows)
+        (if was-full-height
+                (split-window-vertically)
+          (split-window-horizontally))
+        (save-selected-window
+          (other-window 1)
+          (switch-to-buffer (other-buffer)))))
+        )
 
   (global-set-key (kbd "C-x O") 'pb/toggle-split-direction)
 #+end_src
@@ -1312,9 +1302,9 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   ;; Kill *this* buffer
   (defun pb/-kill-this-buffer- ()
-    "Kill the current buffer."
-    (interactive)
-    (kill-buffer (current-buffer)))
+        "Kill the current buffer."
+        (interactive)
+        (kill-buffer (current-buffer)))
 
   (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
 #+end_src
@@ -1332,19 +1322,19 @@ https://macowners.club/posts/custom-functions-5-navigation/
  [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
 #+begin_src emacs-lisp
   (defun pb/key-smart-open-line ()
-    "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
-    (interactive)
-    (move-end-of-line nil)
-    (newline-and-indent))
+        "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
+        (interactive)
+        (move-end-of-line nil)
+        (newline-and-indent))
 
   (defun pb/key-smart-open-line-above ()
-    "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
-    (interactive)
+        "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
+        (interactive)
 
-    (move-beginning-of-line nil)
-    (newline-and-indent)
-    (forward-line -1)
-    (indent-according-to-mode))
+        (move-beginning-of-line nil)
+        (newline-and-indent)
+        (forward-line -1)
+        (indent-according-to-mode))
 
   (global-set-key (kbd "M-o") 'pb/key-smart-open-line)
   (global-set-key (kbd "M-O") 'pb/key-smart-open-line-above)
@@ -1357,36 +1347,36 @@ https://macowners.club/posts/custom-functions-5-navigation/
 [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
 #+begin_src emacs-lisp
   (defun set-font-everywhere (font-spec &optional all-frames)
-    (when (null (assq 'font default-frame-alist))
-      (add-to-list 'default-frame-alist '(font . "")))
+        (when (null (assq 'font default-frame-alist))
+          (add-to-list 'default-frame-alist '(font . "")))
 
-    (setcdr (assq 'font default-frame-alist) font-spec)
+        (setcdr (assq 'font default-frame-alist) font-spec)
 
-    (dolist (f (if all-frames (frame-list) (list (selected-frame))))
-      (with-selected-frame f (set-frame-font font-spec t))))
+        (dolist (f (if all-frames (frame-list) (list (selected-frame))))
+          (with-selected-frame f (set-frame-font font-spec t))))
 
   (defun resize-font(font &optional n)
-    (let* ((ff (split-string font "-"))
-       (size (nth 7 ff))
-       (sizen (string-to-number size))
-       (n (or n 1))
-       (new-size (max 1 (+ n sizen))))
-      (setcar (nthcdr 7 ff) (number-to-string new-size))
-      (cons (mapconcat 'identity ff "-") new-size)))
+        (let* ((ff (split-string font "-"))
+           (size (nth 7 ff))
+           (sizen (string-to-number size))
+           (n (or n 1))
+           (new-size (max 1 (+ n sizen))))
+          (setcar (nthcdr 7 ff) (number-to-string new-size))
+          (cons (mapconcat 'identity ff "-") new-size)))
 
   (defun cur-font ()
-    (cdr (assq 'font (frame-parameters (selected-frame)))))
+        (cdr (assq 'font (frame-parameters (selected-frame)))))
 
   (defvar min-font-size 1)
   (defun change-font-size (&optional decrease times)
-    (let* ((inc (* (or times 1) (if decrease -1 1)))
-       (old-font (cur-font))
-       (new-font-and-size (resize-font old-font inc))
-       (new-font (car new-font-and-size))
-       (size (cdr new-font-and-size)))
-      (unless (equal old-font new-font)
-    (set-font-everywhere new-font)
-    (message (format "%d %s" size new-font)))))
+        (let* ((inc (* (or times 1) (if decrease -1 1)))
+           (old-font (cur-font))
+           (new-font-and-size (resize-font old-font inc))
+           (new-font (car new-font-and-size))
+           (size (cdr new-font-and-size)))
+          (unless (equal old-font new-font)
+        (set-font-everywhere new-font)
+        (message (format "%d %s" size new-font)))))
   (defun increase-font-size(&optional n) (interactive) (change-font-size nil n))
   (defun decrease-font-size(&optional n) (interactive) (change-font-size t n))
 
@@ -1398,13 +1388,13 @@ https://macowners.club/posts/custom-functions-5-navigation/
 [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
 #+begin_src emacs-lisp
   (when (eq system-type 'darwin)
-    ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
-    ;; copy ctrl-insert, paste shift-insert on windows keyboard
-    (global-set-key [C-help] #'clipboard-kill-ring-save)
-    (global-set-key [S-help] #'clipboard-yank)
+        ;; when using Windows keyboard on Mac, the insert key is mapped to <help>
+        ;; copy ctrl-insert, paste shift-insert on windows keyboard
+        (global-set-key [C-help] #'clipboard-kill-ring-save)
+        (global-set-key [S-help] #'clipboard-yank)
 
-    ;; insert to toggle `overwrite-mode'
-    (global-set-key [help] #'overwrite-mode))
+        ;; insert to toggle `overwrite-mode'
+        (global-set-key [help] #'overwrite-mode))
 #+end_src
 * Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
@@ -1474,21 +1464,20 @@ first IBM PC's?)...thus, we won't be changing these often.
 [[https://github.com/ernstvanderlinden/emacs-afterglow/tree/8254dc5d4fdfec63e1b5b2d59af0771d2c5a5474][GitHub - ernstvanderlinden/emacs-afterglow at 8254dc5d4fdfec63e1b5b2d59af0771...]]
 #+begin_src emacs-lisp
   (use-package afterglow
-    :ensure t
-    :config
-    (afterglow-mode t)
-    ;; Optional customizations
-    (setq afterglow-default-duration 1.0)
-    (setq afterglow-default-face 'hl-line)
-    ;; Add triggers as needed
-    (afterglow-add-triggers
-     '((previous-line     :thing line   :duration 0.2)
-       (next-line         :thing line   :duration 0.2)
-       (eval-buffer       :thing window :duration 0.2)
-       (eval-defun        :thing defun  :duration 0.2)
-       (eval-expression   :thing sexp   :duration 1)
-       (eval-last-sexp    :thing sexp   :duration 1)
-       (my-function       :thing my-region-function :duration 0.5 :face 'highlight))))
+        :config
+        (afterglow-mode t)
+        ;; Optional customizations
+        (setq afterglow-default-duration 1.0)
+        (setq afterglow-default-face 'hl-line)
+        ;; Add triggers as needed
+        (afterglow-add-triggers
+         '((previous-line     :thing line   :duration 0.2)
+           (next-line         :thing line   :duration 0.2)
+           (eval-buffer       :thing window :duration 0.2)
+           (eval-defun        :thing defun  :duration 0.2)
+           (eval-expression   :thing sexp   :duration 1)
+           (eval-last-sexp    :thing sexp   :duration 1)
+           (my-function       :thing my-region-function :duration 0.5 :face 'highlight))))
 #+end_src
 ** editorconfig
 "EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
@@ -1496,21 +1485,21 @@ However, I don't work with "multiple developers" much anymore, not necessary!
 [[https://editorconfig.org/][EditorConfig]]
 #+begin_src emacs-lisp
   (use-package editorconfig
-    :init
-    (editorconfig-mode 1)
-    )
+        :init
+        (editorconfig-mode 1)
+        )
 #+end_src
 ** elm-mode
 On hiatus until/if I get back to doing elm development
 https://github.com/jcollard/elm-mode
 #+begin_src emacs-lisp
   (use-package elm-mode
-    :config
-    (setq elm-format-on-save t)
+        :config
+        (setq elm-format-on-save t)
 
-    :init
-    (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
-    )
+        :init
+        (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
+        )
 #+end_src
 ** find-file-in-project
 ~project-find-file~ works fine, no need to ffip for me.
@@ -1518,10 +1507,10 @@ https://github.com/jcollard/elm-mode
 [[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
 #+begin_src emacs-lisp
   (use-package lin
-    :ensure t
-    :config
-    (lin-global-mode 1)
-    )
+        ;; :ensure t
+        :config
+        (lin-global-mode 1)
+        )
 #+end_src
 ** mode-lines
 Tried and discarded for one reason or another.
@@ -1530,88 +1519,88 @@ Tried and discarded for one reason or another.
 [[https://github.com/TheBB/spaceline#turning-segments-on-and-off][GitHub - TheBB/spaceline: Powerline theme from Spacemacs]]
 #+begin_src emacs-lisp
   (use-package spaceline
-    :disabled
-    :init
-    (spaceline-emacs-theme)
-    :config
-    (spaceline-toggle-minor-modes-off)
-    )
+        :disabled
+        :init
+        (spaceline-emacs-theme)
+        :config
+        (spaceline-toggle-minor-modes-off)
+        )
 #+end_src
 *** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
 #+begin_src emacs-lisp
   (use-package smart-mode-line
-    :disabled
-    :ensure t
-    :init
-    (sml/setup)
-    )
+        :disabled
+        ;; :ensure t
+        :init
+        (sml/setup)
+        )
 #+end_src
 *** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
 http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :disabled
-    :ensure t
+        :disabled
+        ;; :ensure t
 
-    :init
-    (setq
-     display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
-     doom-modeline-column-zero-based nil
-     doom-modeline-height 1
+        :init
+        (setq
+         display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
+         doom-modeline-column-zero-based nil
+         doom-modeline-height 1
 
-     doom-modeline-position-column-format '("C%c")
-     doom-modeline-position-column-line-format '("%l - %c")
-     doom-modeline-position-line-format '("L%l")
-     doom-modeline-vcs-max-length 20
+         doom-modeline-position-column-format '("C%c")
+         doom-modeline-position-column-line-format '("%l - %c")
+         doom-modeline-position-line-format '("L%l")
+         doom-modeline-vcs-max-length 20
 
-     modeline-position-column-format '("C%c")
-     modeline-position-column-line-format '("%l - %c")
-     modeline-position-line-format '("L%l")
+         modeline-position-column-format '("C%c")
+         modeline-position-column-line-format '("%l - %c")
+         modeline-position-line-format '("L%l")
 
-     inhibit-compacting-font-caches t
-     nerd-icons-scale-factor 1.0
-     )
-    (custom-set-faces
-     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
-     )
+         inhibit-compacting-font-caches t
+         nerd-icons-scale-factor 1.0
+         )
+        (custom-set-faces
+         '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+         '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
+         )
 
-    :hook
-    (after-init . doom-modeline-mode)
-    )
+        :hook
+        (after-init . doom-modeline-mode)
+        )
 #+end_src
 ** move-text
 #+begin_src emacs-lisp
   (use-package move-text
-    :init
-    (move-text-default-bindings)
-    )
+        :init
+        (move-text-default-bindings)
+        )
 #+end_src
 ** org-modern-indent
  #+begin_src emacs-lisp
    (use-package org-modern-indent
-     :load-path "~/.emacs.d/site-lisp/org-modern-indent"
-     :config
-     (add-hook 'org-mode-hook #'org-modern-indent-mode 128))
+         :load-path "~/.emacs.d/site-lisp/org-modern-indent"
+         :config
+         (add-hook 'org-mode-hook #'org-modern-indent-mode 128))
  #+end_src
 ** outli
 Never could get this to work :-(
 #+begin_src emacs-lisp
   (use-package outli
-    :load-path "~/.emacs.d/site-lisp/outli"
-    :bind (:map outli-mode-map ; convenience key to get back to containing heading
-        ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
-    :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
-                    (emacs-lisp-mode ";; " ?* nil nil)
-                    ))
-    :hook ((prog-mode python-mode text-mode) . outli-mode)) ; or whichever modes you prefer
+        :load-path "~/.emacs.d/site-lisp/outli"
+        :bind (:map outli-mode-map ; convenience key to get back to containing heading
+                ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
+        :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
+                                        (emacs-lisp-mode ";; " ?* nil nil)
+                                        ))
+        :hook ((prog-mode python-mode text-mode) . outli-mode)) ; or whichever modes you prefer
 #+end_src
 ** page-break-lines
 [[https://github.com/purcell/page-break-lines][Display a nice line for ^L's.]]
 #+begin_src emacs-lisp
   (use-package page-break-lines
-    :init (global-page-break-lines-mode))
+        :init (global-page-break-lines-mode))
 #+end_src
 ** python (pet)
 As of now, not sure when this would be necessary, everything *I* need to do works!
@@ -1620,161 +1609,161 @@ As of now, not sure when this would be necessary, everything *I* need to do work
 https://protesilaos.com/emacs/substitute
 #+begin_src emacs-lisp
   (use-package substitute
-    :config
-    (require 'substitute)
-    (add-hook 'substitute-post-replace-functions #'substitute-report-operation)
+        :config
+        (require 'substitute)
+        (add-hook 'substitute-post-replace-functions #'substitute-report-operation)
 
-    :bind (("M-<f6>" . substitute-target-in-buffer))
-    )
+        :bind (("M-<f6>" . substitute-target-in-buffer))
+        )
 #+end_src
 ** theme: modus-operandi
 #+begin_src emacs-lisp
   (use-package modus-themes
-    :ensure t
-    :config
-    ;;
-    ;; Use Prot's own configuration:
-    ;; https://protesilaos.com/emacs/modus-themes#h:aabcada6-810d-4eee-b34a-d2a9c301824d
-    ;;
-    (setq modus-themes-custom-auto-reload nil
-      modus-themes-to-toggle '(modus-operandi modus-vivendi)
-      modus-themes-mixed-fonts t
-      modus-themes-variable-pitch-ui nil
-      modus-themes-italic-constructs t
-      modus-themes-bold-constructs t
-      modus-themes-org-blocks 'gray-background
-      modus-themes-completions '((t . (extrabold)))
-      modus-themes-prompts nil
-      )
+        ;; :ensure t
+        :config
+        ;;
+        ;; Use Prot's own configuration:
+        ;; https://protesilaos.com/emacs/modus-themes#h:aabcada6-810d-4eee-b34a-d2a9c301824d
+        ;;
+        (setq modus-themes-custom-auto-reload nil
+          modus-themes-to-toggle '(modus-operandi modus-vivendi)
+          modus-themes-mixed-fonts t
+          modus-themes-variable-pitch-ui nil
+          modus-themes-italic-constructs t
+          modus-themes-bold-constructs t
+          modus-themes-org-blocks 'gray-background
+          modus-themes-completions '((t . (extrabold)))
+          modus-themes-prompts nil
+          )
 
-    (setq modus-themes-common-palette-overrides
-      '((cursor magenta-cooler)
+        (setq modus-themes-common-palette-overrides
+          '((cursor magenta-cooler)
 
-        ;; Make the fringe invisible.
-        (fringe unspecified)
+                ;; Make the fringe invisible.
+                (fringe unspecified)
 
-        ;; Make line numbers less intense and add a shade of cyan
-        ;; for the current line number.
-        (fg-line-number-inactive "gray50")
-        (fg-line-number-active cyan-cooler)
-        (bg-line-number-inactive unspecified)
-        (bg-line-number-active unspecified)
+                ;; Make line numbers less intense and add a shade of cyan
+                ;; for the current line number.
+                (fg-line-number-inactive "gray50")
+                (fg-line-number-active cyan-cooler)
+                (bg-line-number-inactive unspecified)
+                (bg-line-number-active unspecified)
 
-        ;; Make the current line of `hl-line-mode' a fine shade of
-        ;; gray (though also see my `lin' package).
-        (bg-hl-line bg-dim)
+                ;; Make the current line of `hl-line-mode' a fine shade of
+                ;; gray (though also see my `lin' package).
+                (bg-hl-line bg-dim)
 
-        ;; Make the region have a cyan-green background with no
-        ;; specific foreground (use foreground of underlying text).
-        ;; "bg-sage" refers to Salvia officinalis, else the common
-        ;; sage.
-        (bg-region bg-sage)
-        (fg-region unspecified)
+                ;; Make the region have a cyan-green background with no
+                ;; specific foreground (use foreground of underlying text).
+                ;; "bg-sage" refers to Salvia officinalis, else the common
+                ;; sage.
+                (bg-region bg-sage)
+                (fg-region unspecified)
 
-        ;; Make matching parentheses a shade of magenta.  It
-        ;; complements the region nicely.
-        (bg-paren-match bg-magenta-intense)
+                ;; Make matching parentheses a shade of magenta.  It
+                ;; complements the region nicely.
+                (bg-paren-match bg-magenta-intense)
 
-        ;; Make email citations faint and neutral, reducing the
-        ;; default four colors to two; make mail headers cyan-blue.
-        (mail-cite-0 fg-dim)
-        (mail-cite-1 blue-faint)
-        (mail-cite-2 fg-dim)
-        (mail-cite-3 blue-faint)
-        (mail-part cyan-warmer)
-        (mail-recipient blue-warmer)
-        (mail-subject magenta-cooler)
-        (mail-other cyan-warmer)
+                ;; Make email citations faint and neutral, reducing the
+                ;; default four colors to two; make mail headers cyan-blue.
+                (mail-cite-0 fg-dim)
+                (mail-cite-1 blue-faint)
+                (mail-cite-2 fg-dim)
+                (mail-cite-3 blue-faint)
+                (mail-part cyan-warmer)
+                (mail-recipient blue-warmer)
+                (mail-subject magenta-cooler)
+                (mail-other cyan-warmer)
 
-        ;; Change dates to a set of more subtle combinations.
-        (date-deadline magenta-cooler)
-        (date-scheduled magenta)
-        (date-weekday fg-main)
-        (date-event fg-dim)
-        (date-now blue-faint)
+                ;; Change dates to a set of more subtle combinations.
+                (date-deadline magenta-cooler)
+                (date-scheduled magenta)
+                (date-weekday fg-main)
+                (date-event fg-dim)
+                (date-now blue-faint)
 
-        ;; Make tags (Org) less colorful and tables look the same as
-        ;; the default foreground.
-        (prose-done cyan-cooler)
-        (prose-tag fg-dim)
-        (prose-table fg-main)
+                ;; Make tags (Org) less colorful and tables look the same as
+                ;; the default foreground.
+                (prose-done cyan-cooler)
+                (prose-tag fg-dim)
+                (prose-table fg-main)
 
-        ;; Make headings less colorful (though I never use deeply
-        ;; nested headings).
-        (fg-heading-2 blue-faint)
-        (fg-heading-3 magenta-faint)
-        (fg-heading-4 blue-faint)
-        (fg-heading-5 magenta-faint)
-        (fg-heading-6 blue-faint)
-        (fg-heading-7 magenta-faint)
-        (fg-heading-8 blue-faint)
+                ;; Make headings less colorful (though I never use deeply
+                ;; nested headings).
+                (fg-heading-2 blue-faint)
+                (fg-heading-3 magenta-faint)
+                (fg-heading-4 blue-faint)
+                (fg-heading-5 magenta-faint)
+                (fg-heading-6 blue-faint)
+                (fg-heading-7 magenta-faint)
+                (fg-heading-8 blue-faint)
 
-        ;; Make the active mode line a fine shade of lavender
-        ;; (purple) and tone down the gray of the inactive mode
-        ;; lines.
-        (bg-mode-line-active bg-lavender)
-        (border-mode-line-active bg-lavender)
-        (bg-mode-line-inactive bg-dim)
-        (border-mode-line-inactive bg-inactive)
+                ;; Make the active mode line a fine shade of lavender
+                ;; (purple) and tone down the gray of the inactive mode
+                ;; lines.
+                (bg-mode-line-active bg-lavender)
+                (border-mode-line-active bg-lavender)
+                (bg-mode-line-inactive bg-dim)
+                (border-mode-line-inactive bg-inactive)
 
-        ;; Make the prompts a shade of magenta, to fit in nicely with
-        ;; the overall blue-cyan-purple style of the other overrides.
-        ;; Add a nuanced background as well.
-        (bg-prompt bg-magenta-nuanced)
-        (fg-prompt magenta-cooler)
+                ;; Make the prompts a shade of magenta, to fit in nicely with
+                ;; the overall blue-cyan-purple style of the other overrides.
+                ;; Add a nuanced background as well.
+                (bg-prompt bg-magenta-nuanced)
+                (fg-prompt magenta-cooler)
 
-        ;; Tweak some more constructs for stylistic constistency.
-        (name blue-warmer)
-        (identifier magenta-faint)
-        (keybind magenta-cooler)
-        (accent-0 magenta-cooler)
-        (accent-1 cyan-cooler)
-        (accent-2 blue-warmer)
-        (accent-3 red-cooler)
+                ;; Tweak some more constructs for stylistic constistency.
+                (name blue-warmer)
+                (identifier magenta-faint)
+                (keybind magenta-cooler)
+                (accent-0 magenta-cooler)
+                (accent-1 cyan-cooler)
+                (accent-2 blue-warmer)
+                (accent-3 red-cooler)
+                )
+          )
+
+        ;; Make the active mode line have a pseudo 3D effect (this assumes
+        ;; you are using the default mode line and not an extra package).
+        (custom-set-faces
+         '(mode-line ((t :box (:style released-button)))))
+
+        (load-theme 'modus-operandi)
         )
-      )
-
-    ;; Make the active mode line have a pseudo 3D effect (this assumes
-    ;; you are using the default mode line and not an extra package).
-    (custom-set-faces
-     '(mode-line ((t :box (:style released-button)))))
-
-    (load-theme 'modus-operandi)
-    )
 #+end_src
 ** theme: monokai
 #+begin_src emacs-lisp
   (use-package monokai
-    :ensure nil
-    :config
-    (setq monokai-height-plus-4 1.2
-      monokai-height-plus-3 1.1
-     )
-    (load-theme 'monokai nil)
+        ;; :ensure nil
+        :config
+        (setq monokai-height-plus-4 1.2
+          monokai-height-plus-3 1.1
+         )
+        (load-theme 'monokai nil)
   )
 #+end_src
 ** theme: [[https://protesilaos.com/emacs/ef-themes][ef-autumn]] (prot)
 #+begin_src emacs-lisp
   (use-package ef-themes
-    :ensure nil
-    :config
-    (setq ef-themes-italic-constructs t
-      ef-themes-bold-constructs nil)
-    (setq ef-themes-headings
-      '((0 . (0.8))			;; Document titles etc.
-        (1 . (1.2))
-        (2 . (1.1))))
-    (setq ef-themes-common-palette-overrides
-      '((fg-heading-1 blue)
-        (fg-heading-2 cyan)
-        (fg-heading-3 green)))
-    (load-theme 'ef-autumn)
+        ;; :ensure nil
+        :config
+        (setq ef-themes-italic-constructs t
+          ef-themes-bold-constructs nil)
+        (setq ef-themes-headings
+          '((0 . (0.8))			;; Document titles etc.
+                (1 . (1.2))
+                (2 . (1.1))))
+        (setq ef-themes-common-palette-overrides
+          '((fg-heading-1 blue)
+                (fg-heading-2 cyan)
+                (fg-heading-3 green)))
+        (load-theme 'ef-autumn)
   )
 #+end_src
 ** ws-butler
 #+begin_src emacs-lisp
   (use-package ws-butler
-    :config
-    (ws-butler-global-mode 1)
+        :config
+        (ws-butler-global-mode 1)
   )
 #+end_src

@@ -1,4 +1,5 @@
 .DS_STORE
+garbage.el
 *.eld
 *.eld.gz
 abbrev.defs
@@ -19,6 +20,7 @@ projects
 /recentf
 /request
 /site-lisp
+/straight
 /tramp
 /transient
 /tree-sitter

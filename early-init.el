@@ -6,13 +6,12 @@
 
 ;; Prefer loading newest compiled .el file and turn off
 (setq load-prefer-newer noninteractive
-      package-enable-at-startup t
       inhibit-startup-message   t)
 
-(menu-bar-mode         -1)
-(scroll-bar-mode       -1)
-(tool-bar-mode         -1)
-(tooltip-mode          -1)
+(menu-bar-mode   -1)
+(scroll-bar-mode -1)
+(tool-bar-mode   -1)
+(tooltip-mode    -1)
 
 ;; Setting background color here to prevent color flash as the theme gets activated.
 (setq default-frame-alist '((background-color        . "#1d2021") ;; Same background color as our theme

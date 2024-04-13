@@ -3,37 +3,37 @@
 ;; same setting in the tangled config file (config.el), it's too late].
 (setq vc-follow-symlinks t)
 
-;; Set up repositories
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("org"   . "https://orgmode.org/elpa/"))
-(package-initialize)
+;; -----------------------------------------------------------------------------
+;; Use "straight" for package management/installation:
+;; -----------------------------------------------------------------------------
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+	"straight/repos/straight.el/bootstrap.el"
+	(or (bound-and-true-p straight-base-dir)
+	    user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+	 'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-;; Setup use of use-package macro(s) for the rest of our package installs.
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+(straight-use-package 'use-package)
 
-(eval-and-compile
-  (setq use-package-always-ensure         t
-        use-package-expand-minimally      t
-        use-package-verbose               t
-        use-package-compute-statistics    t
-        use-package-minimum-reported-time 0.1
-        debug-on-error                    nil
-        )
-  )
+(setq straight-use-package-by-default t)
 
-;; Set the location of a separate "custom" file (ie. custom-set-variables and custom-set-faces)
-;; (ie. we don't want it stored below in *this* file. ;-()
-(use-package cus-edit
-  :custom
-  (custom-file (expand-file-name "custom.el" user-emacs-directory))
+;; -----------------------------------------------------------------------------
+;; We don't need a "custom" file, anything worthwhile should be in config.org.
+;; -----------------------------------------------------------------------------
+(setq custom-file "~/.emacs.d/garbage.el")
 
-  :config
-  (load custom-file 'noerror))
-
+;; -----------------------------------------------------------------------------
 ;; In case we run into any issues debugging our tangled config file:
+;; -----------------------------------------------------------------------------
 (setq debug-on-error 1)
 (setq debug-on-quit  t)
 
