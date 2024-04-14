@@ -420,8 +420,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 *** zygospore
 Toggles between "current" buffer to fullscreen and existing buffer layout (and back again)
 #+begin_src emacs-lisp
-  (use-package zygospore
-        :load-path "~/.emacs.d/site-lisp/zygospore.el/")
+  (use-package zygospore)
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
 ** Completion Framework
@@ -739,13 +738,24 @@ https://github.com/rnkn/olivetti
 [[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][GitHub - jcguu95/org-linker.el: Attaching Files in Org-Mode Using UUIDs. Flex...]]
  #+begin_src emacs-lisp
    (defun pb/org-linker/generate-id ()
-         "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
-         (let ((current-date (format-time-string "%Y%m%d"))
+     "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
+     (let ((current-date (format-time-string "%Y%m%d"))
            (id (replace-regexp-in-string "[[:space:]\n]*$" ""
-                                           (shell-command-to-string "openssl rand -hex 6"))))
-           (format "%s-%s" current-date id)))
+                                         (shell-command-to-string "openssl rand -hex 6"))))
+       (format "%s-%s" current-date id)))
 
-   (require 'org-linker "~/.emacs.d/site-lisp/org-linker.el/org-linker.el")
+   (straight-use-package
+    '(org-linker :type git
+                 :host github
+                 :repo "jcguu95/org-linker.el"
+                 :files ("org-linker.el"
+                         "org-linker-commands.el"
+                         "org-linker-org-link-support.el"
+                         )
+                 )
+    )
+   (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
+
    (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
          org-linker/file-size               999999
          org-linker/uuid-generator-function 'pb/org-linker/generate-id
@@ -965,17 +975,9 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
         (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
         (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
-  (use-package ibuffer-git)
-
-  (use-package magit-todos
-        :after magit
-
-        :config
-        (setq magit-show-long-lines-warning nil)
-        (magit-todos-mode 1)
-
-        :load-path "~/.emacs.d/site-lisp/magit-todos/"
-        )
+  (use-package ibuffer-git
+    :after git
+    )
 
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
@@ -1000,10 +1002,11 @@ Use the wonderful delta diff tool in magit diff display.
 **** magit-todos
 #+begin_src emacs-lisp
   (use-package magit-todos
-        :after magit
-        :config (magit-todos-mode 1)
-        :load-path "~/.emacs.d/site-lisp/magit-todos/"
-        )
+    :after magit
+    :config
+    (setq magit-show-long-lines-warning nil)
+    (magit-todos-mode 1)
+    )
 #+end_src
 **** full-frame
 Use a single-window (part. for Magit) and then close.
@@ -1052,7 +1055,6 @@ https://github.com/karthink/gptel
          (error "No API key found for api.anthropic.com in .authinfo"))))
 
    (use-package gptel
-         :load-path "~/.emacs.d/site-lisp/gptel/"
          :custom
          (gptel-model "gpt-4")
          (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
@@ -1580,21 +1582,24 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 ** org-modern-indent
  #+begin_src emacs-lisp
    (use-package org-modern-indent
-         :load-path "~/.emacs.d/site-lisp/org-modern-indent"
-         :config
-         (add-hook 'org-mode-hook #'org-modern-indent-mode 128))
+     :straight (org-modern-indent :type git :host github :repo "jdtsmith/org-modern-indent")
+     :config
+     (add-hook 'org-mode-hook #'org-modern-indent-mode 128)
+   )
  #+end_src
 ** outli
 Never could get this to work :-(
 #+begin_src emacs-lisp
   (use-package outli
-        :load-path "~/.emacs.d/site-lisp/outli"
-        :bind (:map outli-mode-map ; convenience key to get back to containing heading
-                ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
-        :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
-                                        (emacs-lisp-mode ";; " ?* nil nil)
-                                        ))
-        :hook ((prog-mode python-mode text-mode) . outli-mode)) ; or whichever modes you prefer
+    :straight (outli :type git :host github :repo "jdtsmith/outli")
+    :bind
+    (:map outli-mode-map ; convenience key to get back to containing heading
+          ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
+    :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
+                                    (emacs-lisp-mode ";; " ?* nil nil)
+                                    ))
+    :hook ((prog-mode python-mode text-mode) . outli-mode)
+    )
 #+end_src
 ** page-break-lines
 [[https://github.com/purcell/page-break-lines][Display a nice line for ^L's.]]
