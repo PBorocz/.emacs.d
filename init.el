@@ -39,5 +39,9 @@
 
 ;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
+;; 2024-05-06 Testing shows that leaving this to tangle/load vs.
+;;            just loading the config.el is a non-perceptible change in startup time.
+;;            Thus, to ease the few times we DO make config changes, this'll ensure
+;;            they always get picked up.
 ;; -----------------------------------------------------------------------------
 (org-babel-load-file "~/.emacs.d/config.org")
