@@ -101,13 +101,6 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 **** dired
 #+begin_src emacs-lisp
-  ;; Want ability to open a file in the same window as dired (ie. replacing dired with the file).
-  (defun pb/dired-find-file-same-window ()
-    "Open file in the same window."
-    (interactive)
-    (find-file (dired-get-file-for-visit)))
-
-
   (use-package dired
     :straight (:type built-in)
 
@@ -115,22 +108,18 @@ Highlight global-search-replace strings dynamically.
     (add-hook 'dired-mode-hook
           (lambda () (setq truncate-lines t)))
 
-    :bind
-    (("C-x C-d" . dired-jump)
-     ("C-x j"   . dired-jump-other-window)
-     )
+    :bind (:map dired-mode-map
+                ("C-x C-d" . dired-jump)
+                ("C-x j"   . dired-jump-other-window)
+                ("e"       . dired-toggle-read-only) ; Inline filename editing!
+                ("."       . dired-up-directory))
 
     :config
-    (define-key dired-mode-map (kbd "e") 'dired-toggle-read-only) ; Inline filename editing!
-    (define-key dired-mode-map (kbd "E") 'pb/dired-find-file-same-window)
-    (define-key dired-mode-map (kbd "s") 'pb/dired-sort)
-    (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-
-    (setq auto-revert-verbose                 nil ;; Auto refresh Dired, but be quiet about it
+    (setq auto-revert-verbose             nil ;; Auto refresh Dired, but be quiet about it
       delete-by-moving-to-trash           t
       dired-dwim-target                   t
       dired-hide-details-mode             nil
-      dired-listing-switches              "-Al" ;; and see below for dired-sort.
+      dired-listing-switches              "-Al"
       dired-recursive-copies              'always
       dired-recursive-deletes             'always
       dired-use-ls-dired                  t
@@ -142,25 +131,12 @@ Highlight global-search-replace strings dynamically.
 
   (when (string= system-type "darwin")
     (setq dired-use-ls-dired nil))
+
   ;;
   ;; Color our dired display by type of file/directory
   ;; https://github.com/purcell/diredfl
   ;;
   (add-hook 'dired-mode-hook 'diredfl-mode)
-
-  ;; Want ability to sort by more than just 2 dimensions, thus, override "s" for choices.
-  ;; HT: http://xahlee.info/emacs/emacs/dired_sort.html
-  (defun pb/dired-sort ()
-    (interactive)
-    (let (sort_by ls_arg)
-      (setq sort_by (completing-read "Sort by:" '( "Date" "Size" "Name" "Dir" )))
-      (cond
-       ((equal sort_by "Name") (setq ls_arg "-Alh "))
-       ((equal sort_by "Date") (setq ls_arg "-Alh -t"))
-       ((equal sort_by "Size") (setq ls_arg "-Alh -S"))
-       ((equal sort_by "Dir" ) (setq ls_arg "-Alh --group-directories-first"))
-       (t (error "Sorry, that didn't work 🤦" )))
-      (dired-sort-other ls_arg )))
 #+end_src
 **** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
@@ -178,6 +154,16 @@ Toggle between showing just ".git-ted" files and all files.
     :config
     (bind-key "<tab>" #'dired-subtree-toggle dired-mode-map)
     (bind-key "<backtab>" #'dired-subtree-cycle dired-mode-map))
+#+end_src
+**** dired-casual
+#+begin_src emacs-lisp
+  (use-package casual-dired
+    :ensure t
+    :straight (casual-dired :type git :host github :repo "kickingvegas/casual-dired")
+    :bind (:map dired-mode-map
+                ("C-o" . 'casual-dired-tmenu)
+                ("s"   . 'casual-dired-sort-by-tmenu))
+  )
 #+end_src
 *** helpful (better help commands)
 Improve quality of most-used C-h methods.
