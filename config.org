@@ -76,6 +76,29 @@
     :config
     (show-paren-mode t))
 #+end_src
+** dashboard
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
+          dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
+          dashboard-vertically-center-content t           ;; Vertically center content.
+          dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
+          dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
+    )
+    (setq dashboard-items '((recents . 10)))
+    (setq dashboard-startupify-list '(dashboard-insert-banner
+                                      dashboard-insert-newline
+                                      dashboard-insert-banner-title
+                                      dashboard-insert-newline
+                                      dashboard-insert-navigator
+                                      dashboard-insert-newline
+                                      dashboard-insert-init-info
+                                      dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
+    (dashboard-setup-startup-hook)
+    )
+#+end_src
 ** anzu (nicer search-replace)
 Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
