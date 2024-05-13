@@ -87,7 +87,7 @@
           dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
           dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
     )
-    (setq dashboard-items '((recents . 10)))
+    (setq dashboard-items '((recents . 15)))
     (setq dashboard-startupify-list '(dashboard-insert-banner
                                       dashboard-insert-newline
                                       dashboard-insert-banner-title
@@ -1242,6 +1242,14 @@ https://github.com/karthink/gptel
     :cwd           "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"
     :command       "~/.local/bin/poe"
     :args          '("dev_run_production")
+    :ready-message "Ready..."
+    )
+
+  (prodigy-define-service
+    :name          "HealthActivityDashboard-Shiny"
+    :cwd           "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard/dashboard-shiny"
+    :command       "~/.local/bin/poe"
+    :args          '("run")
     :ready-message "Ready..."
     )
 #+end_src
