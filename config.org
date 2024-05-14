@@ -78,25 +78,35 @@
 #+end_src
 ** dashboard
 #+begin_src emacs-lisp
-  (use-package dashboard
-    :ensure t
+  (use-package light-dashboard
+
+    :straight (light-dashboard :type git :host github :repo "ichernyshovvv/light-dashboard")
+
+    :custom
+    (light-dashboard-alist
+     '(
+
+       ("Projects"
+        ("Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
+        ("Optimus Ludos"       (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
+        ("Health Dashboard"    (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
+        )
+
+       ("Org"
+        ("GTD"                 (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
+        ("Projects"            (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+        )
+
+       ("Utility"
+        ("Emacs Configuration" (find-file "~/.emacs.d/config.org"))
+        ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/python"))
+        )
+
+       ))
+
     :config
-    (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
-          dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
-          dashboard-vertically-center-content t           ;; Vertically center content.
-          dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
-          dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
-    )
-    (setq dashboard-items '((recents . 15)))
-    (setq dashboard-startupify-list '(dashboard-insert-banner
-                                      dashboard-insert-newline
-                                      dashboard-insert-banner-title
-                                      dashboard-insert-newline
-                                      dashboard-insert-navigator
-                                      dashboard-insert-newline
-                                      dashboard-insert-init-info
-                                      dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
-    (dashboard-setup-startup-hook)
+    (setq light-dashboard-buffer-name "HOME") ;; He defaults to *light-dashboard* but I want something more generic.
+    (light-dashboard-open)
     )
 #+end_src
 ** anzu (nicer search-replace)
@@ -804,22 +814,23 @@ https://github.com/rnkn/olivetti
      "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
      (let ((current-date (format-time-string "%Y%m%d"))
        (id (replace-regexp-in-string "[[:space:]\n]*$" ""
-             (shell-command-to-string "openssl rand -hex 6"))))
+         (shell-command-to-string "openssl rand -hex 6"))))
        (format "%s-%s" current-date id)))
 
    (straight-use-package
-    '(org-linker :type git
-     :host github
-     :repo "jcguu95/org-linker.el"
-     :files ("org-linker.el"
-         "org-linker-commands.el"
-         "org-linker-org-link-support.el"
-         )
-     )
+    '(org-linker
+      :type git
+      :host github
+      :repo "jcguu95/org-linker.el"
+      :files ("org-linker.el"
+          "org-linker-commands.el"
+          "org-linker-org-link-support.el"
+          )
+      )
     )
    (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
 
-   (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
+   (setq org-linker/root-directory      (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
      org-linker/file-size               999999
      org-linker/uuid-generator-function 'pb/org-linker/generate-id
      org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
@@ -829,7 +840,8 @@ https://github.com/rnkn/olivetti
 Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
  #+begin_src emacs-lisp
    (use-package org-cliplink
-     :after 'org)
+     :after 'org
+     )
  #+end_src
 *** org-superstar
 Nice(r) bullets (replaces org-bullets)
@@ -842,9 +854,8 @@ Nice(r) bullets (replaces org-bullets)
        '((?* . ?•)
          (?+ . ?➤)
          (?- . ?•)))
-     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
-
+     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+     )
  #+end_src
 ** pdf
 #+begin_src emacs-lisp
@@ -1593,6 +1604,29 @@ These are here so I don't waste time in the future trying to use 'em *again*.
        (eval-expression   :thing sexp   :duration 1)
        (eval-last-sexp    :thing sexp   :duration 1)
        (my-function       :thing my-region-function :duration 0.5 :face 'highlight))))
+#+end_src
+** dashboard (from the "dashboard" package)
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :config
+    (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
+          dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
+          dashboard-vertically-center-content t           ;; Vertically center content.
+          dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
+          dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
+    )
+    (setq dashboard-items '((recents . 15)))
+    (setq dashboard-startupify-list '(dashboard-insert-banner
+                                      dashboard-insert-newline
+                                      dashboard-insert-banner-title
+                                      dashboard-insert-newline
+                                      dashboard-insert-navigator
+                                      dashboard-insert-newline
+                                      dashboard-insert-init-info
+                                      dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
+    (dashboard-setup-startup-hook)
+    )
 #+end_src
 ** editorconfig
 "EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
