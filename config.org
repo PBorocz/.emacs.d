@@ -58,9 +58,7 @@
   (add-to-list 'debug-ignored-errors 'minibuffer-quit)
 
   ;; Define all aliases for buffer management
-  ;; As of 2024-05-12, try out bufler instead:
-  ;; (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
-  (defalias 'list-buffers 'bufler)
+  (defalias 'list-buffers 'ibuffer)  ; Use ibuffer default for all buffer management
 
   ;; Don't let Emacs suspend by getting rid of pesky "\C-z" and "\C-x\C-z" annoying minimize
   (unbind-key "C-z")
@@ -87,19 +85,20 @@
      '(
 
        ("Projects"
-        ("Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
-        ("Optimus Ludos"       (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
-        ("Health Dashboard"    (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
+        ("-Root-"           (dired "~/Repository/10-19 Development/10 Development"))
+        ("Coctione Libri"   (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
+        ("Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
+        ("Health Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
         )
 
-       ("Org"
-        ("GTD"                 (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
-        ("Projects"            (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+       ("Management"
+        ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
+        ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
         )
 
        ("Utility"
         ("Emacs Configuration" (find-file "~/.emacs.d/config.org"))
-        ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/python"))
+        ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
         )
 
        ))
@@ -198,13 +197,6 @@ Toggle between showing just ".git-ted" files and all files.
         ("C-o" . 'casual-dired-tmenu)
         ("s"   . 'casual-dired-sort-by-tmenu))
   )
-#+end_src
-** buffer-management
-[[https://github.com/alphapapa/bufler.el][GitHub - alphapapa/bufler.el: A butler for your buffers. Group buffers into w...]]
-#+begin_src emacs-lisp
-  (use-package bufler
-    :defer t
-    )
 #+end_src
 ** helpful (better help commands)
 Improve quality of most-used C-h methods.
@@ -437,12 +429,12 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (add-hook  'org-mode-hook #'hl-line-mode)
   (add-hook 'prog-mode-hook #'hl-line-mode)
 #+end_src
-** COMMENT nerd-icons-ibuffer
+** nerd-icons-ibuffer
 Displays nerd-icons for iBuffer types...yes, somewhat indulgent but I'm worth it ;-)
 #+begin_src emacs-lisp
-  ;; As of <2024-05-12 Sun>, converted to bufler: thus, don't need this anymore.
-  ;; (use-package nerd-icons-ibuffer
-  ;;   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+  (use-package nerd-icons-ibuffer
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
+    )
 #+end_src
 * Window Management
 ** bindings
@@ -1127,8 +1119,7 @@ Use a single-window (part. for Magit) and then close.
      (setq git-gutter:disabled-modes '(org-mode image-mode))
      )
  #+end_src
-*** COMMENT ibuffer-git
-As of <2024-05-12 Sun> Converted from ibuffer to bufler.
+*** ibuffer-git
 #+begin_src emacs-lisp
   (use-package ibuffer-git
     :defer 1
@@ -1157,15 +1148,24 @@ https://github.com/karthink/gptel
      (error "No API key found for api.anthropic.com in .authinfo"))))
 
    (use-package gptel
-     :defer 1
+     :straight (:host github :repo "karthink/gptel")
 
      :custom
-     (gptel-model "gpt-4")
+     (gptel-model "gpt-4o")
      (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
      ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
      ;; :config
      ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
      )
+
+   (defun my-straight-pull-package (package)
+     "Pull the latest version of PACKAGE from its remote repository."
+     (message "'straight-pull-package' for gptel.")
+     (straight-pull-package package)
+     )
+
+   (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+
  #+end_src
 ** postgresql
 #+begin_src emacs-lisp
@@ -1604,6 +1604,14 @@ These are here so I don't waste time in the future trying to use 'em *again*.
        (eval-expression   :thing sexp   :duration 1)
        (eval-last-sexp    :thing sexp   :duration 1)
        (my-function       :thing my-region-function :duration 0.5 :face 'highlight))))
+#+end_src
+** buffer-management
+[[https://github.com/alphapapa/bufler.el][GitHub - alphapapa/bufler.el: A butler for your buffers. Group buffers into w...]]
+Verdict: too "busy" with many different projects' files open. Easier to simply "s f" in ibuffer to group by path if desired.
+#+begin_src emacs-lisp
+  (use-package bufler
+    :defer t
+    )
 #+end_src
 ** dashboard (from the "dashboard" package)
 #+begin_src emacs-lisp
