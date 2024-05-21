@@ -156,6 +156,7 @@ Highlight global-search-replace strings dynamically.
       dired-recursive-copies              'always
       dired-recursive-deletes             'always
       dired-use-ls-dired                  t
+      dired-vc-rename-file                t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
       global-auto-revert-non-file-buffers t
       insert-directory-program            "/usr/local/bin/gls"
       wdired-allow-to-change-permissions  t
@@ -1080,7 +1081,28 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 Use the wonderful delta diff tool in magit diff display.
 #+begin_src emacs-lisp
   (use-package magit-delta
+    :after magit
     :hook (magit-mode . magit-delta-mode))
+#+end_src
+*** magit-file-icons
+[[https://github.com/gekoke/magit-file-icons/tree/d85fad81e74a9b6ce9fd7ab341f265d5a181d2a8][Github: magit-file-icons]]
+#+begin_src emacs-lisp
+  (use-package magit-file-icons
+    :after magit
+
+    :straight (:host github :repo "gekoke/magit-file-icons")
+
+    :defer 1
+
+    :init
+    (magit-file-icons-mode 1)
+
+    :custom
+    ;; These are the default values:
+    (magit-file-icons-enable-diff-file-section-icons t)
+    (magit-file-icons-enable-untracked-icons         t)
+    (magit-file-icons-enable-diffstat-icons          t)
+    )
 #+end_src
 *** magit-todos
 #+begin_src emacs-lisp
@@ -1096,7 +1118,6 @@ Use a single-window (part. for Magit) and then close.
 #+begin_src emacs-lisp
   (use-package fullframe
     :defer 1
-
     :config (fullframe magit-status magit-mode-quit-window)
     )
 #+end_src
