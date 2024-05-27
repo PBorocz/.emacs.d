@@ -5,6 +5,14 @@
 #+property: header-args :tangle config.el
 
 * Base Editing Environment
+** tune garbage collection
+#+begin_src emacs-lisp
+  (use-package gcmh
+    :straight (gcmh :type git :host github :repo "emacsmirror/gcmh")
+    :init
+    (gcmh-mode 1)
+    )
+#+end_src
 ** emacs
 #+begin_src emacs-lisp
   (use-package emacs
@@ -83,30 +91,27 @@
     :custom
     (light-dashboard-alist
      '(
-
        ("Projects"
-        ("-Root-"           (dired "~/Repository/10-19 Development/10 Development"))
-        ("Coctione Libri"   (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
-        ("Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
-        ("Health Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
+        ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "h")
+        ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
+        ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
+        ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
         )
 
        ("Management"
-        ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
         ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+        ("Journal.org"  (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
+        ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
         )
 
-       ("Utility"
-        ("Emacs Configuration" (find-file "~/.emacs.d/config.org"))
+       ("Utilities"
+        ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
         ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
         )
-
        ))
-
     :config
-    (setq light-dashboard-buffer-name "HOME") ;; He defaults to *light-dashboard* but I want something more generic.
-    (light-dashboard-open)
-    )
+    (setq light-dashboard-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something more generic.
+    (light-dashboard-open))
 #+end_src
 ** anzu (nicer search-replace)
 Highlight global-search-replace strings dynamically.
@@ -123,11 +128,14 @@ Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
   (use-package smart-hungry-delete
     :defer 10
-    :bind (([remap delete-char]                   . smart-hungry-delete-forward-char)
+    :bind (
+       ([remap delete-char]               . smart-hungry-delete-forward-char)
        ([remap org-delete-char]               . smart-hungry-delete-forward-char)
        ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
-       ([remap delete-backward-char]          . smart-hungry-delete-backward-char))
-    :init (smart-hungry-delete-add-default-hooks))
+       ([remap delete-backward-char]          . smart-hungry-delete-backward-char)
+       )
+    :init (smart-hungry-delete-add-default-hooks)
+    )
 #+end_src
 ** dired (customise by dired display)
 [[https://github.com/MatthewZMD/.emacs.d]]
@@ -142,10 +150,10 @@ Highlight global-search-replace strings dynamically.
       (lambda () (setq truncate-lines t)))
 
     :bind (:map dired-mode-map
-        ("C-x C-d" . dired-jump)
-        ("C-x j"   . dired-jump-other-window)
-        ("e"       . dired-toggle-read-only) ; Inline filename editing!
-        ("."       . dired-up-directory))
+    ("C-x C-d" . dired-jump)
+    ("C-x j"   . dired-jump-other-window)
+    ("e"       . dired-toggle-read-only) ; Inline filename editing!
+    ("."       . dired-up-directory))
 
     :config
     (setq auto-revert-verbose             nil ;; Auto refresh Dired, but be quiet about it
@@ -195,8 +203,8 @@ Toggle between showing just ".git-ted" files and all files.
     :ensure t
     :straight (casual-dired :type git :host github :repo "kickingvegas/casual-dired")
     :bind (:map dired-mode-map
-        ("C-o" . 'casual-dired-tmenu)
-        ("s"   . 'casual-dired-sort-by-tmenu))
+    ("C-o" . 'casual-dired-tmenu)
+    ("s"   . 'casual-dired-sort-by-tmenu))
   )
 #+end_src
 ** helpful (better help commands)
@@ -323,36 +331,28 @@ Interactive font scaling:
  - (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
 #+begin_src emacs-lisp
+  (setq ns-use-thin-smoothing t)
 
+  ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
   (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-  ;; Tools for interactive use when moving between monitor and laptop displays without restarting
-  ;; (and used below to auto-set font size on startup)
   (defun pb/set-monitor-font-size ()
-    "Set font obo 4K monitor."
+    "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 20))
+    (set-frame-font (format pb/var-fixedwidth-font 22))
     )
 
   (defun pb/set-laptop-font-size ()
-    "Set font obo laptop display."
+    "Set font for laptop display."
     (interactive)
     (set-frame-font (format pb/var-fixedwidth-font 14))
     )
 
-  (setq ns-use-thin-smoothing t)
-  (if (and (display-graphic-p)
-       (>= (x-display-pixel-width) 3840))
-      (progn
-    (pb/set-monitor-font-size)
-    )
-    (progn
-      (when (and (display-graphic-p) (< (x-display-pixel-width) 3840))
-    (pb/set-laptop-font-size)
-    )
-      )
-    )
+  (if (display-graphic-p)
+      (if (>= (x-display-pixel-width) 3840)
+          (pb/set-monitor-font-size)
+        (pb/set-laptop-font-size)))
 #+end_src
 ** mode-line
 Nice and simple: https://github.com/jessiehildebrandt/mood-line
@@ -374,8 +374,8 @@ Nice and simple: https://github.com/jessiehildebrandt/mood-line
     :straight (pulsar :type git :host github :repo "protesilaos/pulsar")
     :config
       (setq pulsar-delay  0.10
-        pulsar-face  'pulsar-yellow
-        pulsar-pulse nil)
+    pulsar-face  'pulsar-yellow
+    pulsar-pulse nil)
 
       (dolist (hook '(org-mode-hook python-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
     (add-hook hook #'pulsar-mode))
@@ -391,8 +391,8 @@ Nice and simple: https://github.com/jessiehildebrandt/mood-line
     :defer 1
     :config
     (set-face-attribute 'rainbow-delimiters-unmatched-face nil
-        :foreground 'unspecified
-        :inherit 'error)
+    :foreground 'unspecified
+    :inherit 'error)
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
   (use-package prog-mode
@@ -533,8 +533,8 @@ Resources:
       "Regexp which matches the end of string with Consult tofu support."
       (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
       (format "[%c-%c]*$"
-          consult--tofu-char
-          (+ consult--tofu-char consult--tofu-range -1))
+      consult--tofu-char
+      (+ consult--tofu-char consult--tofu-range -1))
     "$"))
 
     ;; Recognizes the following patterns:
@@ -547,8 +547,8 @@ Resources:
     `(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
        ;; File extensions
        ((and (or minibuffer-completing-file-name
-         (derived-mode-p 'eshell-mode))
-         (string-match-p "\\`\\.." word))
+     (derived-mode-p 'eshell-mode))
+     (string-match-p "\\`\\.." word))
     `(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
     ;; Define orderless style with initialism by default
@@ -587,13 +587,13 @@ Resources:
       ;; but rather prepended to the default completion-styles.
       ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
       completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-                      ;; enable initialism by default for symbols
-                      (command (styles +orderless-with-initialism))
-                      (variable (styles +orderless-with-initialism))
-                      (symbol (styles +orderless-with-initialism)))
+      ;; enable initialism by default for symbols
+      (command (styles +orderless-with-initialism))
+      (variable (styles +orderless-with-initialism))
+      (symbol (styles +orderless-with-initialism)))
       orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
       orderless-style-dispatchers (list #'+orderless-consult-dispatch
-                        #'orderless-affix-dispatch)))
+    #'orderless-affix-dispatch)))
 #+end_src
 ** vertico
 Resources:
@@ -740,13 +740,13 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
   (setq org-todo-keywords '((sequence
-         "TODO(t)"
-         "WAIT(a)"
-         "HOLD(h)"
-         "WORK(w)"
-         "|"
-         "DONE(x)"
-         )))
+     "TODO(t)"
+     "WAIT(a)"
+     "HOLD(h)"
+     "WORK(w)"
+     "|"
+     "DONE(x)"
+     )))
 
   (setq org-todo-keyword-faces
     '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
@@ -807,7 +807,7 @@ https://github.com/rnkn/olivetti
      "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
      (let ((current-date (format-time-string "%Y%m%d"))
        (id (replace-regexp-in-string "[[:space:]\n]*$" ""
-         (shell-command-to-string "openssl rand -hex 6"))))
+     (shell-command-to-string "openssl rand -hex 6"))))
        (format "%s-%s" current-date id)))
 
    (straight-use-package
@@ -816,9 +816,9 @@ https://github.com/rnkn/olivetti
       :host github
       :repo "jcguu95/org-linker.el"
       :files ("org-linker.el"
-          "org-linker-commands.el"
-          "org-linker-org-link-support.el"
-          )
+      "org-linker-commands.el"
+      "org-linker-org-link-support.el"
+      )
       )
     )
    (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
@@ -845,8 +845,8 @@ Nice(r) bullets (replaces org-bullets)
      (setq org-superstar-special-todo-items t ;; Set our TODO items to have a 'checkbox' icon
        org-superstar-item-bullet-alist
        '((?* . ?•)
-         (?+ . ?➤)
-         (?- . ?•)))
+     (?+ . ?➤)
+     (?- . ?•)))
      (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
      )
  #+end_src
@@ -1039,7 +1039,7 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 
     :hook
     ((python-mode python-ts-mode) . (lambda ()
-              (setq format-all-formatters '(("Python" ruff)))))
+      (setq format-all-formatters '(("Python" ruff)))))
 
     :config
     (format-all-ensure-formatter)
@@ -1163,7 +1163,7 @@ https://github.com/karthink/gptel
      "Retrieve the API key for api.anthropic.com from .authinfo."
      (require 'auth-source)
      (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-          :secret)))
+      :secret)))
        (if secret
        secret
      (error "No API key found for api.anthropic.com in .authinfo"))))
@@ -1640,20 +1640,20 @@ Verdict: too "busy" with many different projects' files open. Easier to simply "
     :ensure t
     :config
     (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
-          dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
-          dashboard-vertically-center-content t           ;; Vertically center content.
-          dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
-          dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
+      dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
+      dashboard-vertically-center-content t           ;; Vertically center content.
+      dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
+      dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
     )
     (setq dashboard-items '((recents . 15)))
     (setq dashboard-startupify-list '(dashboard-insert-banner
-                                      dashboard-insert-newline
-                                      dashboard-insert-banner-title
-                                      dashboard-insert-newline
-                                      dashboard-insert-navigator
-                                      dashboard-insert-newline
-                                      dashboard-insert-init-info
-                                      dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
+          dashboard-insert-newline
+          dashboard-insert-banner-title
+          dashboard-insert-newline
+          dashboard-insert-navigator
+          dashboard-insert-newline
+          dashboard-insert-init-info
+          dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
     (dashboard-setup-startup-hook)
     )
 #+end_src
@@ -1772,8 +1772,8 @@ Never could get this to work :-(
     (:map outli-mode-map ; convenience key to get back to containing heading
       ("C-c C-p" . (lambda () (interactive) (outline-back-to-heading))))
     :custom (outli-heading-config '((python-mode     "## " ?* nil nil)
-            (emacs-lisp-mode ";; " ?* nil nil)
-            ))
+    (emacs-lisp-mode ";; " ?* nil nil)
+    ))
     :hook ((prog-mode python-mode text-mode) . outli-mode)
     )
 #+end_src

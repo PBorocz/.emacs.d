@@ -1,9 +1,10 @@
 ;; 2024-01-23: https://zenodo.org/records/10518083 seems to indicate this would help.
 ;;             (specifically, by increasing this we trade off RAM for less frequent GC's)
 ;; 2024-02-02: Also from https://github.com/jwiegley/dot-emacs/blob/master/init.org
-(setq garbage-collection-messages t
-      gc-cons-percentage 0.6
-      gc-cons-threshold (* 8 1024 1024 1024)) ; 8GB
+;; 2024-05-27: Try out GCMH https://gitlab.com/koral/gcmh
+;; (setq garbage-collection-messages t
+;;       gc-cons-percentage 0.6
+;;       gc-cons-threshold (* 8 1024 1024 1024)) ; 8GB
 
 ;; Prefer loading newest compiled .el file and turn off
 (setq load-prefer-newer       noninteractive
