@@ -150,10 +150,11 @@ Highlight global-search-replace strings dynamically.
       (lambda () (setq truncate-lines t)))
 
     :bind (:map dired-mode-map
-    ("C-x C-d" . dired-jump)
-    ("C-x j"   . dired-jump-other-window)
-    ("e"       . dired-toggle-read-only) ; Inline filename editing!
-    ("."       . dired-up-directory))
+                ("C-x C-d" . dired-jump)
+                ("C-x j"   . dired-jump-other-window)
+                ("e"       . dired-toggle-read-only) ; Inline filename editing!
+                ("q"       . kill-this-buffer)
+                ("."       . dired-up-directory))
 
     :config
     (setq auto-revert-verbose             nil ;; Auto refresh Dired, but be quiet about it
@@ -947,7 +948,7 @@ Nice(r) bullets (replaces org-bullets)
     )
 #+end_src
 * Code Development
-** eglot (obo python and yaml)
+** eglot/python
 - Great reference for comprehensive python config: [[https://config.phundrak.com/emacs/packages/programming.html#python][Programming | Phundrak's Dotfiles]]
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
@@ -1050,7 +1051,7 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 
     )
 #+end_src
-** magit & git
+** magit/git
 *** magit
 #+begin_src emacs-lisp
   (use-package magit
@@ -1076,13 +1077,6 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
     (jump-to-register :magit-fullscreen))
 
 
-#+end_src
-*** magit-delta
-Use the wonderful delta diff tool in magit diff display.
-#+begin_src emacs-lisp
-  (use-package magit-delta
-    :after magit
-    :hook (magit-mode . magit-delta-mode))
 #+end_src
 *** magit-file-icons
 [[https://github.com/gekoke/magit-file-icons/tree/d85fad81e74a9b6ce9fd7ab341f265d5a181d2a8][Github: magit-file-icons]]
@@ -1689,6 +1683,14 @@ https://github.com/jcollard/elm-mode
     :config
     (lin-global-mode 1)
     )
+#+end_src
+** magit-delta
+<2024-05-31 Fri> Took this out...I actually LIKE the old school diff display!
+Use the wonderful delta diff tool in magit diff display.
+#+begin_src emacs-lisp
+  (use-package magit-delta
+    :after magit
+    :hook (magit-mode . magit-delta-mode))
 #+end_src
 ** mode-lines
 Tried and discarded for one reason or another.
