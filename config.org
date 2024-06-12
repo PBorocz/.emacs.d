@@ -84,19 +84,22 @@
 #+end_src
 ** dashboard
 #+begin_src emacs-lisp
-  (use-package light-dashboard
+  (use-package enlight
 
-    :straight (light-dashboard :type git :host github :repo "ichernyshovvv/light-dashboard")
+    :straight (enlight :type git :host github :repo "ichernyshovvv/enlight")
 
     :custom
-    (light-dashboard-alist
-     '(
-       ("Projects"
-        ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "h")
-        ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
-        ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
-        ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
-        )
+    (enlight-content
+     (concat
+      (propertize "Emacs Home" 'face 'highlight )
+      "\n\n\n"
+      (enlight-menu
+       '(("Projects"
+          ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "h")
+          ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
+          ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
+          ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
+          )
 
        ("Management"
         ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
@@ -108,10 +111,12 @@
         ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
         ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
         )
-       ))
+       ))))
+
     :config
-    (setq light-dashboard-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something more generic.
-    (light-dashboard-open))
+    (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something more generic.
+    (enlight-open)
+    )
 #+end_src
 ** anzu (nicer search-replace)
 Highlight global-search-replace strings dynamically.
