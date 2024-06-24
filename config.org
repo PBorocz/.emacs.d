@@ -91,20 +91,20 @@
     :custom
     (enlight-content
      (concat
-      (propertize "Emacs Home" 'face 'highlight )
+      (propertize "Emacs Dashboard" 'face 'highlight )
       "\n\n\n"
       (enlight-menu
        '(("Projects"
-          ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "h")
-          ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri"))
-          ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos"))
-          ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard"))
+          ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
+          ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
+          ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
+          ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "h")
           )
 
        ("Management"
-        ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
-        ("Journal.org"  (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
-        ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
+        ("Projects.org"         (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+        ("Journal.org"          (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
+        ("GTD.org"              (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
         )
 
        ("Utilities"
@@ -1170,13 +1170,16 @@ https://github.com/karthink/gptel
    (use-package gptel
      :straight (:host github :repo "karthink/gptel")
 
-     :custom
-     (gptel-model "gpt-4o")
-     (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key))
-     ;; (gptel-model "claude-3-haiku-20240307") ; "claude-3-opus|sonnet-20240229" also available
+     :config
+     ;; Setup Anthropic..
+     (setq gptel-model "claude-3-5-sonnet-20240620")
+     (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+     )
+     ;; Setup OpenAI..
+     ;; (gptel-model "gpt-4o")
+
      ;; :config
      ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
-     )
 
    (defun my-straight-pull-package (package)
      "Pull the latest version of PACKAGE from its remote repository."
@@ -1680,6 +1683,15 @@ https://github.com/jcollard/elm-mode
 #+end_src
 ** find-file-in-project
 ~project-find-file~ works fine, no need to ffip for me.
+** focus
+[[https://github.com/larstvei/Focus][GitHub - larstvei/Focus: Dim the font color of text in surrounding paragraphs]]
+Doesn't work that well with python (for instance, imports are always grey)
+ #+begin_src emacs-lisp
+   (use-package focus
+     :config
+     (add-to-list 'focus-mode-to-thing '(python-mode . paragraph))
+     )
+#+end_src
 ** lin
 [[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
 #+begin_src emacs-lisp
