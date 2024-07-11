@@ -162,18 +162,20 @@ Highlight global-search-replace strings dynamically.
                 ("."       . dired-up-directory))
 
     :config
-    (setq auto-revert-verbose             nil ;; Auto refresh Dired, but be quiet about it
-      delete-by-moving-to-trash           t
-      dired-dwim-target                   t
-      dired-hide-details-mode             nil
-      dired-listing-switches              "-Al"
-      dired-recursive-copies              'always
-      dired-recursive-deletes             'always
-      dired-use-ls-dired                  t
-      dired-vc-rename-file                t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
-      global-auto-revert-non-file-buffers t
-      insert-directory-program            "/usr/local/bin/gls"
-      wdired-allow-to-change-permissions  t
+    (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
+      delete-by-moving-to-trash                        t
+      dired-create-destination-dirs-on-trailing-dirsep t
+      dired-dwim-target                                t
+      dired-create-destination-dirs                    'ask
+      dired-hide-details-mode                          nil
+      dired-listing-switches                           "-Al"
+      dired-recursive-copies                           'always
+      dired-recursive-deletes                          'always
+      dired-use-ls-dired                               t
+      dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
+      global-auto-revert-non-file-buffers              t
+      insert-directory-program                         "/usr/local/bin/gls"
+      wdired-allow-to-change-permissions               t
       )
     )
 
@@ -413,23 +415,22 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     :hook (prog-mode)
     )
 #+end_src
-** theme
+** theme (gruvbox-dark-hard)
 #+begin_src emacs-lisp
-    (use-package gruvbox-theme
-      :demand t
-      :config
-      (load-theme 'gruvbox-dark-hard t)
-      (custom-set-faces
-       '(org-level-1            ((t (:height 1.15))))
-       '(org-level-2            ((t (:height 1.10))))
-       '(org-level-3            ((t (:height 1.05))))
-       '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-       '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-       '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
-       '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
-       '(org-document-title     ((t (:height 1.5 :underline nil))))
-       )
-      )
+  (use-package gruvbox-theme
+    :demand t
+    :config
+    (load-theme 'gruvbox-dark-hard t)
+    (custom-set-faces
+     '(org-level-1            ((t (:height 1.15))))
+     '(org-level-2            ((t (:height 1.10))))
+     '(org-level-3            ((t (:height 1.05))))
+     '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
+     '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
+     '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
+     '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
+     '(org-document-title     ((t (:height 1.5 :underline nil))))
+     ))
 #+end_src
 ** hl-line-mode
 #+begin_src emacs-lisp
@@ -1942,7 +1943,7 @@ https://protesilaos.com/emacs/substitute
     (load-theme 'monokai nil)
   )
 #+end_src
-** theme: [[https://protesilaos.com/emacs/ef-themes][ef-autumn]] (prot)
+** theme: [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
 #+begin_src emacs-lisp
   (use-package ef-themes
     ;; :ensure nil
@@ -1959,6 +1960,24 @@ https://protesilaos.com/emacs/substitute
     (fg-heading-3 green)))
     (load-theme 'ef-autumn)
   )
+#+end_src
+** theme: flexoki
+#+begin_src emacs-lisp
+  (use-package flexoki-themes
+    :ensure t  ;; or :straight t if using straight.el
+    :config
+    (load-theme 'flexoki-themes-dark t)
+    :custom
+    (flexoki-themes-use-bold-keywords t)
+    (flexoki-themes-use-bold-builtins t)
+    (flexoki-themes-use-italic-comments t))
+#+end_src
+** theme: nano
+#+begin_src emacs-lisp
+  (use-package nano-theme
+    :ensure t
+    :config
+    (load-theme 'nano t))
 #+end_src
 ** ws-butler
 #+begin_src emacs-lisp
