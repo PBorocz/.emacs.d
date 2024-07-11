@@ -1127,19 +1127,14 @@ Use a single-window (part. for Magit) and then close.
      :defer 1
      )
  #+end_src
-*** git-gutter
- #+begin_src emacs-lisp
-   (use-package git-gutter
-     :straight (:build t)
-     :defer 1
-
-     :init
-     (global-git-gutter-mode +1)
-
-     :config
-     (setq git-gutter:disabled-modes '(org-mode image-mode))
-     )
- #+end_src
+*** diff-hl-mode
+Ooh..like this much better than git-gutter!
+#+begin_src emacs-lisp
+  (use-package diff-hl
+    :init
+    (global-diff-hl-mode)
+    )
+#+end_src
 *** ibuffer-git
 #+begin_src emacs-lisp
   (use-package ibuffer-git
@@ -1681,6 +1676,18 @@ https://github.com/jcollard/elm-mode
     :init
     (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
     )
+#+end_src
+** git-gutter
+Stopped usage on 2024-07-10 after replacing with diff-hl.
+#+begin_src emacs-lisp
+  ;; (use-package git-gutter
+  ;;   :straight (:build t)
+  ;;   :defer 1
+  ;;   :init
+  ;;   (global-git-gutter-mode +1)
+  ;;   :config
+  ;;   (setq git-gutter:disabled-modes '(org-mode image-mode))
+  ;;   )
 #+end_src
 ** find-file-in-project
 ~project-find-file~ works fine, no need to ffip for me.
