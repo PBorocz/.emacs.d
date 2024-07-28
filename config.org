@@ -94,7 +94,7 @@
       (propertize "Emacs Dashboard" 'face 'highlight )
       "\n\n\n"
       (enlight-menu
-       '(("Projects"
+       '(("Active Projects"
           ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
           ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
           ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
@@ -337,6 +337,7 @@ Interactive font scaling:
  History of fonts actually tried for more than one day!:
  - (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
  - (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+ - (defvar pb/var-fixedwidth-font "-*-Inconsolata-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+begin_src emacs-lisp
   (setq ns-use-thin-smoothing t)
@@ -357,6 +358,7 @@ Interactive font scaling:
     (set-frame-font (format pb/var-fixedwidth-font 14))
     )
 
+  ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
   (if (display-graphic-p)
       (if (>= (x-display-pixel-width) 3840)
           (pb/set-monitor-font-size)
@@ -415,7 +417,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     :hook (prog-mode)
     )
 #+end_src
-** theme (gruvbox-dark-hard)
+** COMMENT dark-theme (gruvbox-dark-hard)
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
     :demand t
@@ -427,10 +429,110 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
      '(org-level-3            ((t (:height 1.05))))
      '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
      '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-     '(font-lock-doc-face     ((t (:foreground "#666666" :height 0.9))))
-     '(font-lock-comment-face ((t (:foreground "#666666" :height 0.9))))
+     '(font-lock-doc-face     ((t (:foreground "#666666")))) ;; :height 0.9
+     '(font-lock-comment-face ((t (:foreground "#666666")))) ;; :height 0.9
      '(org-document-title     ((t (:height 1.5 :underline nil))))
      ))
+#+end_src
+** light-theme (modus-operandi)
+#+begin_src emacs-lisp
+    (use-package modus-themes
+      :demand t
+      :config
+      ;;
+      ;; Use Prot's own configuration:
+      ;; https://protesilaos.com/emacs/modus-themes#h:aabcada6-810d-4eee-b34a-d2a9c301824d
+      ;;
+      (setq modus-themes-custom-auto-reload nil
+        modus-themes-to-toggle         '(modus-operandi modus-vivendi)
+        modus-themes-mixed-fonts       t
+        modus-themes-variable-pitch-ui nil
+        modus-themes-italic-constructs t
+        modus-themes-bold-constructs   t
+        modus-themes-org-blocks        'gray-background
+        modus-themes-completions       '((t . (extrabold)))
+        modus-themes-prompts           nil
+        )
+
+      (setq modus-themes-common-palette-overrides
+          '((cursor magenta-cooler)
+
+          ;; Make the fringe invisible.
+          (fringe unspecified)
+
+          ;; Make line numbers less intense and add a shade of cyan
+          ;; for the current line number.
+          (fg-line-number-inactive "gray50")
+          (fg-line-number-active cyan-cooler)
+          (bg-line-number-inactive unspecified)
+          (bg-line-number-active unspecified)
+
+          ;; Make the current line of `hl-line-mode' a fine shade of
+          ;; gray (though also see my `lin' package).
+          (bg-hl-line bg-dim)
+
+          ;; Make the region have a cyan-green background with no
+          ;; specific foreground (use foreground of underlying text).
+          ;; "bg-sage" refers to Salvia officinalis, else the common
+          ;; sage.
+          (bg-region bg-sage)
+          (fg-region unspecified)
+
+          ;; Make matching parentheses a shade of magenta. It complements the region nicely.
+          (bg-paren-match bg-magenta-intense)
+
+          ;; Change dates to a set of more subtle combinations.
+          (date-deadline  magenta-cooler)
+          (date-scheduled magenta)
+          (date-weekday   fg-main)
+          (date-event     fg-dim)
+          (date-now       blue-faint)
+
+          ;; Make tags (Org) less colorful and tables look the same as
+          ;; the default foreground.
+          (prose-done  cyan-cooler)
+          (prose-tag   fg-dim)
+          (prose-table fg-main)
+
+          ;; Make headings less colorful (though I never use deeply
+          ;; nested headings).
+          (fg-heading-2 blue-faint)
+          (fg-heading-3 magenta-faint)
+          (fg-heading-4 blue-faint)
+          (fg-heading-5 magenta-faint)
+          (fg-heading-6 blue-faint)
+          (fg-heading-7 magenta-faint)
+          (fg-heading-8 blue-faint)
+
+          ;; Make the active mode line a fine shade of lavender and tone down the gray of the inactive mode lines.
+          (bg-mode-line-active       bg-lavender)
+          (border-mode-line-active   bg-lavender)
+          (bg-mode-line-inactive     bg-dim)
+          (border-mode-line-inactive bg-inactive)
+
+          ;; Make the prompts a shade of magenta, to fit in nicely withthe overall blue-cyan-purple style of the other overrides.
+          ;; Add a nuanced background as well.
+          (bg-prompt bg-magenta-nuanced)
+          (fg-prompt magenta-cooler)
+
+          ;; Tweak some more constructs for stylistic constistency.
+          (name       blue-warmer)
+          (identifier magenta-faint)
+          (keybind    magenta-cooler)
+          (accent-0   magenta-cooler)
+          (accent-1   cyan-cooler)
+          (accent-2   blue-warmer)
+          (accent-3   red-cooler)
+          )
+        )
+
+      ;; Make the active mode line have a pseudo 3D effect (this assumes
+      ;; you are using the default mode line and not an extra package).
+      (custom-set-faces
+       '(mode-line ((t :box (:style released-button)))))
+
+      (load-theme 'modus-operandi t)
+      )
 #+end_src
 ** hl-line-mode
 #+begin_src emacs-lisp
@@ -954,7 +1056,7 @@ Nice(r) bullets (replaces org-bullets)
     )
 #+end_src
 * Code Development
-** eglot/python
+** python
 - Great reference for comprehensive python config: [[https://config.phundrak.com/emacs/packages/programming.html#python][Programming | Phundrak's Dotfiles]]
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
@@ -1000,8 +1102,7 @@ Nice(r) bullets (replaces org-bullets)
     )
 
   (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-     '(python-ts-mode . ("~/.local/bin/ruff-lsp"))))
+    (add-to-list 'eglot-server-programs '(python-ts-mode . ("~/.local/bin/ruff" "server"))))
 
 #+end_src
 *** pyvenv-auto
@@ -1312,11 +1413,17 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
      (setq vterm-shell "/usr/local/bin/fish")
      :hook
      ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-      (vterm-mode . vterm-custom-font-size))
+      (vterm-mode . pb-hook/vterm-text-scale)
+      ;; (vterm-mode . pb-hook/vterm-custom-font-size)
+      )
      :custom
      (vterm-always-compile-module t))
 
-   (defun vterm-custom-font-size()
+   (defun pb-hook/vterm-text-scale()
+     "Sue me...I like to see more text in my terminal windows."
+     (text-scale-set -1))
+
+   (defun pb-hook/vterm-custom-font-size()
      "Sue me...I like to see more text in my terminal windows."
      (setq buffer-face-mode-face '(:weight light :height 180))
      (buffer-face-mode))
