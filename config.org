@@ -81,9 +81,19 @@
     (setq show-paren-delay 0)  ; We want matching parens to show immediately
     :config
     (show-paren-mode t))
+
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
+    (exec-path-from-shell-initialize))
 #+end_src
 ** dashboard
 #+begin_src emacs-lisp
+  (defun my-start-gptel ()
+    "Start a new GPTel chat session."
+    (interactive)
+    (gptel "GPT Chat"))
+
   (use-package enlight
 
     :straight (enlight :type git :host github :repo "ichernyshovvv/enlight")
@@ -95,23 +105,24 @@
       "\n\n\n"
       (enlight-menu
        '(("Active Projects"
-      ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
-      ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
-      ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
-      ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "h")
-      )
+          ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
+          ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
+          ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
+          ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "h")
+          )
 
-       ("Management"
-    ("Projects.org"         (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
-    ("Journal.org"          (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
-    ("GTD.org"              (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
-    )
+         ("Management"
+          ("Projects.org"         (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+          ("Journal.org"          (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
+          ("GTD.org"              (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
+          )
 
-       ("Utilities"
-    ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
-    ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
-    )
-       ))))
+         ("Utilities"
+          ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
+          ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
+          ("Claude"              (my-start-gptel))
+          )
+         ))))
 
     :config
     (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something more generic.
@@ -756,8 +767,6 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   (add-hook 'python-mode-hook    'eglot-ensure)
   (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
-  (add-hook 'after-save-hook  'eglot-format)
-
   ;; "Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
   ;; However, modern machines can take on a lot more. Set it to 1MB which is equal to the limit
   ;; defined in /proc/sys/fs/pipe-max-size/."
@@ -798,23 +807,23 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
   (use-package format-all
-        :defer 1
+   :commands format-all-mode
+   :hook (prog-mode . format-all-mode)
+   :config
+   (setq-default format-all-formatters '(("Python" (ruff "format")))))
 
-        :commands
-        (format-all-mode format-all-region-or-buffer)
+  ;; (use-package format-all
+  ;;   :commands
+  ;;   (format-all-mode format-all-region-or-buffer)
 
-        :hook
-        ((python-mode python-ts-mode) . (lambda ()
-          (setq format-all-formatters '(("Python" ruff)))))
+  ;;   :hook
+  ;;   ((python-mode python-ts-mode) . (lambda () (setq format-all-formatters '(("Python" "~/.local/bin/ruff" "format")))))
 
-        :config
-        (format-all-ensure-formatter)
-
-        (setq-default format-all-formatters '(("Python" ruff)))
-
-        (global-set-key (kbd "M-F") #'format-all-buffer)
-
-        )
+  ;;   :config
+  ;;   ;; (setq-default format-all-formatters '(("Python" ("~/.local/bin/ruff" "format"))))
+  ;;   (global-set-key (kbd "M-F") #'format-all-buffer)
+  ;;   (format-all-ensure-formatter)
+  ;;   )
 #+end_src
 ** magit/git
 *** magit
