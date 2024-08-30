@@ -87,13 +87,8 @@
     :config
     (exec-path-from-shell-initialize))
 #+end_src
-** dashboard
+** enlight (opening dashboard)
 #+begin_src emacs-lisp
-  (defun my-start-gptel ()
-    "Start a new GPTel chat session."
-    (interactive)
-    (gptel "GPT Chat"))
-
   (use-package enlight
 
     :straight (enlight :type git :host github :repo "ichernyshovvv/enlight")
@@ -112,15 +107,15 @@
           )
 
          ("Management"
-          ("Projects.org"         (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
-          ("Journal.org"          (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
-          ("GTD.org"              (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
+          ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
+          ("Journal.org"  (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
+          ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
           )
 
          ("Utilities"
           ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
           ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
-          ("Claude"              (my-start-gptel))
+          ("Claude"              (command-execute 'gptel))
           )
          ))))
 
