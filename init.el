@@ -38,6 +38,11 @@
 (setq debug-on-quit  t)
 
 ;; -----------------------------------------------------------------------------
+;; Expand path for cases where author hasn't packaged some functionality.
+;; -----------------------------------------------------------------------------
+(add-to-list 'load-path "~/.emacs.d/local/")
+
+;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
 ;; 2024-05-06 Testing shows that leaving this to tangle/load vs.
 ;;            just loading the config.el is a non-perceptible change in startup time.

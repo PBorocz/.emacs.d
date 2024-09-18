@@ -164,7 +164,6 @@ Highlight global-search-replace strings dynamically.
         ("C-x C-d" . dired-jump)
         ("C-x j"   . dired-jump-other-window)
         ("e"       . dired-toggle-read-only) ; Inline filename editing!
-        ("q"       . kill-this-buffer)
         ("."       . dired-up-directory))
 
     :config
@@ -386,20 +385,20 @@ Nice and simple: https://github.com/jessiehildebrandt/mood-line
 [[https://protesilaos.com/emacs/pulsar]]
 #+begin_src emacs-lisp
   (use-package pulsar
-        :defer 1
-        :straight (pulsar :type git :host github :repo "protesilaos/pulsar")
-        :config
-          (setq pulsar-delay  0.10
+    :defer 1
+    :straight (pulsar :type git :host github :repo "protesilaos/pulsar")
+    :config
+    (setq pulsar-delay  0.10
         pulsar-face  'pulsar-yellow
         pulsar-pulse nil)
 
-          (dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
-        (add-hook hook #'pulsar-mode))
+    (dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
+      (add-hook hook #'pulsar-mode))
 
-          (add-hook 'next-error-hook #'pulsar-pulse-line)
+    (add-hook 'next-error-hook #'pulsar-pulse-line)
 
-          (pulsar-global-mode 1)
-          )
+    (pulsar-global-mode 1)
+    )
 #+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
@@ -426,19 +425,19 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 ** dark-theme (gruvbox-dark-hard)
 #+begin_src emacs-lisp
   (use-package gruvbox-theme
-        :demand t
-        :config
-        (load-theme 'gruvbox-dark-hard t)
-        (custom-set-faces
-         '(org-level-1            ((t (:height 1.15))))
-         '(org-level-2            ((t (:height 1.10))))
-         '(org-level-3            ((t (:height 1.05))))
-         '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-         '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-         '(font-lock-doc-face     ((t (:foreground "#666666")))) ;; :height 0.9
-         '(font-lock-comment-face ((t (:foreground "#666666")))) ;; :height 0.9
-         '(org-document-title     ((t (:height 1.5 :underline nil))))
-         ))
+    :demand t
+    :config
+    (load-theme 'gruvbox-dark-hard t)
+    (custom-set-faces
+     '(org-level-1            ((t (:height 1.15))))
+     '(org-level-2            ((t (:height 1.10))))
+     '(org-level-3            ((t (:height 1.05))))
+     '(org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
+     '(org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
+     '(font-lock-doc-face     ((t (:foreground "#666666")))) ;; :height 0.9
+     '(font-lock-comment-face ((t (:foreground "#666666")))) ;; :height 0.9
+     '(org-document-title     ((t (:height 1.5 :underline nil))))
+     ))
 #+end_src
 ** COMMENT light-theme (modus-operandi)
 #+begin_src emacs-lisp
@@ -540,17 +539,27 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
           (load-theme 'modus-operandi t)
           )
 #+end_src
-** hl-line-mode
+** hl-line
 #+begin_src emacs-lisp
-  (add-hook  'org-mode-hook #'hl-line-mode)
-  (add-hook 'prog-mode-hook #'hl-line-mode)
+  (use-package hl-line
+    :custom-face
+    (hl-line ((t (:background "gray17"))))
+  )
+  (global-hl-line-mode)
+#+end_src
+** hl-line+
+#+begin_src emacs-lisp
+  (use-package hl-line+
+    :config
+    (hl-line-when-idle-interval 0.5)
+    (toggle-hl-line-when-idle 1))
 #+end_src
 ** nerd-icons-ibuffer
 Displays nerd-icons for iBuffer types...yes, somewhat indulgent but I'm worth it ;-)
 #+begin_src emacs-lisp
   (use-package nerd-icons-ibuffer
-        :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
-        )
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
+    )
 #+end_src
 * Window Management
 ** bindings
@@ -821,7 +830,7 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   ;;    indent-bars-pad-frac 0.1)
   ;;   ) ;; or whichever modes you prefer
 #+end_src
-* envrc
+** envrc
 [[https://github.com/purcell/envrc]]
 #+begin_src emacs-lisp
   (use-package envrc
@@ -1301,6 +1310,56 @@ https://github.com/karthink/gptel
    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
 
  #+end_src
+*** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
+<2024-09-03 Tue> [[https://magnus.therning.org/2024-09-01-improving-how-i-handle-secrets-in-my-work-notes.html][Improving how I handle secrets in my work notes]]:
+
+*Improving how I handle secrets in my work notes*
+
+At work I use org-mode to keep notes about useful ways to query our
+systems, mostly that involves using the built-in SQL support to access
+DBs and ob-http to send HTTP requests. In both cases I often need to
+provide credentials for the systems. I'm embarrassed to admit it, but
+for a long time I've taken the easy path and kept all credentials in
+clear text. Every time I've used one of those code blocks I've thought
+I really ought to find a better way of handling these secrets one of
+these days. Yesterday was that day.
+
+I ended up with two functions that uses auth-source and its ~/.authinfo.gpg file.
+#+begin_src emacs-lisp
+  (defun mes/auth-get-pwd (host)
+    "Get the password for a host (authinfo.gpg)"
+    (-> (auth-source-search :host host)
+        car
+        (plist-get :secret)
+        funcall))
+
+  (defun mes/auth-get-key (host key)
+    "Get a key's value for a host (authinfo.gpg)
+
+  Not usable for getting the password (:secret), use 'mes/auth-get-pwd'
+  for that."
+    (-> (auth-source-search :host host)
+        car
+        (plist-get key)))
+#+end_src
+
+It turns out that the library can handle more keys than the
+documentation suggests so for DB entries I'm using a machine (:host)
+that's a bit shorter and easier to remember than the full AWS
+hostname. Then I keep the DB host and name in dbhost (:dbhost) and
+dbname (:dbname) respectively. That makes an entry look like this:
+
+machine db.svc login user port port password pwd dbname dbname dbhost dbhost
+If I use it in a property drawer it looks like this
+
+:PROPERTIES:
+:header-args:sql: :engine postgresql
+:header-args:sql+: :dbhost (mes/auth-get-key "db.svc" :dbhost)
+:header-args:sql+: :dbport (string-to-number (mes/auth-get-key "db.svc" :port))
+:header-args:sql+: :dbuser (mes/auth-get-key "db.svc" :user)
+:header-args:sql+: :dbpassword (mes/auth-get-pwd "db.svc")
+:header-args:sql+: :database (mes/auth-get-key "db.svc" :dbname)
+:END:
 ** postgresql
 #+begin_src emacs-lisp
   (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
