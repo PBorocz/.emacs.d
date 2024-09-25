@@ -801,8 +801,6 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
 [[https://github.com/jdtsmith/indent-bars][GitHub - jdtsmith/indent-bars]]
 #+begin_src emacs-lisp
   (use-package indent-bars
-    :straight (indent-bars :type git :host github :repo "jdtsmith/indent-bars")
-
     :hook ((python-mode python-ts-mode yaml-mode) . indent-bars-mode)
 
     :custom
