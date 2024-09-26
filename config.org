@@ -18,6 +18,7 @@
   (use-package emacs
     :init
     (setq
+     ad-redefinition-action                 'accept   ; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
      auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
      blink-cursor-blinks                    5
      blink-cursor-delay                     0.0
@@ -56,7 +57,7 @@
      vc-follow-symlinks                     t         ; https://stackoverflow.com/questions/15390178/emacs-and-symbolic-links#15391387
      visible-bell                           t
      word-wrap                              nil
-     x-stretch-cursor                       t
+     x-stretch-cursor                       t         ; https://pragmaticemacs.wordpress.com/2017/10/01/adaptive-cursor-width/
      yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
 
@@ -343,29 +344,30 @@ Interactive font scaling:
  - (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
  - (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
  - (defvar pb/var-fixedwidth-font "-*-Inconsolata-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ - (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+begin_src emacs-lisp
   (setq ns-use-thin-smoothing t)
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-Cascadia Code-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
-"Set font for 4K monitor."
-        (interactive)
-        (set-frame-font (format pb/var-fixedwidth-font 22))
-        )
+    "Set font for 4K monitor."
+    (interactive)
+    (set-frame-font (format pb/var-fixedwidth-font 22))
+    )
 
   (defun pb/set-laptop-font-size ()
-        "Set font for laptop display."
-        (interactive)
-        (set-frame-font (format pb/var-fixedwidth-font 14))
-        )
+    "Set font for laptop display."
+    (interactive)
+    (set-frame-font (format pb/var-fixedwidth-font 14))
+    )
 
   ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
   (if (display-graphic-p)
-          (if (>= (x-display-pixel-width) 3840)
+      (if (>= (x-display-pixel-width) 3840)
           (pb/set-monitor-font-size)
         (pb/set-laptop-font-size)))
 #+end_src
@@ -764,6 +766,16 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
     :straight t
     )
 
+  (use-package eglot
+    :ensure nil
+    :defer t
+    :custom
+    (eglot-report-progress nil)
+    :config
+    (fset #'jsonrpc--log-event #'ignore)
+    (setq jsonrpc-event-hook nil)
+    )
+
   ;; Setup python
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs '(python-mode . ("~/.local/bin/ruff" "server")))
@@ -802,31 +814,15 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
 #+begin_src emacs-lisp
   (use-package indent-bars
     :hook ((python-mode python-ts-mode yaml-mode) . indent-bars-mode)
-
     :custom
-    (indent-bars-color                    '(highlight :face-bg t :blend 0.3))
-    (indent-bars-pattern                  ".")
-    (indent-bars-width-frac               0.2)
-    (indent-bars-pad-frac                 0.2)
-    (indent-bars-prefer-character         t)
-    (indent-bars-color-by-depth           nil)
-    (indent-bars-color-by-depth           '(:regexp "outline-\\([0-9]+\\)" :blend 1))
+    (indent-bars-color                   '(highlight :face-bg t :blend 0.3))
+    (indent-bars-pattern                 ".")
+    (indent-bars-width-frac              0.2)
+    (indent-bars-pad-frac                0.2)
+    (indent-bars-prefer-character        t)
+    (indent-bars-color-by-depth          '(:regexp "outline-\\([0-9]+\\)" :blend 1))
     (indent-bars-highlight-current-depth '(:blend 0.3))
     )
-
-  ;; (use-package indent-bars
-  ;;   :straight (indent-bars :type git :host github :repo "jdtsmith/indent-bars")
-
-  ;;   :hook
-  ;;   ((python-mode python-ts-mode yaml-mode) . indent-bars-mode)
-
-  ;;   :config
-  ;;   (setq
-  ;;    indent-bars-color '(highlight :face-bg t :blend 0.3)
-  ;;    indent-bars-pattern " . . . . ." ; play with the number of dots for your usual font size
-  ;;    indent-bars-width-frac 0.25
-  ;;    indent-bars-pad-frac 0.1)
-  ;;   ) ;; or whichever modes you prefer
 #+end_src
 ** envrc
 [[https://github.com/purcell/envrc]]
@@ -1479,16 +1475,18 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
    (use-package vterm
-         :defer t
-         :config
-         (setq vterm-shell "/usr/local/bin/fish")
-         :hook
-         ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
-          (vterm-mode . pb-hook/vterm-text-scale)
-          ;; (vterm-mode . pb-hook/vterm-custom-font-size)
-          )
-         :custom
-         (vterm-always-compile-module t))
+     :ensure t
+     :defer t
+     :config
+     (setq vterm-timer-delay 0.01)
+     (setq vterm-shell "/usr/local/bin/fish")
+     :hook
+     ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
+      (vterm-mode . pb-hook/vterm-text-scale)
+      ;; (vterm-mode . pb-hook/vterm-custom-font-size)
+      )
+     :custom
+     (vterm-always-compile-module t))
 
    (defun pb-hook/vterm-text-scale()
          "Sue me...I like to see more text in my terminal windows."
