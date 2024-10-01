@@ -154,6 +154,22 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
+  (defun pgb/dired-create-file ()
+    "Wrapper to dired-create-empty-file to avoid minibuffer completion."
+    ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
+    (interactive)
+    (let ((search-term
+            (read-from-minibuffer "Create File : ")))
+      (dired-create-empty-file search-term)))
+
+  (defun pgb/dired-create-directory ()
+    "Wrapper to dired-create-directory to avoid minibuffer completion."
+    ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
+    (interactive)
+    (let ((search-term
+            (read-from-minibuffer "Create Directory : ")))
+      (dired-create-directory search-term)))
+
   (use-package dired
     :straight (:type built-in)
 
@@ -165,7 +181,10 @@ Highlight global-search-replace strings dynamically.
         ("C-x C-d" . dired-jump)
         ("C-x j"   . dired-jump-other-window)
         ("e"       . dired-toggle-read-only) ; Inline filename editing!
-        ("."       . dired-up-directory))
+        ("."       . dired-up-directory)
+        ("_"       . pgb/dired-create-file)
+        ("+"       . pgb/dired-create-directory)
+        )
 
     :config
     (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
@@ -352,7 +371,7 @@ Interactive font scaling:
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-Noto Sans Mono-light-normal-normal-*-12-*-*-*-p-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
