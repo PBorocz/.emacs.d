@@ -1216,45 +1216,32 @@ Nice(r) bullets (replaces org-bullets)
         (yaml-mode . yaml-pro-ts-mode)
         )
 #+end_src
-** web/mmm-mode
+** web-mode
 #+begin_src emacs-lisp
-  (use-package mmm-mode
-        :defer t
+  (use-package web-mode
+    :ensure t
+    :mode
+    (("\\.phtml\\'"    . web-mode)
+     ("\\.php\\'"      . web-mode)
+     ("\\.tpl\\'"      . web-mode)
+     ("\\.htmx\\'"     . web-mode)
+     ("\\.html\\'"     . web-mode)
+     ("\\.[agj]sp\\'"  . web-mode)
+     ("\\.as[cp]x\\'"  . web-mode)
+     ("\\.erb\\'"      . web-mode)
+     ("\\.mustache\\'" . web-mode)
+     ("\\.djhtml\\'"   . web-mode))
 
-        :config
-        (setq mmm-global-mode 'auto)
-        (add-to-list 'auto-mode-alist '("\\.html$"     . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.htmx$"     . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.dhtml$"    . web-mode))
-        (add-to-list 'auto-mode-alist '("\\.jinja2\\'" . html-mode))
+    :config
+    (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
+    (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
+    ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-css-indent-offset    2)
+    (setq web-mode-code-indent-offset   2)
+    (setq web-mode-indent-style         2)
 
-        ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
-        ;; (use-package mmm-jinja2
-        ;;   :load-path "~/.emacs.d/site-lisp/mmm-jinja2/"
-        ;;   :init
-        ;;   (setq mmm-global-mode 'maybe
-        ;;     mmm-parse-when-idle 't)
-        ;;   )
-
-        (use-package web-mode
-          :config
-          (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
-          (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
-        )
-
-        ;; <2024-03-27 Wed> Starting to get some "Error running timer ‘mmm-mode-idle-reparse’: (wrong-type-argument integer-or-marker-p nil)" errors
-        ;; (mmm-add-mode-ext-class 'web-mode  "\\.html?\\'"  'jinja2)
-        ;; (mmm-add-mode-ext-class 'html-mode "\\.jinja2\\'" 'jinja2)
-        )
-
-  ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
-  (defun pb-web-mode-hook ()
-        (setq web-mode-markup-indent-offset 2)
-        (setq web-mode-css-indent-offset    2)
-        (setq web-mode-code-indent-offset   2)
-        (setq web-mode-indent-style         2)
-        )
-  (add-hook 'web-mode-hook 'pb-web-mode-hook)
+    )
 #+end_src
 ** tree-sitter
 - As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
