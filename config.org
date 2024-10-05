@@ -88,7 +88,7 @@
     :config
     (exec-path-from-shell-initialize))
 #+end_src
-** enlight (opening dashboard)
+** enlight
 #+begin_src emacs-lisp
   (use-package enlight
 
@@ -125,7 +125,7 @@
     (enlight-open)
     )
 #+end_src
-** anzu (nicer search-replace)
+** anzu
 Highlight global-search-replace strings dynamically.
 #+begin_src emacs-lisp
   (use-package anzu
@@ -135,7 +135,7 @@ Highlight global-search-replace strings dynamically.
     (global-anzu-mode)
     )
 #+end_src
-** hungry-deletes (aggressively delete white-space)
+** hungry-deletes
 [[https://github.com/hrehfeld/emacs-smart-hungry-delete]]
 #+begin_src emacs-lisp
   (use-package smart-hungry-delete
@@ -149,7 +149,7 @@ Highlight global-search-replace strings dynamically.
     :init (smart-hungry-delete-add-default-hooks)
     )
 #+end_src
-** dired (customise by dired display)
+** dired
 [[https://github.com/MatthewZMD/.emacs.d]]
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
@@ -180,7 +180,8 @@ Highlight global-search-replace strings dynamically.
     :bind (:map dired-mode-map
         ("C-x C-d" . dired-jump)
         ("C-x j"   . dired-jump-other-window)
-        ("e"       . dired-toggle-read-only) ; Inline filename editing!
+        ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
+        ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
         ("."       . dired-up-directory)
         ("_"       . pgb/dired-create-file)
         ("+"       . pgb/dired-create-directory)
@@ -1217,6 +1218,7 @@ Nice(r) bullets (replaces org-bullets)
         )
 #+end_src
 ** web-mode
+[[https://web-mode.org][Web-mode documentation]]
 #+begin_src emacs-lisp
   (use-package web-mode
     :ensure t
