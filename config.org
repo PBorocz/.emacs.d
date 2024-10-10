@@ -365,14 +365,15 @@ Interactive font scaling:
  - (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
  - (defvar pb/var-fixedwidth-font "-*-Inconsolata-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
  - (defvar pb/var-fixedwidth-font "-*-Cascadia Code-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- - (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ - Valiant attempt! Almost a week with Noto Sans Mono but going back to SCP-NF due to the more "rounded" nature.
+   (defvar pb/var-fixedwidth-font "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
 #+begin_src emacs-lisp
   (setq ns-use-thin-smoothing t)
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
