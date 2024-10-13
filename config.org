@@ -46,7 +46,6 @@
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
      switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
-     truncate-lines                         t         ; Start out with NO line truncation.
      uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
      uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
      uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
@@ -60,6 +59,9 @@
      x-stretch-cursor                       t         ; https://pragmaticemacs.wordpress.com/2017/10/01/adaptive-cursor-width/
      yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
+
+  ; Buffer local, can't simply use the setq above.
+  (setq-default truncate-lines t)
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
   ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
@@ -164,10 +166,6 @@ Highlight global-search-replace strings dynamically.
 
   (use-package dired
     :straight (:type built-in)
-
-    :config
-    (add-hook 'dired-mode-hook
-      (lambda () (setq truncate-lines t)))
 
     :bind (:map dired-mode-map
         ("C-x C-d" . dired-jump)
@@ -665,11 +663,6 @@ Resources:
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
-*** python
-#+begin_src emacs-lisp
-  (add-hook 'python-ts-mode-hook (lambda () (toggle-truncate-lines 1)))
-  (add-hook 'python-mode-hook    (lambda () (toggle-truncate-lines 1)))
-#+end_src
 *** eglot
 https://docs.astral.sh/ruff/editors/setup/#via-external-tool
 https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
@@ -694,7 +687,8 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs '(python-mode . ("~/.local/bin/ruff" "server")))
     )
-  (add-hook 'python-mode-hook    'eglot-ensure)
+
+  ;; (add-hook 'python-mode-hook 'eglot-ensure)
   (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
   ;; "Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
@@ -945,7 +939,6 @@ https://github.com/rnkn/olivetti
 
         :config
         (add-hook 'text-mode-hook #'visual-line-mode)
-        (add-hook 'org-mode-hook (lambda () (toggle-truncate-lines 1)))
         (visual-line-mode 1)
 
         ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
