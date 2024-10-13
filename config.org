@@ -154,20 +154,12 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-  (defun pgb/dired-create-file ()
-    "Wrapper to dired-create-empty-file to avoid minibuffer completion."
-    ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
-    (interactive)
-    (let ((search-term
-            (read-from-minibuffer "Create File : ")))
-      (dired-create-empty-file search-term)))
-
   (defun pgb/dired-create-directory ()
     "Wrapper to dired-create-directory to avoid minibuffer completion."
     ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
     (interactive)
     (let ((search-term
-            (read-from-minibuffer "Create Directory : ")))
+           (read-from-minibuffer "Create empty directory : ")))
       (dired-create-directory search-term)))
 
   (use-package dired
@@ -183,7 +175,7 @@ Highlight global-search-replace strings dynamically.
         ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
         ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
         ("."       . dired-up-directory)
-        ("_"       . pgb/dired-create-file)
+        ("_"       . dired-create-empty-file)
         ("+"       . pgb/dired-create-directory)
         )
 
@@ -373,7 +365,7 @@ Interactive font scaling:
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
+  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -649,15 +641,15 @@ Resources:
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
 #+begin_src emacs-lisp
   (use-package vertico
-        :demand t
-        :config
-        (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    :demand t
+    :config
+    (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
           vertico-scroll-margin 0
           vertico-resize        nil
           vertico-count         15)
-        :init
-        (vertico-mode)
-        )
+    :init
+    (vertico-mode)
+    )
 
   ;; Do not allow the cursor in the minibuffer prompt
   (setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
@@ -782,27 +774,26 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 *** magit
 #+begin_src emacs-lisp
   (use-package magit
-        :demand t
+    :demand t
 
-        :bind
-        ("C-x C-g" . magit-status)
+    :bind
+    ("C-x C-g" . magit-status)
 
-        :config
-        (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-        (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+    :config
+    (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
+    (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
-        (window-configuration-to-register :magit-fullscreen)
-        ad-do-it
-        (delete-other-windows))
+    (window-configuration-to-register :magit-fullscreen)
+    ad-do-it
+    (delete-other-windows))
 
   (defun magit-quit-session ()
-        "Restores the previous window configuration and kills the magit buffer"
-        (interactive)
-        (kill-buffer)
-        (jump-to-register :magit-fullscreen))
-
+    "Restores the previous window configuration and kills the magit buffer"
+    (interactive)
+    (kill-buffer)
+    (jump-to-register :magit-fullscreen))
 
 #+end_src
 *** magit-file-icons
