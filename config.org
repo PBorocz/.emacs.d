@@ -90,7 +90,7 @@
     :config
     (exec-path-from-shell-initialize))
 #+end_src
-** enlight
+** enlight (dashboard)
 #+begin_src emacs-lisp
   (use-package enlight
 
@@ -110,6 +110,7 @@
           )
 
          ("Management"
+          ("-Repository-" (dired "~/Repository") "r")
           ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
           ("Journal.org"  (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
           ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
@@ -118,7 +119,7 @@
          ("Utilities"
           ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
           ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org"))
-          ("Claude"              (command-execute 'gptel))
+          ("*Claude*"            (command-execute 'gptel) "a")
           )
          ))))
 
@@ -156,53 +157,67 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-  (defun pgb/dired-create-directory ()
-    "Wrapper to dired-create-directory to avoid minibuffer completion."
-    ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
-    (interactive)
-    (let ((search-term
-           (read-from-minibuffer "Create empty directory : ")))
-      (dired-create-directory search-term)))
+    (defun pgb/dired-create-directory ()
+      "Wrapper to dired-create-directory to avoid minibuffer completion."
+      ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
+      (interactive)
+      (let ((search-term
+             (read-from-minibuffer "Create empty directory : ")))
+        (dired-create-directory search-term)))
 
-  (use-package dired
-    :straight (:type built-in)
+    ;; https://lmno.lol/alvaro/hide-another-detail
+    (defun pgb/hide-dired-details-include-all-subdir-paths ()
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward dired-subdir-regexp nil t)
+          (let* ((match-bounds (cons (match-beginning 1) (match-end 1)))
+                 (path (file-name-directory (buffer-substring (car match-bounds)
+                                                              (cdr match-bounds))))
+                 (path-start (car match-bounds))
+                 (path-end (+ (car match-bounds) (length path)))
+                 (inhibit-read-only t))
+            (put-text-property path-start path-end
+                               'invisible 'dired-hide-details-information)))))
 
-    :bind (:map dired-mode-map
-        ("C-x C-d" . dired-jump)
-        ("C-x j"   . dired-jump-other-window)
-        ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
-        ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
-        ("."       . dired-up-directory)
-        ("_"       . dired-create-empty-file)
-        ("+"       . pgb/dired-create-directory)
+    (use-package dired
+      :straight (:type built-in)
+
+      :bind (:map dired-mode-map
+          ("C-x C-d" . dired-jump)
+          ("C-x j"   . dired-jump-other-window)
+          ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
+          ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
+          ("."       . dired-up-directory)
+          ("_"       . dired-create-empty-file)
+          ("+"       . pgb/dired-create-directory)
+          )
+
+      :config
+      (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
+        delete-by-moving-to-trash                        t
+        dired-create-destination-dirs-on-trailing-dirsep t
+        dired-dwim-target                                t
+        dired-create-destination-dirs                    'ask
+        dired-hide-details-mode                          nil
+        dired-listing-switches                           "-Al"
+        dired-recursive-copies                           'always
+        dired-recursive-deletes                          'always
+        dired-use-ls-dired                               t
+        dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
+        global-auto-revert-non-file-buffers              t
+        insert-directory-program                         "/usr/local/bin/gls"
+        wdired-allow-to-change-permissions               t
         )
 
-    :config
-    (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
-      delete-by-moving-to-trash                        t
-      dired-create-destination-dirs-on-trailing-dirsep t
-      dired-dwim-target                                t
-      dired-create-destination-dirs                    'ask
-      dired-hide-details-mode                          nil
-      dired-listing-switches                           "-Al"
-      dired-recursive-copies                           'always
-      dired-recursive-deletes                          'always
-      dired-use-ls-dired                               t
-      dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
-      global-auto-revert-non-file-buffers              t
-      insert-directory-program                         "/usr/local/bin/gls"
-      wdired-allow-to-change-permissions               t
+      :hook (
+           (dired-mode         . diredfl-mode) ;; Color our dired display by type of file/directory (https://github.com/purcell/diredfl)
+           (dired-mode         . dired-hide-details-mode)
+           (dired-after-readin . pgb/hide-dired-details-include-all-subdir-paths)
+           )
       )
-    )
 
-  (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
-
-  ;;
-  ;; Color our dired display by type of file/directory
-  ;; https://github.com/purcell/diredfl
-  ;;
-  (add-hook 'dired-mode-hook 'diredfl-mode)
+    (when (string= system-type "darwin")
+      (setq dired-use-ls-dired nil))
 #+end_src
 *** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
@@ -939,7 +954,7 @@ https://github.com/rnkn/olivetti
 
     :config
     (add-hook 'text-mode-hook #'visual-line-mode)
-    (visual-line-mode 1)
+    (add-hook 'org-mode-hook (lambda () (setq truncate-lines t)))
 
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
     (org-link-set-parameters
@@ -967,22 +982,25 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; GTD Configuration
   ;; ---------------------------------------------------------------------------
-  ;; Keywords: this sequence is on behalf of regular TO-DO items in my GTD world.
-  (setq org-todo-keywords '((sequence
-                           "TODO(t)"
-                           "WAIT(a)"
-                           "HOLD(h)"
-                           "WORK(w)"
-                           "|"
-                           "DONE(x)"
-                           )))
+  ;; Keywords: For regular TO-DO items in my GTD world -> C-c C-t to select.
+  (setq org-todo-keywords
+        '((sequence
+           "IDEA(i)"
+           "SOMEDAY(o)"
+           "TODO(t)"
+           "WAITING(a)"
+           "WORKING(w)"
+           "DONE(x)"
+           "|"
+           )))
 
   (setq org-todo-keyword-faces
-        '(("TODO" . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
-          ("WORK" . "light green")
-          ("HOLD" . "systemBrownColor")
-          ("WAIT" . "systemBrownColor")
-          ("DONE" . "gray30")
+        '(("DONE"    . "gray30")
+          ("IDEA"    . "gray80")
+          ("SOMEDAY" . "systemBrownColor")
+          ("TODO"    . "systemOrangeColor") ;; used to be org-warning aka "#fb4933".
+          ("WAITING" . "systemBrownColor")
+          ("WORKING" . "light green")
           ))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
@@ -1180,7 +1198,7 @@ https://github.com/karthink/gptel
 
          :config
          ;; Setup Anthropic..
-         (setq gptel-model "claude-3-5-sonnet-20240620")
+         (setq gptel-model 'claude-3-5-sonnet-20240620)
          (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
          )
          ;; Setup OpenAI..
