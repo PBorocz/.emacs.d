@@ -1032,20 +1032,20 @@ https://github.com/rnkn/olivetti
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
-         (js         . t)
-         (python     . t)
-         (shell      . t)
-         (sqlite     . t)
-         ))
+     (js         . t)
+     (python     . t)
+     (shell      . t)
+     (sqlite     . t)
+     ))
   (setq org-confirm-babel-evaluate nil)
 #+end_src
 *** org-appear
  #+begin_src emacs-lisp
    (use-package org-appear
-         :defer 1
-         :hook
-         (org-mode . org-appear-mode)
-         )
+     :defer 1
+     :hook
+     (org-mode . org-appear-mode)
+     )
  #+end_src
 *** org-linker
 [[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][GitHub - jcguu95/org-linker.el: Attaching Files in Org-Mode Using UUIDs. Flex...]]
@@ -1080,45 +1080,48 @@ https://github.com/rnkn/olivetti
 Create an org-link from a URL in the clipboard with the actual title of the URL as the link title.
  #+begin_src emacs-lisp
    (use-package org-cliplink
-         :after 'org
-         )
+     :after 'org
+     )
  #+end_src
 *** org-superstar
 Nice(r) bullets (replaces org-bullets)
  #+begin_src emacs-lisp
    (use-package org-superstar
-         :after 'org
-         :config
-         (setq org-superstar-special-todo-items t ;; Set our TODO items to have a 'checkbox' icon
+     :after 'org
+     :config
+     (setq org-superstar-special-todo-items t ;; Set our TODO items to have a 'checkbox' icon
            org-superstar-item-bullet-alist
            '((?* . ?•)
-         (?+ . ?➤)
-         (?- . ?•)))
-         (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
-         )
+          (?+ . ?➤)
+          (?- . ?•)))
+     (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+     )
  #+end_src
 ** pdf
 #+begin_src emacs-lisp
   (use-package pdf-tools
-        :defer 5
-        :config
-        (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
-        )
+    :defer 5
+    :config
+    (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+    )
   (pdf-tools-install)
 #+end_src
 ** toml-mode
 #+begin_src emacs-lisp
-  (use-package toml-mode
-        :defer t
-        )
+  (use-package toml-ts-mode
+    :defer
+    :ensure t
+    :config
+    (add-hook 'toml-ts-mode-hook (lambda() (setq truncate-lines t) (visual-line-mode -1)))
+    )
 #+end_src
 ** yaml-mode
 #+begin_src emacs-lisp
   (use-package yaml-pro
-        :defer t
-        :hook
-        (yaml-mode . yaml-pro-ts-mode)
-        )
+    :defer t
+    :hook
+    (yaml-mode . yaml-pro-ts-mode)
+    )
 #+end_src
 ** web-mode
 [[https://web-mode.org][Web-mode documentation]]
