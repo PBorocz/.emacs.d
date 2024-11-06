@@ -406,7 +406,8 @@ Interactive font scaling:
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
   (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
+  ;; (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
+  (defvar pb/var-fixedwidth-font    "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -717,7 +718,7 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
     )
 
   (use-package eglot
-    :ensure nil
+    :ensure t
     :defer t
     :custom
     (eglot-report-progress nil)
@@ -751,15 +752,23 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   ;;   ("C-c x f" . xref-find-definitions)
   ;;   ("C-c x r" . xref-find-references))
 #+end_src
+*** poetry
+#+begin_src emacs-lisp
+  (use-package poetry
+    :ensure t
+    :defer t
+    :config
+    (setq poetry-tracking-strategy 'switch-buffer) ;; Checks for the correct virtualenv. Better strategy IMO because the default one is quite slow.
+    :hook (python-mode . poetry-tracking-mode))
+#+end_src
 *** pyvenv-auto
 #+begin_src emacs-lisp
   ;; ref: https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
   (use-package pyvenv-auto
-        :defer 1
-
-        :custom
-        (pyvenv-auto-mode t)
-        )
+    :defer 1
+    :custom
+    (pyvenv-auto-mode t)
+    )
 #+end_src
 *** indent-bars
 [[https://github.com/jdtsmith/indent-bars][GitHub - jdtsmith/indent-bars]]
@@ -780,11 +789,10 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
 [[https://github.com/purcell/envrc]]
 #+begin_src emacs-lisp
   (use-package envrc
-        :defer 1
-
-        :config
-        (envrc-global-mode)
-        )
+    :defer 1
+    :config
+    (envrc-global-mode)
+    )
 #+end_src
 ** format-all
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
