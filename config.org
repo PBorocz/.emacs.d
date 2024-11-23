@@ -803,24 +803,6 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
   ;;   (format-all-ensure-formatter)
   ;;   )
 #+end_src
-** co-pilot
-https://github.com/copilot-emacs/copilot.el
-#+begin_src emacs-lisp
-  ;; For some reason, even though I'm on version 30+, this won't work:
-  ;; Error (use-package): Failed to parse package copilot: use-package: Unrecognized keyword: :vc
-  ;; For now, stay with regular straight pull from github for the time being.
-  ;; (use-package copilot
-  ;;   :vc (:url "https://github.com/copilot-emacs/copilot.el"
-  ;;             :rev :newest
-  ;;             :branch "main")
-  ;;   :config
-  ;;   (add-hook 'prog-mode-hook 'copilot-mode)
-  ;;   )
-  (use-package copilot
-    :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-    :ensure t
-    )
-#+end_src
 ** magit/git
 *** magit
 #+begin_src emacs-lisp
@@ -1160,14 +1142,14 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
              ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
 
             ;; -----------------------------------------------------------------------------
-            ;; My development todo item types (hard to to keep from picking up arbitrary "[foo]" entries)
+            ;; My development GTD item types (hard to to keep from picking up arbitrary "[foo]" entries)
             ;; -----------------------------------------------------------------------------
-          ("\\[ACC\\]" . ((lambda (tag) (svg-tag-make "ACC" :face 'font-lock-comment-face))))
-          ("\\[BUG\\]" . ((lambda (tag) (svg-tag-make "BUG" :face 'font-lock-comment-face))))
-          ("\\[ENH\\]" . ((lambda (tag) (svg-tag-make "ENH" :face 'font-lock-comment-face))))
-          ("\\[HOW\\]" . ((lambda (tag) (svg-tag-make "HOW" :face 'font-lock-comment-face))))
-          ("\\[INF\\]" . ((lambda (tag) (svg-tag-make "INF" :face 'font-lock-comment-face))))
-          ("\\[REF\\]" . ((lambda (tag) (svg-tag-make "REF" :face 'font-lock-comment-face))))
+            ("\\[BUG\\]" . ((lambda (tag) (svg-tag-make "BUG" :face 'font-lock-comment-face)))) ;; Bug (duh..)
+            ("\\[ENH\\]" . ((lambda (tag) (svg-tag-make "ENH" :face 'font-lock-comment-face)))) ;; Enhancement
+            ("\\[HOW\\]" . ((lambda (tag) (svg-tag-make "HOW" :face 'font-lock-comment-face)))) ;; How To
+            ("\\[INF\\]" . ((lambda (tag) (svg-tag-make "INF" :face 'font-lock-comment-face)))) ;; Information
+            ("\\[REF\\]" . ((lambda (tag) (svg-tag-make "REF" :face 'font-lock-comment-face)))) ;; Reference
+            ("\\[SEC\\]" . ((lambda (tag) (svg-tag-make "SEC" :face 'font-lock-comment-face)))) ;; Security
 
             )
         )
@@ -1323,35 +1305,48 @@ https://github.com/karthink/gptel
  #+begin_src emacs-lisp
    (require 'auth-source)
    (defun pb/get-anthropic-api-key ()
-         "Retrieve the API key for api.anthropic.com from .authinfo."
-         (require 'auth-source)
-         (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-          :secret)))
-           (if secret
+     "Retrieve the API key for api.anthropic.com from .authinfo."
+     (require 'auth-source)
+     (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+                           :secret)))
+       (if secret
            secret
          (error "No API key found for api.anthropic.com in .authinfo"))))
 
    (use-package gptel
-         :straight (:host github :repo "karthink/gptel")
+     :straight (:host github :repo "karthink/gptel")
 
-         :config
-         ;; Setup Anthropic..
-         (setq gptel-model 'claude-3-5-sonnet-20240620)
-         (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
-         )
-         ;; Setup OpenAI..
-         ;; (gptel-model "gpt-4o")
+     :config
+     ;; Setup Anthropic..
+     (setq gptel-model 'claude-3-5-sonnet-20240620)
+     (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+     )
+   ;; Setup OpenAI..
+   ;; (gptel-model "gpt-4o")
 
-         ;; :config
-         ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+   ;; :config
+   ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
 
    (defun my-straight-pull-package (package)
-         "Pull the latest version of PACKAGE from its remote repository."
-         (message "'straight-pull-package' for gptel.")
-         (straight-pull-package package)
-         )
+     "Pull the latest version of PACKAGE from its remote repository."
+     (message "'straight-pull-package' for gptel.")
+     (straight-pull-package package)
+     )
 
    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+
+
+   (defun my/gptel-write-buffer ()
+     "Save buffer to disk when starting gptel"
+     ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+     (unless (buffer-file-name (current-buffer))
+       (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+             (chat-dir "~/Repository"))
+         (unless (file-directory-p chat-dir)
+           (make-directory chat-dir :parents))
+         (write-file (expand-file-name (concat "gptel-" suffix ".md") chat-dir)))))
+
+   (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
  #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
@@ -1858,6 +1853,24 @@ Verdict: too "busy" with many different projects' files open. Easier to simply "
         :defer t
         )
 #+end_src
+** co-pilot
+https://github.com/copilot-emacs/copilot.el
+#+begin_src emacs-lisp
+  ;; For some reason, even though I'm on version 30+, this won't work:
+  ;; Error (use-package): Failed to parse package copilot: use-package: Unrecognized keyword: :vc
+  ;; For now, stay with regular straight pull from github for the time being.
+  ;; (use-package copilot
+  ;;   :vc (:url "https://github.com/copilot-emacs/copilot.el"
+  ;;             :rev :newest
+  ;;             :branch "main")
+  ;;   :config
+  ;;   (add-hook 'prog-mode-hook 'copilot-mode)
+  ;;   )
+  (use-package copilot
+    :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
+    :ensure t
+    )
+#+end_src
 ** dashboard (from the "dashboard" package)
 #+begin_src emacs-lisp
   (use-package dashboard
@@ -1925,6 +1938,21 @@ Doesn't work that well with python (for instance, imports are always grey)
          :config
          (add-to-list 'focus-mode-to-thing '(python-ts-mode . paragraph))
          )
+#+end_src
+** inhibit-mouse
+Tried..worked well but I lost the ability to scroll back quickly in a terminal window
+(frankly, the only time I actually use the mouse, i.e. the only place I desparately missed it!)
+[[https://github.com/jamescherti/inhibit-mouse.el][jamescherti/inhibit-mouse.el: Disable the mouse in Emacs]]
+(simply toggle ~inhibit-mouse-mode~ to get it back if absolutely necessary)
+#+begin_src emacs-lisp
+  (use-package inhibit-mouse
+    :ensure t
+    :straight (inhibit-mouse
+               :type git
+               :host github
+               :repo "jamescherti/inhibit-mouse.el")
+    :config
+    (inhibit-mouse-mode))
 #+end_src
 ** lin
 [[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
