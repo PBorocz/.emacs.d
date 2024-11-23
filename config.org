@@ -5,6 +5,12 @@
 #+property: header-args :tangle config.el
 
 * Base Editing Environment
+** identify platform
+#+begin_src emacs-lisp
+  (defvar my/os-linux (string-equal system-type "gnu/linux") "Linux")
+  (defvar my/os-macos (string-equal system-type "darwin") "MacOS")
+  (defvar my/os-windows (string-equal system-type "windows-nt") "Windows!")
+#+end_src
 ** tune garbage collection
 #+begin_src emacs-lisp
   (use-package gcmh
@@ -42,7 +48,6 @@
      initial-scratch-message                nil       ; Start scratch buffers empty..
      make-backup-files                      nil       ; Stop creating backup~ files
      ring-bell-function                     'ignore
-     scroll-conservatively                  1000
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
      switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
@@ -60,7 +65,7 @@
      yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
 
-  ; Buffer local, can't simply use the setq above.
+                                        ; Buffer local, can't simply use the setq above.
   (setq-default truncate-lines t)
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
@@ -77,6 +82,14 @@
 
   (global-auto-revert-mode 1) ;; refresh a buffer if changed on disk
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
+
+  ;; Scrolling HT: http://home.thep.lu.se/~karlf/emacs.html
+  (setq scroll-step 1)
+  (setq scroll-conservatively 100000)		;; Marker distance from center (don't jump to center).
+  (setq scroll-preserve-screen-position 1)	;; Try to keep screen position when PgDn/PgUp.
+  (setq scroll-margin 0)				;; Start scrolling when marker at top/bottom.
+  (setq mouse-wheel-scroll-amount '(1))		;; Mouse scroll moves 1 line at a time, instead of 5 lines.
+  (setq mouse-wheel-progressive-speed nil)	;; On a long mouse scroll keep scrolling by 1 line.
 
   (use-package paren
     :defer 1
@@ -1300,8 +1313,8 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
   (setq ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
-** gptel
-https://github.com/karthink/gptel
+** [[https://github.com/karthink/gptel][gptel]]
+- Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
  #+begin_src emacs-lisp
    (require 'auth-source)
    (defun pb/get-anthropic-api-key ()
@@ -1317,22 +1330,23 @@ https://github.com/karthink/gptel
      :straight (:host github :repo "karthink/gptel")
 
      :config
-     ;; Setup Anthropic..
      (setq gptel-model 'claude-3-5-sonnet-20240620)
      (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
-     )
-   ;; Setup OpenAI..
-   ;; (gptel-model "gpt-4o")
 
-   ;; :config
-   ;; (add-hook 'gptel-post-response-functions 'gptel-end-of-response)
+     :custom
+     (gptel-default-mode 'org-mode)
+     (gptel-org-branching-context t)
+     (gptel-directives
+       '((default . "To assist: Be terse. Do not offer unprompted advice or clarifications. Speak in specific, topic relevant terminology. Do NOT hedge or qualify. Do not waffle. Speak directly and be willing to make creative guesses. Explain your reasoning. if you don’t know, say you don’t know. Remain neutral on all topics. Be willing to reference less reputable sources for ideas. Never apologize.  Ask questions when unsure.")
+         ))
+     )
+
 
    (defun my-straight-pull-package (package)
      "Pull the latest version of PACKAGE from its remote repository."
      (message "'straight-pull-package' for gptel.")
      (straight-pull-package package)
      )
-
    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
 
 
@@ -1344,8 +1358,7 @@ https://github.com/karthink/gptel
              (chat-dir "~/Repository"))
          (unless (file-directory-p chat-dir)
            (make-directory chat-dir :parents))
-         (write-file (expand-file-name (concat "gptel-" suffix ".md") chat-dir)))))
-
+         (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
    (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
  #+end_src
@@ -1449,8 +1462,7 @@ If I use it in a property drawer it looks like this
         (interactive)
         (wrapper-sql-connect 'postgres 'foo))
 #+end_src
-** prodigy
-[[https://www.jds.work/emacs-prodigy/][Managing Local Services in Emacs with Prodigy | JDs Work]] ([[https://github.com/rejeep/prodigy.el][GitHub - rejeep/prodigy.el]])
+** [[https://www.jds.work/emacs-prodigy/][prodigy]] (managing local services)
 #+begin_src emacs-lisp
   (use-package prodigy
         :defer 1
