@@ -138,19 +138,6 @@ Highlight global-search-replace strings dynamically.
     (global-anzu-mode)
     )
 #+end_src
-** inhibit-mouse
-[[https://github.com/jamescherti/inhibit-mouse.el][jamescherti/inhibit-mouse.el: Disable the mouse in Emacs]]
-(simply toggle ~inhibit-mouse-mode~ to get it back if absolutely necessary)
-#+begin_src emacs-lisp
-  (use-package inhibit-mouse
-    :ensure t
-    :straight (inhibit-mouse
-               :type git
-               :host github
-               :repo "jamescherti/inhibit-mouse.el")
-    :config
-    (inhibit-mouse-mode))
-#+end_src
 ** hungry-deletes
 [[https://github.com/hrehfeld/emacs-smart-hungry-delete]]
 #+begin_src emacs-lisp
