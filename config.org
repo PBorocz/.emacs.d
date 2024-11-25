@@ -1333,14 +1333,14 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
      (setq gptel-model 'claude-3-5-sonnet-20240620)
      (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-     :custom
-     (gptel-default-mode 'org-mode)
-     (gptel-org-branching-context t)
-     (gptel-directives
-       '((default . "To assist: Be terse. Do not offer unprompted advice or clarifications. Speak in specific, topic relevant terminology. Do NOT hedge or qualify. Do not waffle. Speak directly and be willing to make creative guesses. Explain your reasoning. if you don’t know, say you don’t know. Remain neutral on all topics. Be willing to reference less reputable sources for ideas. Never apologize.  Ask questions when unsure.")
-         ))
-     )
+     ;; :custom
+     ;; (gptel-default-mode 'md)
+     ;; (gptel-org-branching-context t)
+     ;; (gptel-directives
+     ;;   '((default . "To assist: Be terse. Do not offer unprompted advice or clarifications. Speak in specific, topic relevant terminology. Do NOT hedge or qualify. Do not waffle. Speak directly and be willing to make creative guesses. Explain your reasoning. if you don’t know, say you don’t know. Remain neutral on all topics. Be willing to reference less reputable sources for ideas. Never apologize.  Ask questions when unsure.")
+     ;;     ))
 
+     )
 
    (defun my-straight-pull-package (package)
      "Pull the latest version of PACKAGE from its remote repository."
@@ -1349,17 +1349,16 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
      )
    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
 
-
-   (defun my/gptel-write-buffer ()
-     "Save buffer to disk when starting gptel"
-     ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
-     (unless (buffer-file-name (current-buffer))
-       (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
-             (chat-dir "~/Repository"))
-         (unless (file-directory-p chat-dir)
-           (make-directory chat-dir :parents))
-         (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
-   (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
+   ;; (defun my/gptel-write-buffer ()
+   ;;   "Save buffer to disk when starting gptel"
+   ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+   ;;   (unless (buffer-file-name (current-buffer))
+   ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+   ;;           (chat-dir "~/Repository"))
+   ;;       (unless (file-directory-p chat-dir)
+   ;;         (make-directory chat-dir :parents))
+   ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
+   ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
  #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
