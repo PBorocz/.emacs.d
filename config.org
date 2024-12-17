@@ -380,7 +380,7 @@ yasnippets for now (but make sure they don't expand within comments!)
 #+begin_src emacs-lisp
   ;; Don't do snippet expansion within comments/docstrings for py:
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
-  (defun pb/yas-no-expand-in-comment_string ()
+  (defun pb/no-expand-in-comment_string ()
     (setq yas-buffer-local-condition
       '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
        '(require-snippet-condition . force-in-comment)
@@ -389,13 +389,14 @@ yasnippets for now (but make sure they don't expand within comments!)
   (use-package yasnippet
     :defer 1
     :config
+
     ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
     (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
+
     ;; Use the method above to keep snippets only when we're writing actual code.
-    ;; (add-hook 'prog-mode-hook 'yas-no-expand-in-comment/string)
     (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
     (add-hook 'python-base-mode-hook #'yas-minor-mode)
-    (add-hook 'prog-mode-hook        #'pb/yas-no-expand-in-comment_string)
+    (add-hook 'prog-mode-hook        #'pb/no-expand-in-comment_string)
     (yas-global-mode 1)
     (yas-reload-all)
     )
@@ -461,21 +462,24 @@ Nice and simple: https://github.com/jessiehildebrandt/mood-line
 ** pulsar
 [[https://protesilaos.com/emacs/pulsar]]
 #+begin_src emacs-lisp
-  (use-package pulsar
-    :defer 1
-    :straight (pulsar :type git :host github :repo "protesilaos/pulsar")
-    :config
-    (setq pulsar-delay  0.10
-        pulsar-face  'pulsar-yellow
-        pulsar-pulse nil)
+    (defface pb/pulsar-color
+      '((t :extend t :inverse-video t :background "#ffe7ba"))
+      "My custom color, HT to github: dwang2010/emacs")
 
-    (dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
-      (add-hook hook #'pulsar-mode))
+    (use-package pulsar
+        :init
+        (pulsar-global-mode 1)
 
-    (add-hook 'next-error-hook #'pulsar-pulse-line)
+        :config
+        (setq pulsar-pulse t)
+        (setq pulsar-delay 0.10)
+        (setq pulsar-face  'pb/pulsar-color)
 
-    (pulsar-global-mode 1)
-    )
+        (dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
+          (add-hook hook #'pulsar-mode))
+
+        (add-hook 'next-error-hook #'pulsar-pulse-line)
+        )
 #+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
