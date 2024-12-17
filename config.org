@@ -166,7 +166,7 @@
          ))))
 
     :config
-    (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something more generic.
+    (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
     (enlight-open)
     )
 #+end_src
@@ -199,67 +199,67 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-    (defun pgb/dired-create-directory ()
-      "Wrapper to dired-create-directory to avoid minibuffer completion."
-      ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
-      (interactive)
-      (let ((search-term
-             (read-from-minibuffer "Create empty directory : ")))
-        (dired-create-directory search-term)))
+  (defun pgb/dired-create-directory ()
+    "Wrapper to dired-create-directory to avoid minibuffer completion."
+    ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
+    (interactive)
+    (let ((search-term
+           (read-from-minibuffer "Create empty directory : ")))
+      (dired-create-directory search-term)))
 
-    ;; https://lmno.lol/alvaro/hide-another-detail
-    (defun pgb/hide-dired-details-include-all-subdir-paths ()
-      (save-excursion
-        (goto-char (point-min))
-        (while (re-search-forward dired-subdir-regexp nil t)
-          (let* ((match-bounds (cons (match-beginning 1) (match-end 1)))
-                 (path (file-name-directory (buffer-substring (car match-bounds)
-                                                              (cdr match-bounds))))
-                 (path-start (car match-bounds))
-                 (path-end (+ (car match-bounds) (length path)))
-                 (inhibit-read-only t))
-            (put-text-property path-start path-end
-                               'invisible 'dired-hide-details-information)))))
+  ;; https://lmno.lol/alvaro/hide-another-detail
+  (defun pgb/hide-dired-details-include-all-subdir-paths ()
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward dired-subdir-regexp nil t)
+        (let* ((match-bounds (cons (match-beginning 1) (match-end 1)))
+               (path (file-name-directory (buffer-substring (car match-bounds)
+                                                            (cdr match-bounds))))
+               (path-start (car match-bounds))
+               (path-end (+ (car match-bounds) (length path)))
+               (inhibit-read-only t))
+          (put-text-property path-start path-end
+                             'invisible 'dired-hide-details-information)))))
 
-    (use-package dired
-      :straight (:type built-in)
+  (use-package dired
+    :straight (:type built-in)
 
-      :bind (:map dired-mode-map
-          ("C-x C-d" . dired-jump)
-          ("C-x j"   . dired-jump-other-window)
-          ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
-          ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
-          ("."       . dired-up-directory)
-          ("_"       . dired-create-empty-file)
-          ("+"       . pgb/dired-create-directory)
-          )
-
-      :config
-      (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
-        delete-by-moving-to-trash                        t
-        dired-create-destination-dirs-on-trailing-dirsep t
-        dired-dwim-target                                t
-        dired-create-destination-dirs                    'ask
-        dired-hide-details-mode                          nil
-        dired-listing-switches                           "-Al"
-        dired-recursive-copies                           'always
-        dired-recursive-deletes                          'always
-        dired-use-ls-dired                               t
-        dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
-        global-auto-revert-non-file-buffers              t
-        insert-directory-program                         "/usr/local/bin/gls"
-        wdired-allow-to-change-permissions               t
+    :bind (:map dired-mode-map
+        ("C-x C-d" . dired-jump)
+        ("C-x j"   . dired-jump-other-window)
+        ("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
+        ("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
+        ("."       . dired-up-directory)
+        ("_"       . dired-create-empty-file)
+        ("+"       . pgb/dired-create-directory)
         )
 
-      :hook (
-           (dired-mode         . diredfl-mode) ;; Color our dired display by type of file/directory (https://github.com/purcell/diredfl)
-           (dired-mode         . dired-hide-details-mode)
-           (dired-after-readin . pgb/hide-dired-details-include-all-subdir-paths)
-           )
+    :config
+    (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
+      delete-by-moving-to-trash                        t
+      dired-create-destination-dirs-on-trailing-dirsep t
+      dired-dwim-target                                t
+      dired-create-destination-dirs                    'ask
+      dired-hide-details-mode                          nil
+      dired-listing-switches                           "-Al"
+      dired-recursive-copies                           'always
+      dired-recursive-deletes                          'always
+      dired-use-ls-dired                               t
+      dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
+      global-auto-revert-non-file-buffers              t
+      insert-directory-program                         "/usr/local/bin/gls"
+      wdired-allow-to-change-permissions               t
       )
 
-    (when (string= system-type "darwin")
-      (setq dired-use-ls-dired nil))
+    :hook (
+         (dired-mode         . diredfl-mode) ;; Color our dired display by type of file/directory (https://github.com/purcell/diredfl)
+         (dired-mode         . dired-hide-details-mode)
+         (dired-after-readin . pgb/hide-dired-details-include-all-subdir-paths)
+         )
+    )
+
+  (when (string= system-type "darwin")
+    (setq dired-use-ls-dired nil))
 #+end_src
 *** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
