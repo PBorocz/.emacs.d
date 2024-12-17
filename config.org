@@ -535,12 +535,20 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     (hl-line-when-idle-interval 0.5)
     (toggle-hl-line-when-idle 1))
 #+end_src
-** nerd-icons-ibuffer
-Displays nerd-icons for iBuffer types...yes, somewhat indulgent but I'm worth it ;-)
+** nerd-icons
+[[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce][Use icon fonts (specifically nerd-icons..Thanks Prot!)]]
 #+begin_src emacs-lisp
+  (use-package nerd-icons
+    :ensure t)
+
+  (use-package nerd-icons-dired
+    :ensure t
+    :hook (dired-mode . nerd-icons-dired-mode))
+
   (use-package nerd-icons-ibuffer
-    :hook (ibuffer-mode . nerd-icons-ibuffer-mode)
-    )
+    ;; Also display nerd-icons for iBuffer types
+    :ensure t
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 * Window Management
 ** bindings
@@ -565,7 +573,7 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
         )
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
-* Completion Framework
+* Completion Frameworks
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
 #+begin_src emacs-lisp
@@ -631,7 +639,7 @@ Resources:
 #+begin_src emacs-lisp
   ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
   (use-package orderless
-        :demand t
+        :ensure t
         :config
 
         (defun +orderless--consult-suffix ()
@@ -706,14 +714,13 @@ Resources:
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
 #+begin_src emacs-lisp
   (use-package vertico
-    :demand t
+    :ensure t
     :config
     (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
           vertico-scroll-margin 0
           vertico-resize        nil
           vertico-count         15)
-    :init
-    (vertico-mode)
+    :hook (after-init vertico-mode)
     )
 
   ;; Do not allow the cursor in the minibuffer prompt
@@ -730,6 +737,7 @@ Resources:
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
+*** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
 *** eglot
 https://docs.astral.sh/ruff/editors/setup/#via-external-tool
 https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
@@ -1294,13 +1302,14 @@ Nice(r) bullets (replaces org-bullets)
      ("\\.djhtml\\'"   . web-mode))
 
     :config
-    (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
-    (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
-    ;; Copy what we did for IRIS at ES, ie, have HTML indenting match Python:
-    (setq web-mode-markup-indent-offset 2)
-    (setq web-mode-css-indent-offset    2)
-    (setq web-mode-code-indent-offset   2)
-    (setq web-mode-indent-style         2)
+    ;; (add-to-list 'web-mode-engines-alist '(("django" . "\\.html$")))
+    ;; (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
+    ;;
+    ;; Copy what we did for IRIS at ES, i.e. have HTML indenting match Python:
+    (setq web-mode-markup-indent-offset 4)
+    (setq web-mode-css-indent-offset    4)
+    (setq web-mode-code-indent-offset   4)
+    (setq web-mode-indent-style         4)
 
     )
 #+end_src
