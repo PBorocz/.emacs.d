@@ -1,3 +1,9 @@
+:PROPERTIES:
+:GPTEL_MODEL: claude-3-5-sonnet-20240620
+:GPTEL_BACKEND: Claude
+:GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
+:GPTEL_BOUNDS: nil
+:END:
 #+title: Emacs Configuration
 #+author: Peter Borocz
 #+email: peter.borocz@gmail.com
@@ -148,6 +154,7 @@
           ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
           ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
           ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
+          ("Pecunia Exemplar"   (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")          "u")
           ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "h")
           )
 
@@ -425,9 +432,12 @@ Interactive font scaling:
   (setq ns-use-thin-smoothing t)
 
   ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
-  (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+  ;; (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+  (defvar pb/var-variablewidth-font "-*-Monaspace Radon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+
   ;; (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
-  (defvar pb/var-fixedwidth-font    "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; (defvar pb/var-fixedwidth-font    "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-Monaspace Neon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -738,6 +748,41 @@ Resources:
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
 *** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
+*** COMMENT python
+--> <2024-12-29 Sun> Can't get this to work consistently... :-() <--
+Get our docstrings and comments to look a bit more different.
+:foreground "grey75"
+#+begin_src emacs-lisp
+  (use-package python
+    :ensure t
+
+    :mode ("\\.py\\'" . python-ts-mode)
+
+    :config
+    (defface my-python-docstring-face
+      '((t (:family "Monaspace Radon" :height 200))) ; i.e. 2 less than the default size above.
+      "Face for Python docstrings and comments.")
+
+    (setq python-ts-mode-hook
+          (lambda ()
+            (setq-local treesit-font-lock-settings
+                        (append
+                         (treesit-font-lock-rules
+
+                          :language 'python
+                          :feature  'comment
+                        '((comment) @font-lock-comment-face)
+
+                          :language 'python
+                          :feature  'docstring
+                          '((string) @my-python-docstring-face))
+
+                         treesit-font-lock-settings))
+
+            (treesit-font-lock-recompute-features))))
+
+  (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
+#+end_src
 *** eglot
 https://docs.astral.sh/ruff/editors/setup/#via-external-tool
 https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
