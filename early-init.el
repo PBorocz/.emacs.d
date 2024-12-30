@@ -17,7 +17,11 @@
 			    (ns-transparent-titlebar . t)))
 
 (set-window-scroll-bars (minibuffer-window) nil nil)
+(prefer-coding-system       'utf-8)
 (set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(setq default-buffer-file-coding-system 'utf-8)
 
 ;; Make the initial buffer load faster by setting its mode to fundamental-mode
 (setq initial-major-mode 'fundamental-mode)

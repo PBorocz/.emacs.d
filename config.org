@@ -427,17 +427,15 @@ Interactive font scaling:
  - (defvar pb/var-fixedwidth-font "-*-Cascadia Code-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
  - Valiant attempt! Almost a week with Noto Sans Mono but going back to SCP-NF due to the more "rounded" nature.
    (defvar pb/var-fixedwidth-font "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+ - (defvar pb/var-fixedwidth-font "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ - Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
+   (defvar pb/var-fixedwidth-font "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
 #+begin_src emacs-lisp
   (setq ns-use-thin-smoothing t)
 
-  ;; Set my default fonts for both fixed (primarily) and variable width font (rarely)
-  ;; (defvar pb/var-variablewidth-font "-*-Open Sans-normal-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-  (defvar pb/var-variablewidth-font "-*-Monaspace Radon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-
-  ;; (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
-  ;; (defvar pb/var-fixedwidth-font    "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font "-*-Monaspace Neon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+  ;; Set my default font (always mono, even for org writing)
+  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -743,15 +741,17 @@ Resources:
 #+end_src
 * Code Development
 ** python
-- Great reference for comprehensive python config: [[https://config.phundrak.com/emacs/packages/programming.html#python][Programming | Phundrak's Dotfiles]]
+- [[https://mclare.blog/posts/using-uv-in-emacs/][Using uv in Emacs | MClare Blog]] <2024-12-29 Sun>
+- <2024-12-29 Sun> [[https://olddeuteronomy.github.io/post/python-programming-in-emacs/][Python Programming in Emacs - The Emacs Cat]] (use pyright from Microsoft instead?)
+- <2024-12-22 Sun> Great reference for comprehensive python config: [[https://config.phundrak.com/emacs/packages/programming.html#python][Programming | Phundrak's Dotfiles]]
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
 *** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
 *** COMMENT python
---> <2024-12-29 Sun> Can't get this to work consistently... :-() <--
 Get our docstrings and comments to look a bit more different.
-:foreground "grey75"
+--> <2024-12-29 Sun> Can't get this to work properly & consistently... :-(
+
 #+begin_src emacs-lisp
   (use-package python
     :ensure t
@@ -760,7 +760,7 @@ Get our docstrings and comments to look a bit more different.
 
     :config
     (defface my-python-docstring-face
-      '((t (:family "Monaspace Radon" :height 200))) ; i.e. 2 less than the default size above.
+      '((t (:family "Monaspace Radon" :height 200 :foreground "grey75"))) ; i.e. 2 less than the default size above.
       "Face for Python docstrings and comments.")
 
     (setq python-ts-mode-hook
@@ -1083,6 +1083,7 @@ https://github.com/rnkn/olivetti
           org-return-follows-link   t
           org-startup-folded        t
           org-startup-indented      t
+          org-src-tab-acts-natively t
           org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
 
@@ -1155,6 +1156,11 @@ https://github.com/rnkn/olivetti
 *** svg-tag-mode
 Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-elements][Prettifying Emacs Org Mode | Sophie Bosio]]
 #+begin_src emacs-lisp
+
+  (defface pb/svg-org-date
+    '((t :height 0.5))
+    "My local custom face for use on SVG rendered org-dates.")
+
   (use-package svg-tag-mode
     :config
     (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
@@ -1210,25 +1216,25 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
             ;; Active date (with or without day name, with or without time)
             ;; -----------------------------------------------------------------------------
             (,(format "\\(<%s>\\)" date-re) .
-             ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0))))
+             ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
 
             (,(format "\\(<%s \\)%s>" date-re day-time-re) .
-             ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0))))
+             ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
 
             (,(format "<%s \\(%s>\\)" date-re day-time-re) .
-             ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0))))
+             ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
 
             ;; -----------------------------------------------------------------------------
             ;; Inactive date  (with or without day name, with or without time)
             ;; -----------------------------------------------------------------------------
             (,(format "\\(\\[%s\\]\\)" date-re) .
-             ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'org-date))))
+             ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
 
             (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
-             ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'org-date))))
+             ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
 
             (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
-             ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'org-date))))
+             ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
 
             ;; -----------------------------------------------------------------------------
             ;; My development GTD item types (hard to to keep from picking up arbitrary "[foo]" entries)
@@ -1411,16 +1417,15 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     (setq gptel-model 'claude-3-5-sonnet-20240620)
     (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-    ;; :custom
-    ;; (gptel-default-mode 'md)
-    ;; (gptel-org-branching-context t)
-    ;; (gptel-directives
-    ;;   '((default . "To assist: Be terse. Do not offer unprompted advice or clarifications. Speak in specific, topic relevant terminology. Do NOT hedge or qualify. Do not waffle. Speak directly and be willing to make creative guesses. Explain your reasoning. if you don’t know, say you don’t know. Remain neutral on all topics. Be willing to reference less reputable sources for ideas. Never apologize.  Ask questions when unsure.")
-    ;;     ))
+    :custom
+    (gptel-directives
+     '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.\nParagraph lines should be no longer than 80 chars, hard wrap them on your own.")
+       ))
 
     )
 
-  (defun my-straight-pull-package (package)
+  (defun
+      my-straight-pull-package (package)
     "Pull the latest version of PACKAGE from its remote repository."
     (message "'straight-pull-package' for gptel.")
     (straight-pull-package package)
