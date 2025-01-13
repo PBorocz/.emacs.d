@@ -27,6 +27,12 @@
 (setq straight-use-package-by-default t)
 
 ;; -----------------------------------------------------------------------------
+;; Always "ensure" our packages are up-to-date (don't need separate :ensure's per package)
+;; https://emacsredux.com/blog/2025/01/12/ensure-all-packages-are-installed-by-default-with-use-package/
+;; -----------------------------------------------------------------------------
+(setq use-package-always-ensure t)
+
+;; -----------------------------------------------------------------------------
 ;; We don't need a "custom" file, anything worthwhile should be in config.org.
 ;; -----------------------------------------------------------------------------
 (setq custom-file "~/.emacs.d/garbage.el")

@@ -1,9 +1,3 @@
-:PROPERTIES:
-:GPTEL_MODEL: claude-3-5-sonnet-20240620
-:GPTEL_BACKEND: Claude
-:GPTEL_SYSTEM: You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-:GPTEL_BOUNDS: nil
-:END:
 #+title: Emacs Configuration
 #+author: Peter Borocz
 #+email: peter.borocz@gmail.com
@@ -105,7 +99,6 @@
     (show-paren-mode t))
 
   (use-package exec-path-from-shell
-    :ensure t
     :config
     (exec-path-from-shell-initialize))
 #+end_src
@@ -315,7 +308,6 @@ Improve quality of most-used C-h methods.
 ** outline-indent
 #+begin_src emacs-lisp
   (use-package outline-indent
-    :ensure t
     :straight (outline-indent
                :type git
                :host github
@@ -546,16 +538,13 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 ** nerd-icons
 [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce][Use icon fonts (specifically nerd-icons..Thanks Prot!)]]
 #+begin_src emacs-lisp
-  (use-package nerd-icons
-    :ensure t)
+  (use-package nerd-icons)
 
   (use-package nerd-icons-dired
-    :ensure t
     :hook (dired-mode . nerd-icons-dired-mode))
 
   (use-package nerd-icons-ibuffer
     ;; Also display nerd-icons for iBuffer types
-    :ensure t
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 * Window Management
@@ -647,7 +636,6 @@ Resources:
 #+begin_src emacs-lisp
   ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
   (use-package orderless
-        :ensure t
         :config
 
         (defun +orderless--consult-suffix ()
@@ -722,7 +710,6 @@ Resources:
 - [[https://kristofferbalintona.me/posts/202202211546/][Vertico, Marginalia, All-the-icons-completion, and Orderless | Kristoffer Bal...]]
 #+begin_src emacs-lisp
   (use-package vertico
-    :ensure t
     :config
     (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
           vertico-scroll-margin 0
@@ -754,8 +741,6 @@ Get our docstrings and comments to look a bit more different.
 
 #+begin_src emacs-lisp
   (use-package python
-    :ensure t
-
     :mode ("\\.py\\'" . python-ts-mode)
 
     :config
@@ -794,7 +779,6 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
     )
 
   (use-package eglot
-    :ensure t
     :defer t
     :custom
     (eglot-report-progress nil)
@@ -831,7 +815,6 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
 *** poetry
 #+begin_src emacs-lisp
   (use-package poetry
-    :ensure t
     :defer t
     :config
     (setq poetry-tracking-strategy 'switch-buffer) ;; Checks for the correct virtualenv. Better strategy IMO because the default one is quite slow.
@@ -1300,7 +1283,6 @@ Nice(r) bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   (use-package org-superstar
     :after 'org
-    :ensure t
     :config
     (setq org-superstar-item-bullet-alist '((?* . ?•) (?+ . ?➤) (?- . ?•)))
     :hook
@@ -1320,7 +1302,6 @@ Nice(r) bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   (use-package toml-ts-mode
     :defer
-    :ensure t
     :config
     (add-hook 'toml-ts-mode-hook (lambda() (setq truncate-lines t) (visual-line-mode -1)))
     )
@@ -1339,7 +1320,6 @@ Nice(r) bullets (replaces org-bullets)
 [[https://web-mode.org][Web-mode documentation]]
 #+begin_src emacs-lisp
   (use-package web-mode
-    :ensure t
     :mode
     (("\\.phtml\\'"    . web-mode)
      ("\\.php\\'"      . web-mode)
@@ -1625,7 +1605,6 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
    (use-package vterm
-     :ensure t
      :defer t
      :config
      (setq vterm-timer-delay 0.01)
@@ -1973,31 +1952,29 @@ https://github.com/copilot-emacs/copilot.el
   ;;   )
   (use-package copilot
     :straight (:host github :repo "copilot-emacs/copilot.el" :files ("*.el"))
-    :ensure t
     )
 #+end_src
 ** dashboard (from the "dashboard" package)
 #+begin_src emacs-lisp
   (use-package dashboard
-        :ensure t
-        :config
-        (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
+    :config
+    (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
           dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
           dashboard-vertically-center-content t           ;; Vertically center content.
           dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
           dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
         )
-        (setq dashboard-items '((recents . 15)))
-        (setq dashboard-startupify-list '(dashboard-insert-banner
-          dashboard-insert-newline
-          dashboard-insert-banner-title
-          dashboard-insert-newline
-          dashboard-insert-navigator
-          dashboard-insert-newline
-          dashboard-insert-init-info
-          dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
-        (dashboard-setup-startup-hook)
-        )
+    (setq dashboard-items '((recents . 15)))
+    (setq dashboard-startupify-list '(dashboard-insert-banner
+                                    dashboard-insert-newline
+                                    dashboard-insert-banner-title
+                                    dashboard-insert-newline
+                                    dashboard-insert-navigator
+                                    dashboard-insert-newline
+                                    dashboard-insert-init-info
+                                    dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
+    (dashboard-setup-startup-hook)
+    )
 #+end_src
 ** editorconfig
 "EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
@@ -2051,7 +2028,6 @@ Tried..worked well but I lost the ability to scroll back quickly in a terminal w
 (simply toggle ~inhibit-mouse-mode~ to get it back if absolutely necessary)
 #+begin_src emacs-lisp
   (use-package inhibit-mouse
-    :ensure t
     :straight (inhibit-mouse
                :type git
                :host github
@@ -2063,7 +2039,6 @@ Tried..worked well but I lost the ability to scroll back quickly in a terminal w
 [[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
 #+begin_src emacs-lisp
   (use-package lin
-        ;; :ensure t
         :config
         (lin-global-mode 1)
         )
@@ -2093,11 +2068,10 @@ Tried and discarded for one reason or another.
 *** [[https://github.com/Malabarba/smart-mode-line/][smart-mode-line]]
 #+begin_src emacs-lisp
   (use-package smart-mode-line
-        :disabled
-        ;; :ensure t
-        :init
-        (sml/setup)
-        )
+    :disabled
+    :init
+    (sml/setup)
+    )
 #+end_src
 *** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
 [[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
@@ -2105,8 +2079,6 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 #+begin_src emacs-lisp
   (use-package doom-modeline
         :disabled
-        ;; :ensure t
-
         :init
         (setq
          display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
@@ -2321,7 +2293,6 @@ https://protesilaos.com/emacs/substitute
 ** theme: modus-operandi
 #+begin_src emacs-lisp
   (use-package modus-themes
-        ;; :ensure t
         :config
         ;;
         ;; Use Prot's own configuration:
@@ -2436,7 +2407,6 @@ https://protesilaos.com/emacs/substitute
 ** theme: monokai
 #+begin_src emacs-lisp
   (use-package monokai
-        ;; :ensure nil
         :config
         (setq monokai-height-plus-4 1.2
           monokai-height-plus-3 1.1
@@ -2447,7 +2417,6 @@ https://protesilaos.com/emacs/substitute
 ** theme: [[https://protesilaos.com/emacs/ef-themes][ef-autumn]]
 #+begin_src emacs-lisp
   (use-package ef-themes
-        ;; :ensure nil
         :config
         (setq ef-themes-italic-constructs t
           ef-themes-bold-constructs nil)
@@ -2465,7 +2434,6 @@ https://protesilaos.com/emacs/substitute
 ** theme: flexoki
 #+begin_src emacs-lisp
   (use-package flexoki-themes
-        :ensure t  ;; or :straight t if using straight.el
         :config
         (load-theme 'flexoki-themes-dark t)
         :custom
@@ -2476,7 +2444,6 @@ https://protesilaos.com/emacs/substitute
 ** theme: nano
 #+begin_src emacs-lisp
   (use-package nano-theme
-        :ensure t
         :config
         (load-theme 'nano t))
 #+end_src
