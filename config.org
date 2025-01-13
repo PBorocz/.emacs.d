@@ -1610,6 +1610,17 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
+** [[https://github.com/jdtsmith/ultra-scroll][ultrascroll]]
+ #+begin_src emacs-lisp
+   (use-package ultra-scroll
+     ;:load-path "~/code/emacs/ultra-scroll" ; if you git clone'd instead of package-vc-install
+     :straight (ultra-scroll :type git :host github :repo "jdtsmith/ultra-scroll" :files ("*.el"))
+     :init
+     (setq scroll-conservatively 101 ; important!
+           scroll-margin 0)
+     :config
+     (ultra-scroll-mode 1))
+#+end_src
 ** vterm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
