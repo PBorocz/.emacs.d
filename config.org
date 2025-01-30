@@ -427,7 +427,8 @@ Interactive font scaling:
   (setq ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font    "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1") ;; "light-normal-normal" for light variation.
+  ;; (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
