@@ -1306,8 +1306,7 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
      (org-mode . org-appear-mode)
      )
  #+end_src
-*** org-linker
-[[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][GitHub - jcguu95/org-linker.el: Attaching Files in Org-Mode Using UUIDs. Flex...]]
+*** [[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][org-linker]]
  #+begin_src emacs-lisp
    (defun pb/org-linker/generate-id ()
          "Generate an id, ie. YYYYMMDD-<id> (thanks GPT-4)."
