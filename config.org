@@ -882,6 +882,15 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
   ;;   (format-all-ensure-formatter)
   ;;   )
 #+end_src
+** treesit-fold
+[[https://github.com/emacs-tree-sitter/treesit-fold?tab=readme-ov-file#-method-1-with-straightel-and-use-package][GitHub - emacs-tree-sitter/treesit-fold: Code folding using treesit.el]]
+#+begin_src emacs-lisp
+  (use-package treesit-fold
+    :straight (treesit-fold :type git :host github :repo "emacs-tree-sitter/treesit-fold")
+    :bind
+    ("C-<tab>" . treesit-fold-toggle)
+    )
+#+end_src
 ** magit/git
 *** magit
 #+begin_src emacs-lisp
