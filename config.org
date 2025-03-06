@@ -127,6 +127,11 @@
 #+end_src
 ** enlight (dashboard)
 #+begin_src emacs-lisp
+  (defun pb/set-enlight-font ()
+    (interactive)
+    (setq buffer-face-mode-face '(:height 240))
+    (buffer-face-mode))
+
   (use-package enlight
 
     :straight (enlight :type git :host github :repo "ichernyshovvv/enlight")
@@ -162,6 +167,7 @@
 
     :config
     (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
+    (add-hook 'enlight-mode-hook 'pb/set-enlight-font)
     (enlight-open)
     )
 #+end_src
