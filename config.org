@@ -981,53 +981,71 @@ Ooh..like this much better than git-gutter!
 #+end_src
 ** [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
 #+begin_src emacs-lisp
-  (straight-use-package 'f)
-  (straight-use-package 's)
+    (straight-use-package 'f)
+    (straight-use-package 's)
 
-  (straight-use-package
-   '(transient-compile
-     :type git
-     :host github
-     :repo "gavv/transient-compile"
-     :branch "main"))
+    (straight-use-package
+     '(transient-compile
+       :type git
+       :host github
+       :repo "gavv/transient-compile"
+       :branch "main"))
 
-  (defun transient-compile-poe-targets (directory)
-    "Get list of targets from a pyproject.toml using poe."
-    (when-let* ((executable (transient-compile--tool-property 'poe :exe))
-                (command (transient-compile--shell-join
-                          executable
-                        `("--directory" , directory)
-                        )
-                         )
-                (output (transient-compile--shell-run command))
-                (lines (s-lines output)))
-      ;; (message "command: %s" command)
-      ;; (message "output: %s" output)
-      (let (tasks)
-        (with-temp-buffer
-          (insert output)
-          (goto-char (point-min))
-          (when (re-search-forward "^CONFIGURED TASKS$" nil t)
-            ;; (message "Found CONFIGURED TASKS section")
-            (forward-line 1)
-            (while (not (eobp))
-              (let ((line (buffer-substring-no-properties
-                           (line-beginning-position)
-                           (line-end-position))))
-                ;; (message "Processing line: %s" line)
-                (when (string-match
-                       (rx bol (* whitespace)
-                           (group (+ (not whitespace)))
-                           (+ whitespace))
-                       line)
-                  (let ((task (match-string 1 line)))
-                    (push task tasks)
-                    ;; (message "Added task: %s" task)
-                  )))
-              (forward-line 1))))
-        ;; (message "Final tasks list: %s" tasks)
-        (nreverse tasks)))
-    )
+    (defun transient-compile-poe-targets (directory)
+      "Get list of targets from a pyproject.toml using poe."
+      (when-let* ((executable (transient-compile--tool-property 'poe :exe))
+                  (command (transient-compile--shell-join
+                            executable
+                          `("--directory" , directory)
+                          )
+                           )
+                  (output (transient-compile--shell-run command))
+                  (lines (s-lines output)))
+        ;; (message "command: %s" command)
+        ;; (message "output: %s" output)
+        (let (tasks)
+          (with-temp-buffer
+            (insert output)
+            (goto-char (point-min))
+            (when (re-search-forward "^CONFIGURED TASKS$" nil t)
+              ;; (message "Found CONFIGURED TASKS section")
+              (forward-line 1)
+              (while (not (eobp))
+                (let ((line (buffer-substring-no-properties
+                             (line-beginning-position)
+                             (line-end-position))))
+                  ;; (message "Processing line: %s" line)
+                  (when (string-match
+                         (rx bol (* whitespace)
+                             (group (+ (not whitespace)))
+                             (+ whitespace))
+                         line)
+                    (let ((task (match-string 1 line)))
+                      (push task tasks)
+                      ;; (message "Added task: %s" task)
+                    )))
+                (forward-line 1))))
+          ;; (message "Final tasks list: %s" tasks)
+          (nreverse tasks)))
+      )
+
+  (defun transient-compile-poe-command (directory target)
+    "Format build command for a poe directive."
+    (when-let* ((executable (transient-compile--tool-property 'poe :exe)))
+      (transient-compile--shell-join executable target)))
+
+  (defun interactive-transient-compile-poe-command (directory target)
+    "Format build command for a poe directive allowing for optional extra command line arguments."
+    (interactive)
+    (let ((extra-string (read-string "Enter extra command arguments: ")))
+      (when-let* ((executable (transient-compile--tool-property 'poe :exe)))
+        (transient-compile--shell-join executable target extra-string))))
+
+  (defun echo-user-input ()
+    "Ask for user input and echo it back."
+    (interactive)
+    (let ((user-input (read-string "Enter a string: ")))
+      (message "You entered: %s" user-input)))
 
   (use-package transient-compile
     :config
@@ -1036,7 +1054,8 @@ Ooh..like this much better than git-gutter!
                        :exe "poe"
                        :chdir t
                        :targets transient-compile-poe-targets
-                       :command transient-compile-makefile-command)))
+                       :command transient-compile-poe-command)))
+
 #+end_src
 * File Types/Modes
 ** css
@@ -1841,25 +1860,24 @@ https://macowners.club/posts/custom-functions-5-navigation/
   (global-set-key "\M-n" (lambda () (interactive) (scroll-up 12)))
   (global-set-key "\M-p" (lambda () (interactive) (scroll-down 12)))
 #+end_src
-** Smarter open line
+** COMMENT Smarter open line
+<2025-02-25 Tue> Want M-o to be on behalf of change-outer from above "change-inner" package.
  [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
 #+begin_src emacs-lisp
   (defun pb/key-smart-open-line ()
-        "Insert an empty line after the current line. Position the cursor
-  at its beginning, according to the current mode."
-        (interactive)
-        (move-end-of-line nil)
-        (newline-and-indent))
+    "Insert an empty line after the current line. Position the cursor at its beginning, according to the current mode."
+    (interactive)
+    (move-end-of-line nil)
+    (newline-and-indent))
 
   (defun pb/key-smart-open-line-above ()
-        "Insert an empty line above the current line. Position the cursor
-  at it's beginning, according to the current mode."
-        (interactive)
+    "Insert an empty line above the current line. Position the cursor at it's beginning, according to the current mode."
+    (interactive)
 
-        (move-beginning-of-line nil)
-        (newline-and-indent)
-        (forward-line -1)
-        (indent-according-to-mode))
+    (move-beginning-of-line nil)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
 
   (global-set-key (kbd "M-o") 'pb/key-smart-open-line)
   (global-set-key (kbd "M-O") 'pb/key-smart-open-line-above)
