@@ -512,7 +512,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (use-package gruvbox-theme
     :demand t
     :config
-    (load-theme 'gruvbox-dark-hard t)
+    (load-theme 'gruvbox-dark-soft t)
     :custom-face
     (org-level-1            ((t (:height 1.15))))
     (org-level-2            ((t (:height 1.10))))
