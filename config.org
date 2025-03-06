@@ -148,14 +148,15 @@
           ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
           ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
           ("Pecunia Exemplar"   (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")          "u")
-          ("Health Dashboard"   (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "h")
+          ("Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "a")
           )
 
-         ("Management"
+         ("Management Through Org"
+          ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+          ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+          ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+          ("Restaurants"  (find-file "~/Repository/00-09 System/01 Org/restaurants.org") "t")
           ("-Repository-" (dired "~/Repository") "r")
-          ("Projects.org" (find-file "~/Repository/00-09 System/01 Org/projects.org") "p")
-          ("Journal.org"  (find-file "~/Repository/00-09 System/01 Org/journal.org")  "j")
-          ("GTD.org"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")      "g")
           )
 
          ("Utilities"
