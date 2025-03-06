@@ -1980,9 +1980,16 @@ first IBM PC's?)...thus, we won't be changing these often.
   ;; Start with this displayed on startup:
   ;; (find-file "~/Repository/00-09 System/01 Org/projects.org")
 #+end_src
-** Display startup time:
+** display startup time:
 #+begin_src emacs-lisp
   (message "Emacs startup time: %s" (emacs-init-time))
+#+end_src
+** set frame size
+#+begin_src emacs-lisp
+  (when window-system
+    (set-frame-position (selected-frame) 950 0)
+    (set-frame-size (selected-frame) 1920 2135 t) ;; Note that final 't' is to specify that we're providing pixel-based values..
+    )
 #+end_src
 * COMMENT HISTORY (for sh_ts and giggles)
 |------------+-------------------------------------------------------------------|
