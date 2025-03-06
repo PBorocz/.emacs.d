@@ -5,12 +5,6 @@
 #+property: header-args :tangle config.el
 
 * Base Editing Environment
-** identify platform
-#+begin_src emacs-lisp
-  (defvar my/os-linux (string-equal system-type "gnu/linux") "Linux")
-  (defvar my/os-macos (string-equal system-type "darwin") "MacOS")
-  (defvar my/os-windows (string-equal system-type "windows-nt") "Windows!")
-#+end_src
 ** tune garbage collection
 #+begin_src emacs-lisp
   (use-package gcmh
