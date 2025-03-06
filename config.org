@@ -1743,7 +1743,7 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
 #+end_src
 * Custom Commands
 These are custom commands I used on regular basis (almost all of which are cribbed from others, credit given as much as possible!). Listed in no particular order:
-** Change case of text
+** change case of text
 [[http://ergoemacs.org/emacs/modernization_upcase-word.html]]
 #+begin_src emacs-lisp
   (defun pb/toggle-letter-case ()
@@ -1783,7 +1783,7 @@ These are custom commands I used on regular basis (almost all of which are cribb
 
   (global-set-key (kbd "M-l") 'pb/toggle-letter-case) ;; Overrides existing mapping
 #+end_src
-** Ctrl-a behaviour enhancement
+** ctrl-a behaviour enhancement
 Ctrl-a goes to *logical beginning* of line first before a second invocation takes point to *physical* beginning.
 #+begin_src emacs-lisp
   (defun pb/key-back-to-indentation-or-beginning ()
@@ -1792,7 +1792,7 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
         (beginning-of-line)))
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
 #+end_src
-** Smarter C-w (backward word kill)
+** smarter C-w (backward word kill)
 [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
 #+begin_src emacs-lisp
   ;; Here's a better C-w (kill region if active, otherwise kill backward word)
@@ -1803,7 +1803,7 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
           (backward-kill-word 1)))
   (global-set-key (kbd "C-w") (lambda () (interactive) (pb/kill-region-or-backward-word)))
 #+end_src
-** Better mark-word
+** better mark-word
 [[https://www.emacs.dyerdwelling.family/emacs/20231209092556-emacs--redefining-mark-paragraph-and-mark-word/]]
 #+begin_src emacs-lisp
   (defun pb/mark-word()
@@ -1818,7 +1818,7 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
   ;; Override existing keymapping
   (global-set-key (kbd "M-@") 'pb/mark-word)
 #+end_src
-** Toggle window split
+** toggle window split
 https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (defun pb/toggle-split-direction ()
@@ -1839,7 +1839,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 
   (global-set-key (kbd "C-x O") 'pb/toggle-split-direction)
 #+end_src
-** Kill this buffer
+** kill this buffer
 [[http://pragmaticemacs.com/emacs/dont-kill-buffer-kill-this-buffer-instead/]]
 #+begin_src emacs-lisp
   ;; Kill *this* buffer
@@ -1850,17 +1850,17 @@ https://macowners.club/posts/custom-functions-5-navigation/
 
   (global-set-key (kbd "C-x k") 'pb/-kill-this-buffer-)
 #+end_src
-** Use project-file-find instead of file-find:
+** use project-file-find instead of file-find:
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-x C-f")   (lambda () (interactive) (project-find-file)))
   (global-set-key (kbd "C-x C-S-f") (lambda () (interactive) (find-file)))
 #+end_src
-** Scroll page without moving cursor
+** scroll page without moving cursor
 #+begin_src emacs-lisp
   (global-set-key "\M-n" (lambda () (interactive) (scroll-up 12)))
   (global-set-key "\M-p" (lambda () (interactive) (scroll-down 12)))
 #+end_src
-** COMMENT Smarter open line
+** COMMENT smarter open line
 <2025-02-25 Tue> Want M-o to be on behalf of change-outer from above "change-inner" package.
  [[http://emacsredux.com/blog/2013/03/26/smarter-open-line/]]
 #+begin_src emacs-lisp
@@ -1882,11 +1882,11 @@ https://macowners.club/posts/custom-functions-5-navigation/
   (global-set-key (kbd "M-o") 'pb/key-smart-open-line)
   (global-set-key (kbd "M-O") 'pb/key-smart-open-line-above)
 #+end_src
-** Split current frame into evenly balanced "3"
+** split current frame into evenly balanced "3"
 #+begin_src emacs-lisp
   (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
 #+end_src
-** Text/Font scaling interactively
+** text/Font scaling interactively
 [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
 #+begin_src emacs-lisp
   (defun set-font-everywhere (font-spec &optional all-frames)
@@ -1927,7 +1927,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
   (define-key global-map (kbd "C--") 'decrease-font-size)
 
 #+end_src
-** Use Insert key to toggle overwrite/insert
+** use Insert key to toggle overwrite/insert
 [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
 #+begin_src emacs-lisp
   (when (eq system-type 'darwin)
@@ -1941,7 +1941,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+end_src
 * Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
-** Function Key Mappings
+** function Key Mappings
 Some of these are baked into my fingers from more than three decades (anymore remember SPF on IBM Mainframes or the Brief editor on the
 first IBM PC's?)...thus, we won't be changing these often.
 #+begin_src emacs-lisp
@@ -1968,7 +1968,7 @@ first IBM PC's?)...thus, we won't be changing these often.
   (global-set-key (kbd   "<f12>") 'pb/vterm-current-directory)
   (global-set-key (kbd "C-<f12>") 'pb/vterm-by-name)
 #+end_src
-** Files to have open when we start
+** files to have open when we start
 "Yes Ken, what IS the [[https://johnnydecimal.com/][Johny Decimal System]] for a thousand..."
 #+begin_src emacs-lisp
   ;; (find-file "~/Repository/00-09 System/01 Org/reference/python.org")
