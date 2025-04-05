@@ -181,6 +181,23 @@ Highlight global-search-replace strings dynamically.
     (global-anzu-mode)
     )
 #+end_src
+** buffer-terminator
+[[https://github.com/jamescherti/buffer-terminator.el][GitHub - jamescherti/buffer-terminator.el: buffer-terminator - Safely Termina...]]
+#+begin_src emacs-lisp
+  (use-package buffer-terminator
+    :ensure t
+    :custom
+    (buffer-terminator-verbose t)
+    :config
+    (setq buffer-terminator-rules-alist
+          '((keep-buffer-property . special)
+            (keep-buffer-property . process)
+            (keep-buffer-property . visible)
+            (kill-buffer-property . inactive)
+          (keep-buffer-name . ("*Claude*"))
+            (call-function . krisb-buffer-terminator-predicate)))
+    (buffer-terminator-mode 1))
+#+end_src
 ** hungry-deletes
 [[https://github.com/hrehfeld/emacs-smart-hungry-delete]]
 #+begin_src emacs-lisp
@@ -981,71 +998,59 @@ Ooh..like this much better than git-gutter!
 #+end_src
 ** [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
 #+begin_src emacs-lisp
-    (straight-use-package 'f)
-    (straight-use-package 's)
+  (straight-use-package 'f)
+  (straight-use-package 's)
 
-    (straight-use-package
-     '(transient-compile
-       :type git
-       :host github
-       :repo "gavv/transient-compile"
-       :branch "main"))
+  (straight-use-package
+   '(transient-compile
+     :type git
+     :host github
+     :repo "gavv/transient-compile"
+     :branch "main"))
 
-    (defun transient-compile-poe-targets (directory)
-      "Get list of targets from a pyproject.toml using poe."
-      (when-let* ((executable (transient-compile--tool-property 'poe :exe))
-                  (command (transient-compile--shell-join
-                            executable
+  (defun transient-compile-poe-targets (directory)
+    "Get list of targets from a pyproject.toml using poe."
+    (when-let* ((executable (transient-compile--tool-property 'poe :exe))
+                (command (transient-compile--shell-join
+                          executable
                           `("--directory" , directory)
                           )
-                           )
-                  (output (transient-compile--shell-run command))
-                  (lines (s-lines output)))
-        ;; (message "command: %s" command)
-        ;; (message "output: %s" output)
-        (let (tasks)
-          (with-temp-buffer
-            (insert output)
-            (goto-char (point-min))
-            (when (re-search-forward "^CONFIGURED TASKS$" nil t)
-              ;; (message "Found CONFIGURED TASKS section")
-              (forward-line 1)
-              (while (not (eobp))
-                (let ((line (buffer-substring-no-properties
-                             (line-beginning-position)
-                             (line-end-position))))
-                  ;; (message "Processing line: %s" line)
-                  (when (string-match
-                         (rx bol (* whitespace)
-                             (group (+ (not whitespace)))
-                             (+ whitespace))
-                         line)
-                    (let ((task (match-string 1 line)))
-                      (push task tasks)
-                      ;; (message "Added task: %s" task)
+                         )
+                (output (transient-compile--shell-run command))
+                (lines (s-lines output)))
+      ;; (message "command: %s" command)
+      ;; (message "output: %s" output)
+      (let (tasks)
+        (with-temp-buffer
+          (insert output)
+          (goto-char (point-min))
+          (when (re-search-forward "^CONFIGURED TASKS$" nil t)
+            ;; (message "Found CONFIGURED TASKS section")
+            (forward-line 1)
+            (while (not (eobp))
+              (let ((line (buffer-substring-no-properties
+                           (line-beginning-position)
+                           (line-end-position))))
+                ;; (message "Processing line: %s" line)
+                (when (string-match
+                       (rx bol (* whitespace)
+                           (group (+ (not whitespace)))
+                           (+ whitespace))
+                       line)
+                  (let ((task (match-string 1 line)))
+                    (push task tasks)
+                    ;; (message "Added task: %s" task)
                     )))
-                (forward-line 1))))
-          ;; (message "Final tasks list: %s" tasks)
-          (nreverse tasks)))
-      )
+              (forward-line 1))))
+        ;; (message "Final tasks list: %s" tasks)
+        (nreverse tasks))))
 
   (defun transient-compile-poe-command (directory target)
     "Format build command for a poe directive."
     (when-let* ((executable (transient-compile--tool-property 'poe :exe)))
+      (message "directory: %s" directory)
+      (message "target   : %s" target)
       (transient-compile--shell-join executable target)))
-
-  (defun interactive-transient-compile-poe-command (directory target)
-    "Format build command for a poe directive allowing for optional extra command line arguments."
-    (interactive)
-    (let ((extra-string (read-string "Enter extra command arguments: ")))
-      (when-let* ((executable (transient-compile--tool-property 'poe :exe)))
-        (transient-compile--shell-join executable target extra-string))))
-
-  (defun echo-user-input ()
-    "Ask for user input and echo it back."
-    (interactive)
-    (let ((user-input (read-string "Enter a string: ")))
-      (message "You entered: %s" user-input)))
 
   (use-package transient-compile
     :config
@@ -1055,6 +1060,10 @@ Ooh..like this much better than git-gutter!
                        :chdir t
                        :targets transient-compile-poe-targets
                        :command transient-compile-poe-command)))
+
+  (custom-set-variables
+   '(transient-compile-function
+     (lambda (command) (call-interactively 'compile command))))
 
 #+end_src
 * File Types/Modes
@@ -1137,7 +1146,7 @@ https://github.com/rnkn/olivetti
     :bind (:map org-mode-map
                 ("C-M-<return>" . org-insert-subheading)
                 ("C-c l"        . org-store-link)
-                ("C-c L"        . org-cliplink)
+                ("C-c L"        . org-cliplink) ;; Defined below...
                 ("C-c a"        . org-agenda)
                 ("C-c |"        . org-table-create-or-convert-from-region)
                 ("C-c C-<"      . org-promote-subtree)
@@ -1234,6 +1243,8 @@ https://github.com/rnkn/olivetti
      ))
   (setq org-confirm-babel-evaluate nil)
 #+end_src
+**** sql-lite mode
+- [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sqlite.html][SQLite Source Code Blocks in Org Mode]]
 *** svg-tag-mode
 Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-elements][Prettifying Emacs Org Mode | Sophie Bosio]]
 #+begin_src emacs-lisp
@@ -1335,6 +1346,7 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
   (add-hook 'org-mode-hook 'svg-tag-mode)
 #+end_src
 *** org-appear
+Enables /automatic/ visibility toggling depending on cursor position
  #+begin_src emacs-lisp
    (use-package org-appear
      :defer 1
@@ -1364,7 +1376,7 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
         )
    (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
 
-   (setq org-linker/root-directory      (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
+   (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
          org-linker/file-size               999999
          org-linker/uuid-generator-function 'pb/org-linker/generate-id
          org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
@@ -1503,8 +1515,7 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
 
     )
 
-  (defun
-      my-straight-pull-package (package)
+  (defun my-straight-pull-package (package)
     "Pull the latest version of PACKAGE from its remote repository."
     (message "'straight-pull-package' for gptel.")
     (straight-pull-package package)
