@@ -59,7 +59,7 @@
      yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
 
-                                        ; Buffer local, can't simply use the setq above.
+  ; Buffer local, can't simply use the setq above.
   (setq-default truncate-lines t)
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
@@ -78,17 +78,17 @@
   (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
 
   ;; Scrolling HT: http://home.thep.lu.se/~karlf/emacs.html
-  (setq scroll-step 1)
-  (setq scroll-conservatively 100000)		;; Marker distance from center (don't jump to center).
-  (setq scroll-preserve-screen-position 1)	;; Try to keep screen position when PgDn/PgUp.
-  (setq scroll-margin 0)				;; Start scrolling when marker at top/bottom.
-  (setq mouse-wheel-scroll-amount '(1))		;; Mouse scroll moves 1 line at a time, instead of 5 lines.
-  (setq mouse-wheel-progressive-speed nil)	;; On a long mouse scroll keep scrolling by 1 line.
+  (setopt scroll-step 1)
+  (setopt scroll-conservatively 100000)		;; Marker distance from center (don't jump to center).
+  (setopt scroll-preserve-screen-position 1)	;; Try to keep screen position when PgDn/PgUp.
+  (setopt scroll-margin 0)				;; Start scrolling when marker at top/bottom.
+  (setopt mouse-wheel-scroll-amount '(1))		;; Mouse scroll moves 1 line at a time, instead of 5 lines.
+  (setopt mouse-wheel-progressive-speed nil)	;; On a long mouse scroll keep scrolling by 1 line.
 
   (use-package paren
     :defer 1
     :init
-    (setq show-paren-delay 0)  ; We want matching parens to show immediately
+    (setopt show-paren-delay 0)  ; We want matching parens to show immediately
     :config
     (show-paren-mode t))
 
@@ -129,7 +129,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setq buffer-face-mode-face '(:height 240))
+    (setopt buffer-face-mode-face '(:height 240))
     (buffer-face-mode))
 
   (use-package enlight
@@ -146,6 +146,7 @@
           ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development")                                 "d")
           ("Coctione Libri"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
           ("Optimus Ludos"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
+          ("Restaurants"        (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")           "t")
           ("Pecunia Exemplar"   (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")          "u")
           ("Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "a")
           )
@@ -154,7 +155,6 @@
           ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
           ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
           ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-          ("Restaurants"  (find-file "~/Repository/00-09 System/01 Org/restaurants.org") "t")
           ("-Repository-" (dired "~/Repository") "r")
           )
 
@@ -166,7 +166,7 @@
          ))))
 
     :config
-    (setq enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
+    (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
     (add-hook 'enlight-mode-hook 'pb/set-enlight-font)
     (enlight-open)
     )
@@ -189,13 +189,13 @@ Highlight global-search-replace strings dynamically.
     :custom
     (buffer-terminator-verbose t)
     :config
-    (setq buffer-terminator-rules-alist
-          '((keep-buffer-property . special)
-            (keep-buffer-property . process)
-            (keep-buffer-property . visible)
-            (kill-buffer-property . inactive)
-          (keep-buffer-name . ("*Claude*"))
-            (call-function . krisb-buffer-terminator-predicate)))
+    (setopt buffer-terminator-rules-alist
+            '((keep-buffer-property . special)
+              (keep-buffer-property . process)
+              (keep-buffer-property . visible)
+              (kill-buffer-property . inactive)
+              (keep-buffer-name . ("*Claude*"))
+              ))
     (buffer-terminator-mode 1))
 #+end_src
 ** hungry-deletes
@@ -253,7 +253,7 @@ Highlight global-search-replace strings dynamically.
         )
 
     :config
-    (setq auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
+    (setopt auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
       delete-by-moving-to-trash                        t
       dired-create-destination-dirs-on-trailing-dirsep t
       dired-dwim-target                                t
@@ -277,7 +277,7 @@ Highlight global-search-replace strings dynamically.
     )
 
   (when (string= system-type "darwin")
-    (setq dired-use-ls-dired nil))
+    (setopt dired-use-ls-dired nil))
 #+end_src
 *** dired-gitignore
 Toggle between showing just ".git-ted" files and all files.
@@ -334,7 +334,7 @@ Improve quality of most-used C-h methods.
     (outline-indent-ellipsis " ▼ ")
 
     :config
-    (setq outline-blank-line t)
+    (setopt outline-blank-line t)
     )
 #+end_src
 ** pbcopy (allow interaction with MacOS clipboard and kill/yank ring)
@@ -384,7 +384,7 @@ https://github.com/purcell/unfill
     :defer 1
 
     :init
-    (setq whitespace-cleanup-mode-only-if-initially-clean nil)
+    (setopt whitespace-cleanup-mode-only-if-initially-clean nil)
 
     :config
     (global-whitespace-cleanup-mode 1)
@@ -398,7 +398,7 @@ yasnippets for now (but make sure they don't expand within comments!)
   ;; Don't do snippet expansion within comments/docstrings for py:
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
   (defun pb/no-expand-in-comment_string ()
-    (setq yas-buffer-local-condition
+    (setopt yas-buffer-local-condition
       '(if (nth 8 (syntax-ppss)) ;; non-nil if in a string or comment
        '(require-snippet-condition . force-in-comment)
      t)))
@@ -443,7 +443,7 @@ Interactive font scaling:
  (defvar pb/var-fixedwidth-font "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+begin_src emacs-lisp
-  (setq ns-use-thin-smoothing t)
+  (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
   ;; (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
@@ -491,9 +491,9 @@ Nice and simple: https://github.com/jessiehildebrandt/mood-line
         (pulsar-global-mode 1)
 
         :config
-        (setq pulsar-pulse t)
-        (setq pulsar-delay 0.10)
-        (setq pulsar-face  'pb/pulsar-color)
+        (setopt pulsar-pulse t)
+        (setopt pulsar-delay 0.10)
+        (setopt pulsar-face  'pb/pulsar-color)
 
         (dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
           (add-hook hook #'pulsar-mode))
@@ -600,7 +600,7 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
         :defer 2
         :delight company-mode  ;; Turns off the listing of company mode in list of minor modes (e.g. modeline)
         :init
-        (setq company-idle-delay 0.1
+        (setopt company-idle-delay 0.1
           company-minimum-prefix-length 1)
 
         :bind (:map company-active-map
@@ -710,7 +710,7 @@ Resources:
         ;; 4. (setq completion-styles '(substring orderless basic))
         ;; Combine substring, orderless and basic.
         ;;
-        (setq completion-styles '(substring orderless basic)
+        (setopt completion-styles '(substring orderless basic)
           completion-category-defaults nil
           ;; Enable partial-completion for files.
           ;; Either give orderless precedence or partial-completion.
@@ -733,7 +733,7 @@ Resources:
 #+begin_src emacs-lisp
   (use-package vertico
     :config
-    (setq vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    (setopt vertico-cycle         t ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
           vertico-scroll-margin 0
           vertico-resize        nil
           vertico-count         15)
@@ -741,15 +741,16 @@ Resources:
     )
 
   ;; Do not allow the cursor in the minibuffer prompt
-  (setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
+  (setopt minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
   ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
   ;; Vertico commands are hidden in normal buffers.
-  (setq read-extended-command-predicate #'command-completion-default-include-p)
+  (setopt read-extended-command-predicate #'command-completion-default-include-p)
 #+end_src
 * Code Development
 ** python
+- <2025-04-05 Sat> [[https://www.reddit.com/r/emacs/comments/1jqy8xl/python_so_many_lspserver_options_which_one_is_the/][So many lsp-server options. Which one is "the right one"]]
 - <2024-12-29 Sun> [[https://mclare.blog/posts/using-uv-in-emacs/][Using uv in Emacs | MClare Blog]]
 - <2024-12-29 Sun> [[https://olddeuteronomy.github.io/post/python-programming-in-emacs/][Python Programming in Emacs - The Emacs Cat]] (use pyright from Microsoft instead?)
 - <2024-12-22 Sun> Great reference for comprehensive python config: [[https://config.phundrak.com/emacs/packages/programming.html#python][Programming | Phundrak's Dotfiles]]
@@ -770,7 +771,7 @@ Get our docstrings and comments to look a bit more different.
       '((t (:family "Monaspace Radon" :height 200 :foreground "grey75"))) ; i.e. 2 less than the default size above.
       "Face for Python docstrings and comments.")
 
-    (setq python-ts-mode-hook
+    (setopt python-ts-mode-hook
           (lambda ()
             (setq-local treesit-font-lock-settings
                         (append
@@ -806,7 +807,7 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
     (eglot-report-progress nil)
     :config
     (fset #'jsonrpc--log-event #'ignore)
-    (setq jsonrpc-event-hook nil)
+    (setopt jsonrpc-event-hook nil)
     )
 
   ;; Setup python
@@ -825,7 +826,7 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   ;; "Emacs by default caps the number of bytes read from a subprocess in a single chunk to 4KB.
   ;; However, modern machines can take on a lot more. Set it to 1MB which is equal to the limit
   ;; defined in /proc/sys/fs/pipe-max-size/."
-  (setq read-process-output-max (* 1024 1024))
+  (setopt read-process-output-max (* 1024 1024))
 
   ;; (:map eglot-mode-map
   ;;   ("C-c e a" . eglot-code-actions)
@@ -843,7 +844,7 @@ https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_a
   (use-package poetry
     :defer t
     :config
-    (setq poetry-tracking-strategy 'switch-buffer) ;; Checks for the correct virtualenv. Better strategy IMO because the default one is quite slow.
+    (setopt poetry-tracking-strategy 'switch-buffer) ;; Checks for the correct virtualenv. Better strategy IMO because the default one is quite slow.
     :hook (python-mode . poetry-tracking-mode))
 #+end_src
 *** pyvenv-auto
@@ -921,7 +922,7 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 
     :config
     (define-key magit-status-mode-map (kbd "q") 'magit-quit-session)
-    (setq magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+    (setopt magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
   ;; Full screen magit-status
   (defadvice magit-status (around magit-fullscreen activate)
@@ -963,7 +964,7 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
   (use-package magit-todos
         :after magit
         :config
-        (setq magit-show-long-lines-warning nil)
+        (setopt magit-show-long-lines-warning nil)
         (magit-todos-mode 1)
         )
 #+end_src
@@ -1088,7 +1089,7 @@ Ooh..like this much better than git-gutter!
   (use-package graphviz-dot-mode
         :defer t
         :config
-        (setq graphviz-dot-indent-width 4))
+        (setopt graphviz-dot-indent-width 4))
 #+end_src
 ** justfile
 #+begin_src emacs-lisp
@@ -1128,7 +1129,7 @@ https://github.com/rnkn/olivetti
         :defer t
 
         :init
-        (setq olivetti-body-width 0.66)
+        (setopt olivetti-body-width 0.66)
 
         :hook
         ((markdown-mode . olivetti-mode))
@@ -1157,7 +1158,7 @@ https://github.com/rnkn/olivetti
 
     :config
     (add-hook 'text-mode-hook #'visual-line-mode)
-    (add-hook 'org-mode-hook (lambda () (setq truncate-lines t)))
+    (add-hook 'org-mode-hook (lambda () (setopt truncate-lines t)))
 
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
     (org-link-set-parameters
@@ -1187,7 +1188,7 @@ https://github.com/rnkn/olivetti
   ;; GTD Configuration
   ;; ---------------------------------------------------------------------------
   ;; Keywords: For regular TO-DO items in my GTD world -> C-c C-t to select.
-  (setq org-todo-keywords
+  (setopt org-todo-keywords
         '((sequence
            "IDEA(i)"
            "SMDY(o)"
@@ -1198,7 +1199,7 @@ https://github.com/rnkn/olivetti
            "|"
            )))
 
-  (setq org-todo-keyword-faces
+  (setopt org-todo-keyword-faces
         '(
             ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
             ("WORK" . "light green")
@@ -1212,7 +1213,7 @@ https://github.com/rnkn/olivetti
   ;; (setq org-fontify-todo-headline nil)
 
   ;; Format of DONE items (defined like this so the entire headline is colored across, not just the DONE keyword.)
-  (setq org-fontify-done-headline t)
+  (setopt org-fontify-done-headline t)
   (set-face-attribute 'org-headline-done nil :foreground "gray30" :strike-through t)
   (set-face-attribute 'org-done          nil :foreground "gray30" :strike-through t)
 
@@ -1220,7 +1221,7 @@ https://github.com/rnkn/olivetti
   ;; Capture templates
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
-  (setq org-capture-templates
+  (setopt org-capture-templates
         '(
           ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
           ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
@@ -1241,7 +1242,7 @@ https://github.com/rnkn/olivetti
      (shell      . t)
      (sqlite     . t)
      ))
-  (setq org-confirm-babel-evaluate nil)
+  (setopt org-confirm-babel-evaluate nil)
 #+end_src
 **** sql-lite mode
 - [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sqlite.html][SQLite Source Code Blocks in Org Mode]]
@@ -1274,7 +1275,7 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
                     (svg-lib-progress-bar (/ count total) nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
                     (svg-lib-tag value nil :stroke 0 :margin 0)) :ascent 'center)))
 
-    (setq svg-tag-tags
+    (setopt svg-tag-tags
         `(
             ;; -----------------------------------------------------------------------------
             ;; Task priority
@@ -1376,7 +1377,7 @@ Enables /automatic/ visibility toggling depending on cursor position
         )
    (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
 
-   (setq org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
+   (setopt org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
          org-linker/file-size               999999
          org-linker/uuid-generator-function 'pb/org-linker/generate-id
          org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
@@ -1395,7 +1396,7 @@ Nice(r) bullets (replaces org-bullets)
   (use-package org-superstar
     :after 'org
     :config
-    (setq org-superstar-item-bullet-alist '((?* . ?•) (?+ . ?➤) (?- . ?•)))
+    (setopt org-superstar-item-bullet-alist '((?* . ?•) (?+ . ?➤) (?- . ?•)))
     :hook
     (org-mode . org-superstar-mode)
     )
@@ -1405,7 +1406,7 @@ Nice(r) bullets (replaces org-bullets)
   (use-package pdf-tools
     :defer 5
     :config
-    (setq pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+    (setopt pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
     )
   (pdf-tools-install)
 #+end_src
@@ -1414,7 +1415,7 @@ Nice(r) bullets (replaces org-bullets)
   (use-package toml-ts-mode
     :defer
     :config
-    (add-hook 'toml-ts-mode-hook (lambda() (setq truncate-lines t) (visual-line-mode -1)))
+    (add-hook 'toml-ts-mode-hook (lambda() (setopt truncate-lines t) (visual-line-mode -1)))
     )
 #+end_src
 ** yaml-mode
@@ -1448,10 +1449,10 @@ Nice(r) bullets (replaces org-bullets)
     ;; (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
     ;;
     ;; Copy what we did for IRIS at ES, i.e. have HTML indenting match Python:
-    (setq web-mode-markup-indent-offset 4)
-    (setq web-mode-css-indent-offset    4)
-    (setq web-mode-code-indent-offset   4)
-    (setq web-mode-indent-style         4)
+    (setopt web-mode-markup-indent-offset 4)
+    (setopt web-mode-css-indent-offset    4)
+    (setopt web-mode-code-indent-offset   4)
+    (setopt web-mode-indent-style         4)
 
     )
 #+end_src
@@ -1459,7 +1460,7 @@ Nice(r) bullets (replaces org-bullets)
 - As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
   (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
 #+begin_src emacs-lisp
-  (setq treesit-language-source-alist
+  (setopt treesit-language-source-alist
         '(
           (bash       "https://github.com/tree-sitter/tree-sitter-bash")
           (cmake      "https://github.com/uyha/tree-sitter-cmake")
@@ -1484,7 +1485,7 @@ Nice(r) bullets (replaces org-bullets)
 Live spell checking.
 NOTE!: This requires a local/manual installation (ie. outside emacs)!
 #+begin_src emacs-lisp
-  (setq ispell-program-name "/usr/local/bin/aspell")
+  (setopt ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 ** [[https://github.com/karthink/gptel][gptel]]
@@ -1505,8 +1506,8 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     :straight (:host github :repo "karthink/gptel")
 
     :config
-    (setq gptel-model 'claude-3-5-sonnet-20240620)
-    (setq gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+    (setopt gptel-model 'claude-3-5-sonnet-20240620)
+    (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
     :custom
     (gptel-directives
@@ -1586,7 +1587,7 @@ If I use it in a property drawer it looks like this
 :END:
 ** postgresql
 #+begin_src emacs-lisp
-  (setq sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
+  (setopt sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
   (add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
   (add-hook 'sql-interactive-mode-hook 'sql-rename-buffer)
 
@@ -1613,7 +1614,7 @@ If I use it in a property drawer it looks like this
         (upcase-word 1)
         (forward-char))))))
 
-  (setq sql-connection-alist
+  (setopt sql-connection-alist
           '(
         (foo
         (sql-product 'postgres)
@@ -1626,7 +1627,7 @@ If I use it in a property drawer it looks like this
           )
 
   (defun wrapper-sql-connect (product connection)
-        (setq sql-product product)
+        (setopt sql-product product)
         (sql-connect connection))
 
   ; Startup wrappers
@@ -1692,9 +1693,9 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 #+end_src
 ** shell
 #+begin_src emacs-lisp
-  (setq explicit-shell-file-name "/usr/local/bin/fish")
-  (setq shell-pushd-regexp "push[d]*")
-  (setq shell-popd-regexp   "pop[d]*")
+  (setopt explicit-shell-file-name "/usr/local/bin/fish")
+  (setopt shell-pushd-regexp "push[d]*")
+  (setopt shell-popd-regexp   "pop[d]*")
 
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
@@ -1706,7 +1707,7 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
      ;:load-path "~/code/emacs/ultra-scroll" ; if you git clone'd instead of package-vc-install
      :straight (ultra-scroll :type git :host github :repo "jdtsmith/ultra-scroll" :files ("*.el"))
      :init
-     (setq scroll-conservatively 101 ; important!
+     (setopt scroll-conservatively 101 ; important!
            scroll-margin 0)
      :config
      (ultra-scroll-mode 1))
@@ -1717,8 +1718,8 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
    (use-package vterm
      :defer t
      :config
-     (setq vterm-timer-delay 0.01)
-     (setq vterm-shell "/usr/local/bin/fish")
+     (setopt vterm-timer-delay 0.01)
+     (setopt vterm-shell "/usr/local/bin/fish")
      :hook
      ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
       (vterm-mode . pb-hook/vterm-text-scale)
@@ -1733,7 +1734,7 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
 
    (defun pb-hook/vterm-custom-font-size()
          "Sue me...I like to see more text in my terminal windows."
-         (setq buffer-face-mode-face '(:weight light :height 180))
+         (setopt buffer-face-mode-face '(:weight light :height 180))
          (buffer-face-mode))
 
    (defun pb/vterm-current-directory ()
@@ -1762,29 +1763,29 @@ These are custom commands I used on regular basis (almost all of which are cribb
         (interactive)
         (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
           (if (region-active-p)
-          (setq p1 (region-beginning) p2 (region-end))
-        (let ((bds (bounds-of-thing-at-point 'word) ) )
-          (setq p1 (car bds) p2 (cdr bds)) ) )
+              (setq p1 (region-beginning) p2 (region-end))
+          (let ((bds (bounds-of-thing-at-point 'word) ) )
+              (setq p1 (car bds) p2 (cdr bds)) ) )
 
           (when (not (eq last-command this-command))
-        (save-excursion
-          (goto-char p1)
-          (cond
-           ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
-           ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
-           ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
-           ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
-           ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
-           (t (put this-command 'state "all lower") ) ) )
-        )
+          (save-excursion
+              (goto-char p1)
+              (cond
+               ((looking-at "[[:lower:]][[:lower:]]") (put this-command 'state "all lower"))
+               ((looking-at "[[:upper:]][[:upper:]]") (put this-command 'state "all caps") )
+               ((looking-at "[[:upper:]][[:lower:]]") (put this-command 'state "init caps") )
+               ((looking-at "[[:lower:]]") (put this-command 'state "all lower"))
+               ((looking-at "[[:upper:]]") (put this-command 'state "all caps") )
+               (t (put this-command 'state "all lower") ) ) )
+          )
 
           (cond
            ((string= "all lower" (get this-command 'state))
-        (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
+          (upcase-initials-region p1 p2) (put this-command 'state "init caps"))
            ((string= "init caps" (get this-command 'state))
-        (upcase-region p1 p2) (put this-command 'state "all caps"))
+          (upcase-region p1 p2) (put this-command 'state "all caps"))
            ((string= "all caps" (get this-command 'state))
-        (downcase-region p1 p2) (put this-command 'state "all lower")) )
+          (downcase-region p1 p2) (put this-command 'state "all lower")) )
           )
         )
 
@@ -2033,8 +2034,8 @@ These are here so I don't waste time in the future trying to use 'em *again*.
         :config
         (afterglow-mode t)
         ;; Optional customizations
-        (setq afterglow-default-duration 1.0)
-        (setq afterglow-default-face 'hl-line)
+        (setopt afterglow-default-duration 1.0)
+        (setopt afterglow-default-face 'hl-line)
         ;; Add triggers as needed
         (afterglow-add-triggers
          '((previous-line     :thing line   :duration 0.2)
@@ -2074,14 +2075,14 @@ https://github.com/copilot-emacs/copilot.el
 #+begin_src emacs-lisp
   (use-package dashboard
     :config
-    (setq dashboard-banner-logo-title "Good Morning Mr. Phelps..."
+    (setopt dashboard-banner-logo-title "Good Morning Mr. Phelps..."
           dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
           dashboard-vertically-center-content t           ;; Vertically center content.
           dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
           dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
         )
-    (setq dashboard-items '((recents . 15)))
-    (setq dashboard-startupify-list '(dashboard-insert-banner
+    (setopt dashboard-items '((recents . 15)))
+    (setopt dashboard-startupify-list '(dashboard-insert-banner
                                     dashboard-insert-newline
                                     dashboard-insert-banner-title
                                     dashboard-insert-newline
@@ -2108,7 +2109,7 @@ https://github.com/jcollard/elm-mode
 #+begin_src emacs-lisp
   (use-package elm-mode
         :config
-        (setq elm-format-on-save t)
+        (setopt elm-format-on-save t)
 
         :init
         (add-hook 'elm-mode-hook 'elm-format-on-save-mode)
@@ -2254,7 +2255,7 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
                 )
               )
 
-  (setq mode-line-compact t)
+  (setopt mode-line-compact t)
 #+end_src
 ** move-text
 #+begin_src emacs-lisp
