@@ -1959,7 +1959,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+end_src
 * Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
-** function Key Mappings
+** function key mappings
 Some of these are baked into my fingers from more than three decades (anymore remember SPF on IBM Mainframes or the Brief editor on the
 first IBM PC's?)...thus, we won't be changing these often.
 #+begin_src emacs-lisp
@@ -1979,7 +1979,7 @@ first IBM PC's?)...thus, we won't be changing these often.
   (global-set-key (kbd "<f8>") 'kmacro-end-macro)
   (global-set-key (kbd "<f9>") 'call-last-kbd-macro)
 
-  ;; <f10> still available! (but has an existing emacs assignment)
+  (global-set-key (kbd "<f10>") 'transient-compile) ; Override menu-bar-open (have *never* used it!)
 
   ;; <f11> still available! (but used by MacOS to hide all windows and display desktop.)
 
