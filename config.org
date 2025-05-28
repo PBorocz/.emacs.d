@@ -131,7 +131,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 240))
+    (setopt buffer-face-mode-face '(:height 200))
     (buffer-face-mode))
 
   (use-package enlight
@@ -248,14 +248,14 @@ Highlight global-search-replace strings dynamically.
 	("C-x C-d" . dired-jump)
 	("C-x j"   . dired-jump-other-window)
 	("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
-	("q"       . kill-current-buffer)	   ; Instead of simply closing the buffer
+	("q"       . kill-current-buffer)    ; Instead of simply closing the buffer
 	("."       . dired-up-directory)
-	("_"       . dired-create-empty-file)
-	("+"       . pgb/dired-create-directory)
+	("F"       . dired-create-empty-file)
+	("D"       . pgb/dired-create-directory)
 	)
 
     :config
-    (setopt auto-revert-verbose                          nil ;; Auto refresh Dired, but be quiet about it
+    (setopt auto-revert-verbose                        nil ;; Auto refresh Dired, but be quiet about it
       delete-by-moving-to-trash                        t
       dired-create-destination-dirs-on-trailing-dirsep t
       dired-dwim-target                                t
@@ -454,7 +454,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 22))
+    (set-frame-font (format pb/var-fixedwidth-font 24))
     )
 
   (defun pb/set-laptop-font-size ()
