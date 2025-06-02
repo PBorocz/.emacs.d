@@ -125,7 +125,8 @@
      (t
       (keyboard-quit))))
 
-  (define-key global-map (kbd "C-g") #'pb/keyboard-quit-dwim)
+  (global-set-key [remap keyboard-quit] #'pb/keyboard-quit-dwim)
+
 #+end_src
 ** enlight (dashboard)
 #+begin_src emacs-lisp
@@ -454,7 +455,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 24))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/set-laptop-font-size ()
@@ -465,7 +466,7 @@ Interactive font scaling:
 
   ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
   (if (display-graphic-p)
-      (if (>= (x-display-pixel-width) 3840)
+      (if (>= (x-display-pixel-width) 3000) ; Allow for somewhat lower resolutions than full 3840.
 	  (pb/set-monitor-font-size)
 	(pb/set-laptop-font-size)))
 #+end_src
