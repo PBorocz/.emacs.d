@@ -6,7 +6,7 @@
 (setq native-comp-async-report-warnings-errors 'silent)
 
 ;; Prefer loading newest compiled .el file and turn off startup messages
-(setq load-prefer-newer       noninteractive
+(setq load-prefer-newer       t ;; Ensure Emacs loads the most recent byte-compiled files.
       inhibit-startup-message t
       frame-resize-pixelwise  t
       )

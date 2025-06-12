@@ -1495,7 +1495,7 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
   (setopt ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
-** [[https://github.com/karthink/gptel][gptel]]
+** [[https://github.com/karthink/gptel][gptel]] obo Claude
 - Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
 - Alternative package to keep an eye on: [[https://github.com/mzacho/claudia][Claudia is an Emacs integration for the Claude AI as...]]
 #+begin_src emacs-lisp
@@ -1513,14 +1513,14 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     :straight (:host github :repo "karthink/gptel")
 
     :config
-    (setopt gptel-model 'claude-3-5-sonnet-20240620)
+    (setopt gptel-model 'claude-sonnet-4-20250514) ;; 'claude-3-5-sonnet-20240620)
     (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
     :custom
     (gptel-directives
-     '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.\nParagraph lines should be no longer than 80 chars, hard wrap them on your own.")
+     '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.
+Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
        ))
-
     )
 
   (defun my-straight-pull-package (package)
@@ -2099,6 +2099,14 @@ https://github.com/copilot-emacs/copilot.el
 				    dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
     (dashboard-setup-startup-hook)
     )
+#+end_src
+** dired-du
+Like the functionality but will NEVER remember C-x M-R to invoke it!
+#+begin_src emacs-lisp
+  (use-package dired-du
+    :ensure t
+    :commands dired-du-mode
+    :config (setq dired-du-size-format t))
 #+end_src
 ** editorconfig
 "EditorConfig helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs."
