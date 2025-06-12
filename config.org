@@ -422,7 +422,7 @@ yasnippets for now (but make sure they don't expand within comments!)
     )
 #+end_src
 * Display
-** fonts
+** font
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
   - For current buffer -> M-x text-scale-adjust
@@ -444,13 +444,15 @@ Interactive font scaling:
  (defvar pb/var-fixedwidth-font "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
     - Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
  (defvar pb/var-fixedwidth-font "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ (defvar pb/var-fixedwidth-font "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
 #+begin_src emacs-lisp
   (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
   ;; (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-  (defvar pb/var-fixedwidth-font "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  ;; #(defvar pb/var-fixedwidth-font "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
