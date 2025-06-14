@@ -132,7 +132,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 200))
+    (setopt buffer-face-mode-face '(:height 220))
     (buffer-face-mode))
 
   (use-package enlight
@@ -146,26 +146,27 @@
       "\n\n\n"
       (enlight-menu
        '(("Active Projects"
-	  ("-Development Root-"            (dired "~/Repository/10-19 Development/10 Development")                                 "d")
 	  ("Coctione Libri  (Recipes)"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
 	  ("Optimus Ludos   (Sports)"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
 	  ("Optimus Popinae (Restaurants)" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")           "t")
 	  ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")          "u")
 	  ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "a")
 	  )
-
-	 ("Management Through Org"
+	 ("Org"
 	  ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
 	  ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
 	  ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-	  ("-Repository-" (dired "~/Repository") "r")
+	  )
+	 ("Directories"
+	  ("-Repository-"       (dired "~/Repository")                                  "r")
+	  ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
+	  )
+	 ("Utilities"
+	  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+	  ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+	  ("*Claude*"            (command-execute 'gptel)                                            "a")
 	  )
 
-	 ("Utilities"
-	  ("Emacs Configuration" (find-file "~/.emacs.d/config.org") "e")
-	  ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-	  ("*Claude*"            (command-execute 'gptel) "a")
-	  )
 	 ))))
 
     :config
