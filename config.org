@@ -132,7 +132,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 220))
+    (setopt buffer-face-mode-face '(:height 200))
     (buffer-face-mode))
 
   (use-package enlight
@@ -142,8 +142,8 @@
     :custom
     (enlight-content
      (concat
-      (propertize "Emacs Dashboard" 'face 'highlight )
-      "\n\n\n"
+      (propertize "DASHBOARD" 'face 'bold )
+      "\n\n"
       (enlight-menu
        '(("Active Projects"
 	  ("Coctione Libri  (Recipes)"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
@@ -422,6 +422,34 @@ yasnippets for now (but make sure they don't expand within comments!)
     (yas-reload-all)
     )
 #+end_src
+** split-windows
+I want my split windows to do something different. Seldom do I want to
+simply show another location in the current buffer, rather, it's
+almost always to get to another file. Let's do this explicitly.
+#+begin_src emacs-lisp
+  (defun my-split-window-dired (split-function)
+    "Split window using SPLIT-FUNCTION and open dired in current directory."
+    (let ((current-dir (if buffer-file-name
+			   (file-name-directory buffer-file-name)
+			 default-directory)))
+      (funcall split-function)
+      (other-window 1)
+      (dired current-dir)))
+
+  (defun my-split-window-right-dired ()
+    "Split window right and open dired in current directory."
+    (interactive)
+    (my-split-window-dired 'split-window-right))
+
+  (defun my-split-window-below-dired ()
+    "Split window below and open dired in current directory."
+    (interactive)
+    (my-split-window-dired 'split-window-below))
+
+  ;; Replace the default split-window commands
+  (global-set-key (kbd "C-x 3") 'my-split-window-right-dired)
+  (global-set-key (kbd "C-x 2") 'my-split-window-below-dired)
+#+end_src
 * Display
 ** font
 Interactive font scaling:
@@ -458,7 +486,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 20))
+    (set-frame-font (format pb/var-fixedwidth-font 18))
     )
 
   (defun pb/set-laptop-font-size ()
@@ -1154,21 +1182,21 @@ https://github.com/rnkn/olivetti
     :demand t
     :straight (:type built-in)
     :bind (:map org-mode-map
-		("C-M-<return>" . org-insert-subheading)
-		("C-c l"        . org-store-link)
-		("C-c L"        . org-cliplink) ;; Defined below...
-		("C-c a"        . org-agenda)
-		("C-c |"        . org-table-create-or-convert-from-region)
-		("C-c C-<"      . org-promote-subtree)
-		("C-c C->"      . org-demote-subtree)
-		("C-<right>"    . org-metaright)
-		("C-<left>"     . org-metaleft)
-		)
+			("C-M-<return>" . org-insert-subheading)
+			("C-c l"        . org-store-link)
+			("C-c L"        . org-cliplink) ;; Defined below...
+			("C-c a"        . org-agenda)
+			("C-c |"        . org-table-create-or-convert-from-region)
+			("C-c C-<"      . org-promote-subtree)
+			("C-c C->"      . org-demote-subtree)
+			("C-<right>"    . org-metaright)
+			("C-<left>"     . org-metaleft)
+			)
 
     :config
-    (add-hook 'text-mode-hook #'visual-line-mode)
-    (add-hook 'org-mode-hook (lambda () (org-indent-mode      -1)))
-    (add-hook 'org-mode-hook (lambda () (setopt truncate-lines t)))
+    (add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
+    ;; (add-hook 'org-mode-hook (lambda () (org-indent-mode      -1)))
+    ;; (add-hook 'org-mode-hook (lambda () (setopt truncate-lines t)))
 
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
     (org-link-set-parameters
@@ -1178,14 +1206,14 @@ https://github.com/rnkn/olivetti
 
     :init
     (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
-	  org-catch-invisible-edits 'show-and-error
-	  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-	  org-hide-leading-stars    t
-	  org-return-follows-link   t
-	  org-startup-folded        t
-	  org-startup-indented      nil	;; Goes hand-in-hand with turning off org-indent-mode above in :config.
-	  org-src-tab-acts-natively t
-	  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
+		  org-catch-invisible-edits 'show-and-error
+		  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+		  org-hide-leading-stars    t
+		  org-return-follows-link   t
+		  org-startup-folded        t
+		  org-startup-indented      nil	;; Goes hand-in-hand with turning off org-indent-mode above in :config.
+		  org-src-tab-acts-natively t
+		  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -1199,25 +1227,25 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: For regular TO-DO items in my GTD world -> C-c C-t to select.
   (setopt org-todo-keywords
-	'((sequence
-	   "IDEA(i)"
-	   "SMDY(o)"
-	   "TODO(t)"
-	   "WAIT(a)"
-	   "WORK(w)"
-	   "DONE(x)"
-	   "|"
-	   )))
+		'((sequence
+		   "IDEA(i)"
+		   "SMDY(o)"
+		   "TODO(t)"
+		   "WAIT(a)"
+		   "WORK(w)"
+		   "DONE(x)"
+		   "|"
+		   )))
 
   (setopt org-todo-keyword-faces
-	'(
-	    ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
-	    ("WORK" . "light green")
-	    ("DONE" . (:foreground "gray30" :strike-through t))
-	    ("WAIT" . "systemBrownColor")
-	    ("IDEA" . "gray80")
-	    ("SMDY" . "systemBrownColor")
-	    ))
+		'(
+		    ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
+		    ("WORK" . "light green")
+		    ("DONE" . (:foreground "gray30" :strike-through t))
+		    ("WAIT" . "systemBrownColor")
+		    ("IDEA" . "gray80")
+		    ("SMDY" . "systemBrownColor")
+		    ))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   ;; (setq org-fontify-todo-headline nil)
@@ -1232,11 +1260,11 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setopt org-capture-templates
-	'(
-	  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-	  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-	  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-	  ))
+		'(
+		  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+		  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+		  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+		  ))
 
   ;; Insert date-time stamp like org but everywhere.
   (global-set-key (kbd "C-c .") 'org-time-stamp)
