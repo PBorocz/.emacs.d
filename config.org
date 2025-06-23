@@ -5,7 +5,9 @@
 #+property: header-args :tangle config.el
 
 * INBOX
+** TODO Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
 ** TODO Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
+** TODO Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
 * Base Editing Environment
 ** tune garbage collection
 #+begin_src emacs-lisp
@@ -451,7 +453,7 @@ almost always to get to another file. Let's do this explicitly.
   (global-set-key (kbd "C-x 2") 'my-split-window-below-dired)
 #+end_src
 * Display
-** font
+** fonts
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
   - For current buffer -> M-x text-scale-adjust
@@ -462,18 +464,17 @@ Interactive font scaling:
  Set a new font interactively:
    - M-x set-frame-font (Pick from list!)
 
- History of fonts actually tried for more than one day!:
- (defvar pb/var-fixedwidth-font "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Inconsolata-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Cascadia Code-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-   - Valiant attempt! Almost a week with Noto Sans Mono but going back to SCP-NF due to the more "rounded" nature.
- (defvar pb/var-fixedwidth-font "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
-    - Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
- (defvar pb/var-fixedwidth-font "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
- (defvar pb/var-fixedwidth-font "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+ History of fonts actually tried for more than one day:
+ "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1"
+ "-*-Inconsolata-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Cascadia Code-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Noto Sans Mono-light-normal-normal-*-%d-*-*-*-p-0-iso10646-1" ; Valiant attempt! Almost a week with Noto Sans Mono but going back to SCP-NF due to the more "rounded" nature.
+ "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1" ; Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
+ "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
 
 #+begin_src emacs-lisp
   (setopt ns-use-thin-smoothing t)
