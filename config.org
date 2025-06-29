@@ -5,9 +5,11 @@
 #+property: header-args :tangle config.el
 
 * INBOX
-** TODO Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
-** TODO Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
-** TODO Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
+** TODO Stuff to do:
+- Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
+- Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
+- Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
+- [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
 * Base Editing Environment
 ** tune garbage collection
 #+begin_src emacs-lisp
