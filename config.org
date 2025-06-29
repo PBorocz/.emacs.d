@@ -804,7 +804,6 @@ Resources:
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
-*** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
 *** COMMENT python
 Get our docstrings and comments to look a bit more different.
 --> <2024-12-29 Sun> Can't get this to work properly & consistently... :-(
@@ -1468,6 +1467,22 @@ Nice(r) bullets (replaces org-bullets)
     :config
     (add-hook 'toml-ts-mode-hook (lambda() (setopt truncate-lines t) (visual-line-mode -1)))
     )
+#+end_src
+** typst-mode
+#+begin_src emacs-lisp
+  (use-package typst-ts-mode
+    :straight '(:type git :host codeberg :repo "meow_king/typst-ts-mode")
+
+    :custom
+    (typst-ts-watch-options "--open")
+    (typst-ts-mode-grammar-location (expand-file-name "tree-sitter/libtree-sitter-typst.so" user-emacs-directory))
+    (typst-ts-mode-enable-raw-blocks-highlight t)
+
+    :config
+    (keymap-set typst-ts-mode-map "C-c C-c" #'typst-ts-tmenu)
+
+    )
+
 #+end_src
 ** yaml-mode
 #+begin_src emacs-lisp
