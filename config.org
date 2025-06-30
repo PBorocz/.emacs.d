@@ -220,7 +220,7 @@ Highlight global-search-replace strings dynamically.
     :init (smart-hungry-delete-add-default-hooks)
     )
 #+end_src
-** dired
+** dired environment
 [[https://github.com/MatthewZMD/.emacs.d]]
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
@@ -639,7 +639,7 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
 	)
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
-* Completion Frameworks
+* Completion Framework
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
 #+begin_src emacs-lisp
@@ -795,7 +795,7 @@ Resources:
   ;; Vertico commands are hidden in normal buffers.
   (setopt read-extended-command-predicate #'command-completion-default-include-p)
 #+end_src
-* Code Development
+* Development Support
 ** python
 - <2025-04-05 Sat> [[https://www.reddit.com/r/emacs/comments/1jqy8xl/python_so_many_lspserver_options_which_one_is_the/][So many lsp-server options. Which one is "the right one"]]
 - <2024-12-29 Sun> [[https://mclare.blog/posts/using-uv-in-emacs/][Using uv in Emacs | MClare Blog]]
@@ -1116,7 +1116,7 @@ Ooh..like this much better than git-gutter!
      )
 
 #+end_src
-* File Types/Modes
+* Other File Types/Modes
 ** css
 #+begin_src emacs-lisp
   (use-package css-mode
@@ -1184,7 +1184,7 @@ https://github.com/rnkn/olivetti
 	((markdown-mode . olivetti-mode))
 	)
 #+end_src
-** org
+** org environment
 *** org
 #+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
@@ -1217,9 +1217,9 @@ https://github.com/rnkn/olivetti
      :export (lambda (_ desc &rest _) desc))
 
     :init
-    (setq fill-column               96 ;; Org won't use the global fill-column, set here explicitly?
+    (setq fill-column                       96  ;; Org won't use the global fill-column, set here explicitly?
 		  org-catch-invisible-edits 'show-and-error
-		  org-ellipsis              "…" ;; ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+		  org-ellipsis              "…" ;; Other options: ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
 		  org-hide-leading-stars    t
 		  org-return-follows-link   t
 		  org-startup-folded        t
