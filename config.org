@@ -150,11 +150,12 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-	  ("Coctione Libri  (Recipes)"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")            "c")
-	  ("Optimus Ludos   (Sports)"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")             "o")
-	  ("Optimus Popinae (Restaurants)" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")           "t")
-	  ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")          "u")
-	  ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard") "a")
+	  ("Coctione Libri  (Recipes)"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+	  ("Optimus Ludos   (Sports)"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+	  ("Optimus Popinae (Restaurants)" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
+	  ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+	  ("Typst-Information Mapping"     (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+	  ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
 	  )
 	 ("Org"
 	  ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
@@ -426,10 +427,14 @@ yasnippets for now (but make sure they don't expand within comments!)
     (yas-reload-all)
     )
 #+end_src
-** split-windows
+** COMMENT split-windows
 I want my split windows to do something different. Seldom do I want to
 simply show another location in the current buffer, rather, it's
 almost always to get to another file. Let's do this explicitly.
+
+On further reflection, I've gotten so used to the split-window
+commands in their old incarnation, I find this new behaviour
+"sup-optimal".
 #+begin_src emacs-lisp
   (defun my-split-window-dired (split-function)
     "Split window using SPLIT-FUNCTION and open dired in current directory."
@@ -589,20 +594,19 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 
     )
 #+end_src
-** hl-line
+** hl-line(+)
 #+begin_src emacs-lisp
   (use-package hl-line
     :custom-face
     (hl-line ((t (:background "gray17"))))
   )
   (global-hl-line-mode)
-#+end_src
-** hl-line+
-#+begin_src emacs-lisp
+
   (use-package hl-line+
     :config
     (hl-line-when-idle-interval 0.5)
     (toggle-hl-line-when-idle 1))
+
 #+end_src
 ** nerd-icons
 [[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:e5e7b781-4b04-4c53-bf23-5e81789549ce][Use icon fonts (specifically nerd-icons..Thanks Prot!)]]
@@ -627,16 +631,16 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 [[https://github.com/cyrus-and/zoom][GitHub - cyrus-and/zoom: Fixed and automatic balanced window layout for Emacs]]
 #+begin_src emacs-lisp
   (use-package zoom
-	:defer 2
-	:config
-	(zoom-mode 1))
+    :defer 2
+    :config
+    (zoom-mode 1))
 #+end_src
 ** zygospore
 Toggles between "current" buffer to fullscreen and existing buffer layout (and back again)
 #+begin_src emacs-lisp
   (use-package zygospore
-	:defer 2
-	)
+    :defer 2
+    )
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
 * Completion Framework
@@ -1554,51 +1558,51 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
   (setopt ispell-program-name "/usr/local/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
-** [[https://github.com/karthink/gptel][gptel]] obo Claude
+** [[https://github.com/karthink/gptel][gptel]]
 - Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
 - Alternative package to keep an eye on: [[https://github.com/mzacho/claudia][Claudia is an Emacs integration for the Claude AI as...]]
 #+begin_src emacs-lisp
-  (require 'auth-source)
-  (defun pb/get-anthropic-api-key ()
-    "Retrieve the API key for api.anthropic.com from .authinfo."
     (require 'auth-source)
-    (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-			  :secret)))
-      (if secret
-	  secret
-	(error "No API key found for api.anthropic.com in .authinfo"))))
+    (defun pb/get-anthropic-api-key ()
+      "Retrieve the API key for api.anthropic.com from .authinfo."
+      (require 'auth-source)
+      (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+			    :secret)))
+	(if secret
+	    secret
+	  (error "No API key found for api.anthropic.com in .authinfo"))))
 
-  (use-package gptel
-    :straight (:host github :repo "karthink/gptel")
+    (use-package gptel
+      :straight (:host github :repo "karthink/gptel")
 
-    :config
-    (setopt gptel-model 'claude-sonnet-4-20250514) ;; 'claude-3-5-sonnet-20240620)
-    (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+      :config
+      (setopt gptel-model 'claude-sonnet-4-20250514)
+      (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-    :custom
-    (gptel-directives
-     '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.
-Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
-       ))
-    )
+      :custom
+      (gptel-default-mode #'org-mode)
+      (gptel-directives
+       '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings. Please respond using org-mode format instead of markdown. Use org-mode syntax for headings (* ** ***), bold (*bold*), code blocks, lists, etc.")
+	 ))
+      )
 
-  (defun my-straight-pull-package (package)
-    "Pull the latest version of PACKAGE from its remote repository."
-    (message "'straight-pull-package' for gptel.")
-    (straight-pull-package package)
-    )
-  (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+    (defun my-straight-pull-package (package)
+      "Pull the latest version of PACKAGE from its remote repository."
+      (message "'straight-pull-package' for gptel.")
+      (straight-pull-package package)
+      )
+    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
 
-  ;; (defun my/gptel-write-buffer ()
-  ;;   "Save buffer to disk when starting gptel"
-  ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
-  ;;   (unless (buffer-file-name (current-buffer))
-  ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
-  ;;           (chat-dir "~/Repository"))
-  ;;       (unless (file-directory-p chat-dir)
-  ;;         (make-directory chat-dir :parents))
-  ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
-  ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
+    ;; (defun my/gptel-write-buffer ()
+    ;;   "Save buffer to disk when starting gptel"
+    ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+    ;;   (unless (buffer-file-name (current-buffer))
+    ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+    ;;           (chat-dir "~/Repository"))
+    ;;       (unless (file-directory-p chat-dir)
+    ;;         (make-directory chat-dir :parents))
+    ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
+    ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
 #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
@@ -1964,7 +1968,7 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
 #+end_src
-** text/Font scaling interactively
+** interactive text/font scaling
 [[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
 #+begin_src emacs-lisp
   (defun set-font-everywhere (font-spec &optional all-frames)
