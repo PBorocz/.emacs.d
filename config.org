@@ -1655,7 +1655,8 @@ If I use it in a property drawer it looks like this
 :header-args:sql+: :dbpassword (mes/auth-get-pwd "db.svc")
 :header-args:sql+: :database (mes/auth-get-key "db.svc" :dbname)
 :END:
-** postgresql
+** COMMENT postgresql
+<2025-07-04 Fri> Turn off as don't use SQL that much anymore and this doesn't seem complete!
 #+begin_src emacs-lisp
   (setopt sql-postgres-program "/Applications/Postgres.app/Contents/Versions/latest/bin/psql")
   (add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
