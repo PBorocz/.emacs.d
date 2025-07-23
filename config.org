@@ -460,7 +460,7 @@ commands in their old incarnation, I find this new behaviour
   (global-set-key (kbd "C-x 2") 'my-split-window-below-dired)
 #+end_src
 * Display
-** fonts
+** font(s)
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
   - For current buffer -> M-x text-scale-adjust
@@ -520,16 +520,16 @@ Interactive font scaling:
 	(pb/set-laptop-font-size)))
 #+end_src
 ** mode-line
-Nice and simple: https://github.com/jessiehildebrandt/mood-line
+Nice and simple based on: https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
-	:init
-	(custom-set-faces
-	 '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-	 '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
-	 )
-	(mood-line-mode)
-	)
+    :init
+    (custom-set-faces
+     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
+     )
+    (mood-line-mode)
+    )
 #+end_src
 ** pulsar
 [[https://protesilaos.com/emacs/pulsar]]
@@ -575,7 +575,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 	:hook (prog-mode)
 	)
 #+end_src
-** theme
+** theme: gruvbux-dark-soft
 #+begin_src emacs-lisp
   ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
   (use-package gruvbox-theme
@@ -1188,7 +1188,7 @@ https://github.com/rnkn/olivetti
 	((markdown-mode . olivetti-mode))
 	)
 #+end_src
-** org environment
+** org
 *** org
 #+begin_src emacs-lisp
   ;; -----------------------------------------------------------------------------
@@ -1562,47 +1562,62 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
 - Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
 - Alternative package to keep an eye on: [[https://github.com/mzacho/claudia][Claudia is an Emacs integration for the Claude AI as...]]
 #+begin_src emacs-lisp
+  (require 'auth-source)
+  (defun pb/get-anthropic-api-key ()
+    "Retrieve the API key for api.anthropic.com from .authinfo."
     (require 'auth-source)
-    (defun pb/get-anthropic-api-key ()
-      "Retrieve the API key for api.anthropic.com from .authinfo."
-      (require 'auth-source)
-      (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-			    :secret)))
-	(if secret
-	    secret
-	  (error "No API key found for api.anthropic.com in .authinfo"))))
+    (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+				  :secret)))
+	      (if secret
+		  secret
+		(error "No API key found for api.anthropic.com in .authinfo"))))
 
-    (use-package gptel
-      :straight (:host github :repo "karthink/gptel")
+  (use-package gptel
+    :straight (:host github :repo "karthink/gptel")
 
-      :config
-      (setopt gptel-model 'claude-sonnet-4-20250514)
-      (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+    :config
+    (setopt gptel-model 'claude-sonnet-4-20250514)
+    (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-      :custom
-      (gptel-default-mode #'org-mode)
-      (gptel-directives
-       '((default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings. Please respond using org-mode format instead of markdown. Use org-mode syntax for headings (* ** ***), bold (*bold*), code blocks, lists, etc.")
-	 ))
-      )
+    :custom
+    (gptel-default-mode #'org-mode)
+    ;; (gptel-directives
+    ;;  '(
+    ;;    (default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own.")
+    ;;    (python . "You are a large language model living in Emacs and a helpful python coding assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
+    ;;    )
+    ;;  )
 
-    (defun my-straight-pull-package (package)
-      "Pull the latest version of PACKAGE from its remote repository."
-      (message "'straight-pull-package' for gptel.")
-      (straight-pull-package package)
-      )
-    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+    ;; ;; https:github.com/DiamondBond/emacs/blob/f9747d9e595518b26d605278144328d73d5d64bf/lisp/gpt.el#L38
+    ;; ((default . "You are a large language model and a helpful assistant. Respond concisely.")
+    ;;  (reflect . "You are a world-class AI system, capable of complex reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you detect that you made a mistake in your reasoning at any point, correct yourself inside <reflection> tags.")
+    ;;  (emacs . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
+    ;;  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+    ;;  (typescript . "You are an expert Typescript programmer. Provide code as output.")
+    ;;  (writing . "You are a large language model and a writing assistant. Respond concisely.")
+    ;;  (chat . "You are a large language model and a conversation partner. Respond concisely."))
 
-    ;; (defun my/gptel-write-buffer ()
-    ;;   "Save buffer to disk when starting gptel"
-    ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
-    ;;   (unless (buffer-file-name (current-buffer))
-    ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
-    ;;           (chat-dir "~/Repository"))
-    ;;       (unless (file-directory-p chat-dir)
-    ;;         (make-directory chat-dir :parents))
-    ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
-    ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
+    ;; https://github.com/ksqsf/emacs-config/blob/bf7cda793532a5b0a391c74b8f9b55f0e5aaafb2/modules/prelude-ai.el#L31
+    ;; (bug . "You are a large language model and a careful programmer. The supplied code doesn't work, or contains bugs. Describe each problem using only one sentence. Provide fixes without changing the old behavior.")
+    )
+
+  (defun my-straight-pull-package (package)
+    "Pull the latest version of PACKAGE from its remote repository."
+    (message "'straight-pull-package' for gptel.")
+    (straight-pull-package package)
+    )
+  (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+
+  ;; (defun my/gptel-write-buffer ()
+  ;;   "Save buffer to disk when starting gptel"
+  ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+  ;;   (unless (buffer-file-name (current-buffer))
+  ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+  ;;           (chat-dir "~/Repository"))
+  ;;       (unless (file-directory-p chat-dir)
+  ;;         (make-directory chat-dir :parents))
+  ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
+  ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
 #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
@@ -2235,9 +2250,9 @@ Tried..worked well but I lost the ability to scroll back quickly in a terminal w
 [[https://elpa.gnu.org/packages/lin.html][GNU ELPA - lin]] (Prot)
 #+begin_src emacs-lisp
   (use-package lin
-	:config
-	(lin-global-mode 1)
-	)
+    :config
+    (lin-global-mode 1)
+    )
 #+end_src
 ** magit-delta
 <2024-05-31 Fri> Took this out...I actually LIKE the old school diff display!
@@ -2384,6 +2399,25 @@ https://protesilaos.com/emacs/substitute
 
 	:bind (("M-<f6>" . substitute-target-in-buffer))
 	)
+#+end_src
+** theme: hercules
+Like it but couldn't get the code below to work (custom-theme-set-faces not defined? etc.)
+#+begin_src emacs-lisp
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/local/hercules-theme/")
+  (use-package hercules-theme
+    :demand t
+    :config
+    (load-theme 'hercules t)
+    :custom-theme-set-faces
+     'user
+     '(org-level-1            ((t (:height 1.15))))
+     '(org-level-2            ((t (:height 1.10))))
+     '(org-level-3            ((t (:height 1.05))))
+     '(org-level-4            ((t (:foreground "#b8bb26"))))
+     '(org-level-5            ((t (:foreground "#fb4933"))))
+     '(font-lock-doc-face     ((t (:foreground "#666666"))))
+     '(font-lock-comment-face ((t (:foreground "#666666"))))
+     '(org-document-title     ((t (:height 1.5 :underline nil)))))
 #+end_src
 ** theme: modus-operandi (light-theme)
 #+begin_src emacs-lisp
