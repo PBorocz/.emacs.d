@@ -1300,6 +1300,19 @@ https://github.com/rnkn/olivetti
 #+end_src
 **** sql-lite mode
 - [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sqlite.html][SQLite Source Code Blocks in Org Mode]]
+*** company-org-block
+Just start a line with "<" and company will provide a set of options for the org src block, e.g. emacs-lisp, python etc.
+#+begin_src emacs-lisp
+  (use-package company-org-block
+    :ensure t
+    :custom
+    (company-org-block-edit-style 'auto) ;; 'auto, 'prompt, or 'inline
+    :hook ((org-mode . (lambda ()
+			 (setq-local company-backends '(company-org-block))
+			 (company-mode +1)))))
+#+end_src
+*** sql-lite mode
+- [[https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sqlite.html][SQLite Source Code Blocks in Org Mode]]
 *** svg-tag-mode
 Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-elements][Prettifying Emacs Org Mode | Sophie Bosio]]
 #+begin_src emacs-lisp
