@@ -36,6 +36,7 @@
      debug-on-signal                        nil
      debug-on-quit                          nil
      default-directory                      (concat (getenv  "HOME") "/")
+     delete-by-moving-to-trash              t         ; Goes with setq trash-directory setting below
      fill-column                            96
      font-lock-maximum-decoration           t
      frame-title-format                     '("%b " (:eval (format-time-string " %Y-%m-%d %H:%M")))
@@ -51,6 +52,7 @@
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
      switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
+     trash-directory                        "~/.Trash"; Goes with delete-by-moving-to-trash above
      uniquify-after-kill-buffer-p           t         ; Rename after killing uniquified
      uniquify-buffer-name-style             'forward  ; https://github.com/bbatsov/prelude
      uniquify-ignore-buffers-re             "^\\*"    ; Don't muck with special buffers
@@ -168,7 +170,7 @@
 	  )
 	 ("Utilities"
 	  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-	  ("Python"              (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+	  ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
 	  ("*Claude*"            (command-execute 'gptel)                                            "a")
 	  )
 
@@ -263,7 +265,6 @@ Highlight global-search-replace strings dynamically.
 
     :config
     (setopt auto-revert-verbose                        nil ;; Auto refresh Dired, but be quiet about it
-      delete-by-moving-to-trash                        t
       dired-create-destination-dirs-on-trailing-dirsep t
       dired-dwim-target                                t
       dired-create-destination-dirs                    'ask
@@ -846,6 +847,8 @@ Get our docstrings and comments to look a bit more different.
 https://docs.astral.sh/ruff/editors/setup/#via-external-tool
 https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
 https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_and_pythonlspruff/ (problem solving)
+
+When we're ready to use pyright, we can use uvx to do so -> [[https://www.reddit.com/r/emacs/comments/1mddqpx/eglot_pyright_made_simple_thanks_to_uvx/][eglot + pyrights made simple thanks to uvx!]]
 #+begin_src emacs-lisp
   ;; Workaround to keep "project" from interfering with "projectile" (which I don't use??)
   (use-package project
@@ -1137,6 +1140,10 @@ Ooh..like this much better than git-gutter!
 	(add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
 	(add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
   )
+#+end_src
+** dbml
+#+begin_src emacs-lisp
+  (load-file "~/.emacs.d/local/dbd-mode/dbdiagram-mode.el")
 #+end_src
 ** graphviz-dot-mode
 #+begin_src emacs-lisp
@@ -1445,7 +1452,7 @@ Enables /automatic/ visibility toggling depending on cursor position
 	)
    (load "~/.emacs.d/straight/repos/org-linker.el/org-linker.el")
 
-   (setopt org-linker/root-directory          (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
+   (setopt org-linker/root-directory        (concat (getenv "HOME") "/Repository/00-09 System/99 org-linker-storage/")
 	 org-linker/file-size               999999
 	 org-linker/uuid-generator-function 'pb/org-linker/generate-id
 	 org-linker/trashing-function       (lambda (file) (move-file-to-trash file))
@@ -2050,6 +2057,31 @@ https://macowners.club/posts/custom-functions-5-navigation/
 
 	;; insert to toggle `overwrite-mode'
 	(global-set-key [help] #'overwrite-mode))
+#+end_src
+** easier navigation direds of images
+Allows us to browse directories of images with simply left-right arrows.
+#+begin_src emacs-lisp
+(defun kill-buffer-and-move-down ()
+  "Kill current buffer, move to next line in dired, and open it."
+  (interactive)
+  (kill-buffer)
+  (when (eq major-mode 'dired-mode)
+    (dired-next-line 1)
+    (dired-find-file)))
+
+(defun kill-buffer-and-move-up ()
+  "Kill current buffer, move to previous line in dired, and open it."
+  (interactive)
+  (kill-buffer)
+  (when (eq major-mode 'dired-mode)
+    (dired-previous-line 1)
+    (dired-find-file)))
+
+;; Bind arrow keys only in image-mode
+(add-hook 'image-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "<right>") 'kill-buffer-and-move-down)
+	    (local-set-key (kbd "<left>") 'kill-buffer-and-move-up)))
 #+end_src
 * Startup
 Stuff we do these after everything else has been setup so we have commands available for key-mappings
