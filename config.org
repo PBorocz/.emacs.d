@@ -138,7 +138,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 200))
+    (setopt buffer-face-mode-face '(:height 240))
     (buffer-face-mode))
 
   (use-package enlight
@@ -506,7 +506,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 18))
+    (set-frame-font (format pb/var-fixedwidth-font 24))
     )
 
   (defun pb/set-laptop-font-size ()
