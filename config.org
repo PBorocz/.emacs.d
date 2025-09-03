@@ -1218,10 +1218,6 @@ https://github.com/rnkn/olivetti
 			)
 
     :config
-    (add-hook 'org-mode-hook (lambda () (visual-line-mode 1)))
-    ;; (add-hook 'org-mode-hook (lambda () (org-indent-mode      -1)))
-    ;; (add-hook 'org-mode-hook (lambda () (setopt truncate-lines t)))
-
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
     (org-link-set-parameters
      "copy"
