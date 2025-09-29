@@ -138,7 +138,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 240))
+    (setopt buffer-face-mode-face '(:height 200)) ; Was 260 for full 3840x resolution.
     (buffer-face-mode))
 
   (use-package enlight
@@ -152,29 +152,29 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-	  ("Coctione Libri  (Recipes)"     (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-	  ("Optimus Ludos   (Sports)"      (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-	  ("Optimus Popinae (Restaurants)" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
-	  ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-	  ("Typst-Information Mapping"     (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-	  ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-	  )
-	 ("Org"
-	  ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-	  ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-	  ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-	  )
-	 ("Directories"
-	  ("-Repository-"       (dired "~/Repository")                                  "r")
-	  ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
-	  )
-	 ("Utilities"
-	  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-	  ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-	  ("*Claude*"            (command-execute 'gptel)                                            "a")
-	  )
+	      ("Recipes - Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+	      ("Sports - Optimus Ludos"        (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+	      ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
+	      ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+	      ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+	      ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+	      )
+	     ("Org"
+	      ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+	      ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+	      ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+	      )
+	     ("Directories"
+	      ("-Repository-"       (dired "~/Repository")                                  "r")
+	      ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
+	      )
+	     ("Utilities"
+	      ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+	      ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+	      ("*Claude*"            (command-execute 'gptel)                                            "a")
+	      )
 
-	 ))))
+	     ))))
 
     :config
     (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
@@ -506,7 +506,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 24))
+    (set-frame-font (format pb/var-fixedwidth-font 18))
     )
 
   (defun pb/set-laptop-font-size ()
@@ -517,7 +517,7 @@ Interactive font scaling:
 
   ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
   (if (display-graphic-p)
-      (if (>= (x-display-pixel-width) 3000) ; Allow for somewhat lower resolutions than full 3840.
+      (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
 	  (pb/set-monitor-font-size)
 	(pb/set-laptop-font-size)))
 #+end_src
@@ -577,7 +577,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 	:hook (prog-mode)
 	)
 #+end_src
-** theme: gruvbux-dark-soft
+** color theme
 #+begin_src emacs-lisp
   ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
   (use-package gruvbox-theme
@@ -938,6 +938,11 @@ When we're ready to use pyright, we can use uvx to do so -> [[https://www.reddit
     (envrc-global-mode)
     )
 #+end_src
+
+** dotenv-mode
+#+begin_src emacs-lisp
+  (load-file "~/.emacs.d/local/emacs-dotenv-mode/dotenv-mode.el")
+#+end_src
 ** format-all
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
 #+begin_src emacs-lisp
@@ -1054,6 +1059,14 @@ Ooh..like this much better than git-gutter!
 	:defer 1
 	:after git
 	)
+#+end_src
+** jujutsu
+#+begin_src emacs-lisp
+  (use-package jj-mode
+    :straight (:host github :repo "bolivier/jj-mode.el")
+    :bind
+    ("C-x C-j" . jj-log)
+    )
 #+end_src
 ** [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
 #+begin_src emacs-lisp
@@ -1837,7 +1850,7 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
 
    (defun pb-hook/vterm-custom-font-size()
 	 "Sue me...I like to see more text in my terminal windows."
-	 (setopt buffer-face-mode-face '(:weight light :height 180))
+	 (setopt buffer-face-mode-face '(:weight light :height 220))
 	 (buffer-face-mode))
 
    (defun pb/vterm-current-directory ()
