@@ -152,29 +152,29 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-	      ("Recipes - Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-	      ("Sports - Optimus Ludos"        (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-	      ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
-	      ("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-	      ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-	      ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-	      )
-	     ("Org"
-	      ("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-	      ("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-	      ("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-	      )
-	     ("Directories"
-	      ("-Repository-"       (dired "~/Repository")                                  "r")
-	      ("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
-	      )
-	     ("Utilities"
-	      ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-	      ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-	      ("*Claude*"            (command-execute 'gptel)                                            "a")
-	      )
+		("Recipes - Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+		("Sports - Optimus Ludos"        (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+		("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+		;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
+		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+		)
+	       ("Org"
+		("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+		("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+		("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+		)
+	       ("Directories"
+		("-Repository-"       (dired "~/Repository")                                  "r")
+		("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
+		)
+	       ("Utilities"
+		("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+		("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+		("*Claude*"            (command-execute 'gptel)                                            "a")
+		)
 
-	     ))))
+	       ))))
 
     :config
     (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
@@ -501,12 +501,12 @@ Interactive font scaling:
   (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-Geist Mono-extralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 18))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/set-laptop-font-size ()
@@ -583,7 +583,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (use-package gruvbox-theme
     :demand t
     :config
-    (load-theme 'gruvbox-dark-soft t)
+    (load-theme 'gruvbox-dark-medium t)
     :custom-face
     (org-level-1            ((t (:height 1.15))))
     (org-level-2            ((t (:height 1.10))))
@@ -918,7 +918,7 @@ When we're ready to use pyright, we can use uvx to do so -> [[https://www.reddit
 [[https://github.com/jdtsmith/indent-bars][GitHub - jdtsmith/indent-bars]]
 #+begin_src emacs-lisp
   (use-package indent-bars
-    :hook ((python-mode python-ts-mode yaml-mode) . indent-bars-mode)
+    :hook ((python-mode python-ts-mode) . indent-bars-mode)
     :custom
     (indent-bars-color                   '(highlight :face-bg t :blend 0.3))
     (indent-bars-pattern                 ".")
@@ -1525,6 +1525,7 @@ Nice(r) bullets (replaces org-bullets)
     :hook
     (yaml-mode . yaml-pro-ts-mode)
     )
+  (add-hook 'yaml-mode-hook    (lambda () (setq indent-tabs-mode nil)));; <2025-10-07 Tue> Something was turning ON tab mode for yaml, explicitly kill it!
   (add-hook 'yaml-mode-hook    #'outline-indent-minor-mode)
   (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 #+end_src
@@ -2139,10 +2140,10 @@ first IBM PC's?)...thus, we won't be changing these often.
 #+end_src
 ** set frame size
 #+begin_src emacs-lisp
-  (when window-system
-    (set-frame-position (selected-frame) 950 0)
-    (set-frame-size (selected-frame) 1920 2135 t) ;; Note that final 't' is to specify that we're providing pixel-based values..
-    )
+  ;; (when window-system
+  ;;   (set-frame-position (selected-frame) 950 0)
+  ;;   (set-frame-size (selected-frame) 1920 2135 t) ;; Note that final 't' is to specify that we're providing pixel-based values..
+  ;;   )
 #+end_src
 * COMMENT HISTORY (for sh_ts and giggles)
 |------------+-------------------------------------------------------------------|
@@ -2217,20 +2218,20 @@ https://github.com/copilot-emacs/copilot.el
   (use-package dashboard
     :config
     (setopt dashboard-banner-logo-title "Good Morning Mr. Phelps..."
-	  dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
-	  dashboard-vertically-center-content t           ;; Vertically center content.
-	  dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
-	  dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
-	)
+	    dashboard-center-content            t           ;; Content is not centered by default, we want it to be.
+	    dashboard-vertically-center-content t           ;; Vertically center content.
+	    dashboard-display-icons-p           t           ;; Display icons on both GUI and terminal
+	    dashboard-icon-type                 'nerd-icons ;; Use `nerd-icons' package
+	  )
     (setopt dashboard-items '((recents . 15)))
     (setopt dashboard-startupify-list '(dashboard-insert-banner
-				    dashboard-insert-newline
-				    dashboard-insert-banner-title
-				    dashboard-insert-newline
-				    dashboard-insert-navigator
-				    dashboard-insert-newline
-				    dashboard-insert-init-info
-				    dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
+					dashboard-insert-newline
+					dashboard-insert-banner-title
+					dashboard-insert-newline
+					dashboard-insert-navigator
+					dashboard-insert-newline
+					dashboard-insert-init-info
+					dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
     (dashboard-setup-startup-hook)
     )
 #+end_src
