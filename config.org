@@ -452,19 +452,19 @@ Interactive font scaling:
  "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
- "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; As of 20250806, like this better than Maple!
  "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
+ "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; As of 20250806, like this better than Maple!
 
 #+begin_src emacs-lisp
   (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5")
+  (defvar pb/var-fixedwidth-font  "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 22))
+    (set-frame-font (format pb/var-fixedwidth-font 20))
     )
 
   (defun pb/set-laptop-font-size ()
