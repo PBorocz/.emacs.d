@@ -451,9 +451,9 @@ Interactive font scaling:
  "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1" ; Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
  "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
- "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
  "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
- "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; As of 20250806, like this better than Maple!
+ "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
+ "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
 
 #+begin_src emacs-lisp
   (setopt ns-use-thin-smoothing t)
@@ -1151,16 +1151,16 @@ https://github.com/rnkn/olivetti
     :demand t
     :straight (:type built-in)
     :bind (:map org-mode-map
-			("C-M-<return>" . org-insert-subheading)
-			("C-c l"        . org-store-link)
-			("C-c L"        . org-cliplink) ;; Defined below...
-			("C-c a"        . org-agenda)
-			("C-c |"        . org-table-create-or-convert-from-region)
-			("C-c C-<"      . org-promote-subtree)
-			("C-c C->"      . org-demote-subtree)
-			("C-<right>"    . org-metaright)
-			("C-<left>"     . org-metaleft)
-			)
+		("C-M-<return>" . org-insert-subheading)
+		("C-c l"        . org-store-link)
+		("C-c L"        . org-cliplink) ;; Defined below...
+		("C-c a"        . org-agenda)
+		("C-c |"        . org-table-create-or-convert-from-region)
+		("C-c C-<"      . org-promote-subtree)
+		("C-c C->"      . org-demote-subtree)
+		("C-<right>"    . org-metaright)
+		("C-<left>"     . org-metaleft)
+		)
 
     :config
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
@@ -1171,14 +1171,14 @@ https://github.com/rnkn/olivetti
 
     :init
     (setq fill-column                       96  ;; Org won't use the global fill-column, set here explicitly?
-		  org-catch-invisible-edits 'show-and-error
-		  org-ellipsis              "…" ;; Other options: ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
-		  org-hide-leading-stars    t
-		  org-return-follows-link   t
-		  org-startup-folded        t
-		  org-startup-indented      nil	;; Goes hand-in-hand with turning off org-indent-mode above in :config.
-		  org-src-tab-acts-natively t
-		  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
+	  org-catch-invisible-edits 'show-and-error
+	  org-ellipsis              "…" ;; Other options: ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
+	  org-hide-leading-stars    t
+	  org-return-follows-link   t
+	  org-startup-folded        t
+	  org-startup-indented      nil	;; Goes hand-in-hand with turning off org-indent-mode above in :config.
+	  org-src-tab-acts-natively t
+	  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
 
   (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -1192,25 +1192,25 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: For regular TO-DO items in my GTD world -> C-c C-t to select.
   (setopt org-todo-keywords
-		'((sequence
-		   "IDEA(i)"
-		   "SMDY(o)"
-		   "TODO(t)"
-		   "WAIT(a)"
-		   "WORK(w)"
-		   "DONE(x)"
-		   "|"
-		   )))
+	  '((sequence
+	     "IDEA(i)"
+	     "SMDY(o)"
+	     "TODO(t)"
+	     "WAIT(a)"
+	     "WORK(w)"
+	     "DONE(x)"
+	     "|"
+	     )))
 
   (setopt org-todo-keyword-faces
-		'(
-		    ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
-		    ("WORK" . "light green")
-		    ("DONE" . (:foreground "gray30" :strike-through t))
-		    ("WAIT" . "systemBrownColor")
-		    ("IDEA" . "gray80")
-		    ("SMDY" . "systemBrownColor")
-		    ))
+	  '(
+	    ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
+	    ("WORK" . "light green")
+	    ("DONE" . (:foreground "gray30" :strike-through t))
+	    ("WAIT" . "systemBrownColor")
+	    ("IDEA" . "gray80")
+	    ("SMDY" . "systemBrownColor")
+	    ))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   ;; (setq org-fontify-todo-headline nil)
@@ -1225,11 +1225,11 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setopt org-capture-templates
-		'(
-		  ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-		  ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-		  ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-		  ))
+	  '(
+	    ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+	    ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+	    ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+	    ))
 
   ;; Insert date-time stamp like org but everywhere.
   (global-set-key (kbd "C-c .") 'org-time-stamp)
@@ -1530,10 +1530,10 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     "Retrieve the API key for api.anthropic.com from .authinfo."
     (require 'auth-source)
     (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-				  :secret)))
-	      (if secret
-		  secret
-		(error "No API key found for api.anthropic.com in .authinfo"))))
+			     :secret)))
+      (if secret
+	  secret
+	(error "No API key found for api.anthropic.com in .authinfo"))))
 
   (use-package gptel
     :straight (:host github :repo "karthink/gptel")
@@ -1541,6 +1541,17 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     :config
     (setopt gptel-model 'claude-sonnet-4-20250514)
     (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+
+    ;; Set your custom system prompt as default
+    (setopt gptel-directives
+	    '((default . "You are a large language model living in Emacs and a helpful assistant.
+  Respond concisely. Don't be overly agreeable and act as my brutally
+  honest, high-level advisor and mirror. If do you challenge my thinking,
+  question my assumptions, or expose the blind spots: be direct but
+  friendly. Look at my situation with complete objectivity and strategic
+  depth. Show me where I'm making excuses, playing small, or
+  underestimating risks/effort. When generating python, use double-quotes
+  around all string constants.")))
 
     :custom
     (gptel-default-mode #'org-mode)
@@ -1875,45 +1886,17 @@ https://macowners.club/posts/custom-functions-5-navigation/
   (fset 'pb/split3 (kmacro-lambda-form [?\C-x ?1 ?\C-x ?3 ?\C-x ?3 ?\C-x ?+] 0 "%d"))
 #+end_src
 ** interactive text/font scaling
-[[https://www.reddit.com/r/emacs/comments/ck4k2u/forgot_my_glasses/?utm_source=share&utm_medium=ios_app]]
 #+begin_src emacs-lisp
-  (defun set-font-everywhere (font-spec &optional all-frames)
-	(when (null (assq 'font default-frame-alist))
-	  (add-to-list 'default-frame-alist '(font . "")))
-
-	(setcdr (assq 'font default-frame-alist) font-spec)
-
-	(dolist (f (if all-frames (frame-list) (list (selected-frame))))
-	  (with-selected-frame f (set-frame-font font-spec t))))
-
-  (defun resize-font(font &optional n)
-	(let* ((ff (split-string font "-"))
-	   (size (nth 7 ff))
-	   (sizen (string-to-number size))
-	   (n (or n 1))
-	   (new-size (max 1 (+ n sizen))))
-	  (setcar (nthcdr 7 ff) (number-to-string new-size))
-	  (cons (mapconcat 'identity ff "-") new-size)))
-
-  (defun cur-font ()
-	(cdr (assq 'font (frame-parameters (selected-frame)))))
-
-  (defvar min-font-size 1)
-  (defun change-font-size (&optional decrease times)
-	(let* ((inc (* (or times 1) (if decrease -1 1)))
-	   (old-font (cur-font))
-	   (new-font-and-size (resize-font old-font inc))
-	   (new-font (car new-font-and-size))
-	   (size (cdr new-font-and-size)))
-	  (unless (equal old-font new-font)
-	(set-font-everywhere new-font)
-	(message (format "%d %s" size new-font)))))
-  (defun increase-font-size(&optional n) (interactive) (change-font-size nil n))
-  (defun decrease-font-size(&optional n) (interactive) (change-font-size t n))
-
-  (define-key global-map (kbd "C-+") 'increase-font-size)
-  (define-key global-map (kbd "C--") 'decrease-font-size)
-
+  (defun pb/change-font-size (size)
+    "Change font size (clearly `:height` in `face-attribute`) to given SIZE."
+    (interactive
+     (list
+      (read-number
+       (format "Input font size (current=%d): " (face-attribute 'default :height))
+       nil)))
+    (set-face-attribute 'default nil :height size)
+    )
+  (global-set-key (kbd "C-+") 'pb/change-font-size)
 #+end_src
 ** use Insert key to toggle overwrite/insert
 [[https://emacs.stackexchange.com/questions/18533/how-to-use-the-insert-key-to-toggle-overwrite-mode-when-using-a-pc-keyboard-in]]
