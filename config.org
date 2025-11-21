@@ -537,21 +537,22 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 #+end_src
 ** color theme
 #+begin_src emacs-lisp
-  ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
+    ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
   (use-package gruvbox-theme
     :demand t
     :config
     (load-theme 'gruvbox-dark-medium t)
-    :custom-face
-    (org-level-1            ((t (:height 1.15))))
-    (org-level-2            ((t (:height 1.10))))
-    (org-level-3            ((t (:height 1.05))))
-    (org-level-4            ((t (:foreground "#b8bb26")))) ;; Swap these as level 4 shows up a lot in my
-    (org-level-5            ((t (:foreground "#fb4933")))) ;; projects.org file for GTD's and red is too harsh!
-    (font-lock-doc-face     ((t (:foreground "#666666")))) ;; :height 0.9
-    (font-lock-comment-face ((t (:foreground "#666666")))) ;; :height 0.9
-    (org-document-title     ((t (:height 1.5 :underline nil))))
-    )
+    (run-with-timer 0.1 nil
+      (lambda ()
+	(custom-set-faces
+	 '(org-level-1 ((t (:height 1.15))))
+	 '(org-level-2 ((t (:height 1.10))))
+	 '(org-level-3 ((t (:height 1.05))))
+	 '(org-level-4 ((t (:foreground "#b8bb26"))))
+	 '(org-level-5 ((t (:foreground "#fb4933"))))
+	 '(font-lock-doc-face ((t (:foreground "#666666"))))
+	 '(font-lock-comment-face ((t (:foreground "#666666"))))
+	 '(org-document-title ((t (:height 1.5 :underline nil))))))))
 #+end_src
 ** hl-line(+)
 #+begin_src emacs-lisp
