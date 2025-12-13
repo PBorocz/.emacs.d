@@ -1,3 +1,5 @@
+(setq package-enable-at-startup nil)
+
 ;; Startup speed, annoyance suppression
 ;; (ht: https://git.sr.ht/~ashton314/emacs-bedrock/tree/main/item/early-init.el)
 (setq gc-cons-threshold 10000000)
@@ -6,10 +8,9 @@
 (setq native-comp-async-report-warnings-errors 'silent)
 
 ;; Prefer loading newest compiled .el file and turn off startup messages
-(setq load-prefer-newer       t ;; Ensure Emacs loads the most recent byte-compiled files.
-      inhibit-startup-message t
-      frame-resize-pixelwise  t
-      )
+(setq load-prefer-newer         t ;; Ensure Emacs loads the most recent byte-compiled files.
+      inhibit-startup-message   t
+      frame-resize-pixelwise    t)
 
 (blink-cursor-mode 0)
 (menu-bar-mode    -1)
