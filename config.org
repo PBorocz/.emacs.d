@@ -155,7 +155,7 @@ w#+title: Emacs Configuration
 		("Recipes - Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
 		("Sports - Optimus Ludos"        (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
 		("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		("Python Code Quality"           (dired "~/Repository/10-19 Development/10 Development/POCs/python-code-quality")          "q")
+		("MQ - Python Code Quality"      (dired "~/Repository/10-19 Development/10 Development/POCs/python-code-quality")          "q")
 		;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
 		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
 		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
@@ -229,7 +229,7 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-  (defun pgb/dired-create-directory ()
+  (defun pb/dired-create-directory ()
     "Wrapper to dired-create-directory to avoid minibuffer completion."
     ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
     (interactive)
@@ -238,7 +238,7 @@ Highlight global-search-replace strings dynamically.
       (dired-create-directory search-term)))
 
   ;; https://lmno.lol/alvaro/hide-another-detail
-  (defun pgb/hide-dired-details-include-all-subdir-paths ()
+  (defun pb/hide-dired-details-include-all-subdir-paths ()
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward dired-subdir-regexp nil t)
@@ -261,7 +261,7 @@ Highlight global-search-replace strings dynamically.
 	("q"       . kill-current-buffer)    ; Instead of simply closing the buffer
 	("."       . dired-up-directory)
 	("F"       . dired-create-empty-file)
-	("D"       . pgb/dired-create-directory)
+	("D"       . pb/dired-create-directory)
 	)
 
     :config
@@ -283,7 +283,7 @@ Highlight global-search-replace strings dynamically.
     :hook (
 	 ;; (dired-mode         . diredfl-mode) ;; Color our dired display by type of file/directory (https://github.com/purcell/diredfl)
 	 (dired-mode         . dired-hide-details-mode)
-	 (dired-after-readin . pgb/hide-dired-details-include-all-subdir-paths)
+	 (dired-after-readin . pb/hide-dired-details-include-all-subdir-paths)
 	 )
     )
 
@@ -903,20 +903,8 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
    :commands format-all-mode
    :hook (prog-mode . format-all-mode)
    :config
-   (setq-default format-all-formatters '(("Python" (ruff "format")))))
-
-  ;; (use-package format-all
-  ;;   :commands
-  ;;   (format-all-mode format-all-region-or-buffer)
-
-  ;;   :hook
-  ;;   ((python-mode python-ts-mode) . (lambda () (setq format-all-formatters '(("Python" "~/.local/bin/ruff" "format")))))
-
-  ;;   :config
-  ;;   ;; (setq-default format-all-formatters '(("Python" ("~/.local/bin/ruff" "format"))))
-  ;;   (global-set-key (kbd "M-F") #'format-all-buffer)
-  ;;   (format-all-ensure-formatter)
-  ;;   )
+   (setq-default format-all-formatters '(("Python" (ruff "format"))))
+   (setq format-all-show-errors nil))
 #+end_src
 ** treesit-fold
 [[https://github.com/emacs-tree-sitter/treesit-fold?tab=readme-ov-file#-method-1-with-straightel-and-use-package][GitHub - emacs-tree-sitter/treesit-fold: Code folding using treesit.el]]
