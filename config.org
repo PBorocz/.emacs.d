@@ -1,4 +1,4 @@
-w#+title: Emacs Configuration
+#+title: Emacs Configuration
 #+author: Peter Borocz
 #+email: peter.borocz@gmail.com
 #+options: num:nil
@@ -6,6 +6,7 @@ w#+title: Emacs Configuration
 
 * INBOX
 ** TODO Stuff to do:
+- Would love to try out [[https://github.com/honmaple/emacs-maple-modeline][honmaple/emacs-maple-modeline: Beautiful emacs modeline]] but can't get quelpa install to work well.
 - Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
 - Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
 - Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
@@ -199,15 +200,15 @@ Highlight global-search-replace strings dynamically.
   (use-package buffer-terminator
     :ensure t
     :custom
-    (buffer-terminator-verbose t)
+    (buffer-terminator-inactivity-timeout (* 90 60)) ;Override default of 30' to be 90'
     :config
     (setopt buffer-terminator-rules-alist
-	    '((keep-buffer-property . special)
-	      (keep-buffer-property . process)
-	      (keep-buffer-property . visible)
-	      (kill-buffer-property . inactive)
-	      (keep-buffer-name . ("*Claude*"))
-	      ))
+	      '((keep-buffer-property . special)
+		(keep-buffer-property . process)
+		(keep-buffer-property . visible)
+		(kill-buffer-property . inactive)
+		(keep-buffer-name . ("*Claude*"))
+		))
     (buffer-terminator-mode 1))
 #+end_src
 ** hungry-deletes
@@ -500,6 +501,7 @@ Interactive font scaling:
 	(pb/set-laptop-font-size)))
 #+end_src
 ** mode-line
+*** mood-line
 Nice and simple based on: https://github.com/jessiehildebrandt/mood-line
 #+begin_src emacs-lisp
   (use-package mood-line
@@ -1361,11 +1363,12 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
 	    ;; -----------------------------------------------------------------------------
 	    ("\\[BUG\\]" . ((lambda (tag) (svg-tag-make "BUG" :face 'font-lock-comment-face)))) ;; Bug (duh..)
 	    ("\\[ENH\\]" . ((lambda (tag) (svg-tag-make "ENH" :face 'font-lock-comment-face)))) ;; Enhancement
+	    ("\\[FIX\\]" . ((lambda (tag) (svg-tag-make "FIX" :face 'font-lock-comment-face)))) ;; FixMe
 	    ("\\[HOW\\]" . ((lambda (tag) (svg-tag-make "HOW" :face 'font-lock-comment-face)))) ;; How To
 	    ("\\[INF\\]" . ((lambda (tag) (svg-tag-make "INF" :face 'font-lock-comment-face)))) ;; Information
 	    ("\\[REF\\]" . ((lambda (tag) (svg-tag-make "REF" :face 'font-lock-comment-face)))) ;; Reference
 	    ("\\[SEC\\]" . ((lambda (tag) (svg-tag-make "SEC" :face 'font-lock-comment-face)))) ;; Security
-
+	    ("\\[TST\\]" . ((lambda (tag) (svg-tag-make "TST" :face 'font-lock-comment-face)))) ;; Bug (duh..)
 	    )
 	)
     )
@@ -1503,25 +1506,31 @@ Nice(r) bullets (replaces org-bullets)
 - As of <2023-08-14 Mon> Working 29.1! (from https://github.com/railwaycat/homebrew-emacsmacport)
   (with some help from [[https://www.masteringemacs.org/article/how-to-get-started-tree-sitter][How to Get Started with Tree-Sitter - Mastering Emacs]])
 #+begin_src emacs-lisp
-  (setopt treesit-language-source-alist
-	'(
-	  (bash       "https://github.com/tree-sitter/tree-sitter-bash")
-	  (cmake      "https://github.com/uyha/tree-sitter-cmake")
-	  (css        "https://github.com/tree-sitter/tree-sitter-css")
-	  (html       "https://github.com/tree-sitter/tree-sitter-html")
-	  (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
-	  (json       "https://github.com/tree-sitter/tree-sitter-json")
-	  (make       "https://github.com/alemuller/tree-sitter-make")
-	  (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
-	  (python     "https://github.com/tree-sitter/tree-sitter-python")
-	  (toml       "https://github.com/tree-sitter/tree-sitter-toml")
-	  (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
-	)
+    (setopt treesit-language-source-alist
+	    '(
+	      (bash       "https://github.com/tree-sitter/tree-sitter-bash")
+	      (cmake      "https://github.com/uyha/tree-sitter-cmake")
+	      (css        "https://github.com/tree-sitter/tree-sitter-css")
+	      (html       "https://github.com/tree-sitter/tree-sitter-html")
+	      (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+	      (json       "https://github.com/tree-sitter/tree-sitter-json")
+	      (make       "https://github.com/alemuller/tree-sitter-make")
+	      (markdown   "https://github.com/ikatyang/tree-sitter-markdown")
+	      (python     "https://github.com/tree-sitter/tree-sitter-python")
+	      (toml       "https://github.com/tree-sitter/tree-sitter-toml")
+	      (yaml       "https://github.com/ikatyang/tree-sitter-yaml"))
+	    )
 
-  (use-package treesit-auto
-	:config
-	(global-treesit-auto-mode)
-	)
+    (use-package treesit-auto
+      :config
+      (global-treesit-auto-mode)
+      )
+
+    (use-package treesit-fold
+      :hook (yaml-ts-mode . treesit-fold-mode)
+      :bind (:map treesit-fold-mode-map
+		  ("C-<tab>" . treesit-fold-toggle-all)
+		  ("S-<tab>" . treesit-fold-toggle)))
 #+end_src
 * External Tools & Services
 ** aspell
@@ -1549,7 +1558,7 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
     :straight (:host github :repo "karthink/gptel")
 
     :config
-    (setopt gptel-model 'claude-sonnet-4-20250514)
+    (setopt gptel-model 'claude-sonnet-4-5-20250929)
     (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
     ;; Set your custom system prompt as default
@@ -1705,7 +1714,6 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 #+begin_src emacs-lisp
   (use-package rg
 	:defer 1
-
 	:config
 	(rg-enable-menu)
 	)
@@ -1720,10 +1728,10 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** [[https://github.com/jdtsmith/ultra-scroll][ultrascroll]]
+** COMMENT [[https://github.com/jdtsmith/ultra-scroll][ultrascroll]]
+<2026-01-21 Wed> Not sure this is working on my build, removing for the time being.
  #+begin_src emacs-lisp
    (use-package ultra-scroll
-     ;:load-path "~/code/emacs/ultra-scroll" ; if you git clone'd instead of package-vc-install
      :straight (ultra-scroll :type git :host github :repo "jdtsmith/ultra-scroll" :files ("*.el"))
      :init
      (setopt scroll-conservatively 101 ; important!

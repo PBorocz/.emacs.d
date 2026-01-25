@@ -1,6 +1,0 @@
-# name : #+begin_...#+end_
-# key: block_
-# --
-#+begin_src $1
-  $0
-#+end_src

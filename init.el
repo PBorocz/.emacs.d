@@ -23,6 +23,8 @@
   (load bootstrap-file nil 'nomessage))
 
 (straight-use-package 'use-package)
+(straight-use-package 'quelpa)
+(straight-use-package 'quelpa-use-package)
 
 (setq straight-use-package-by-default t)
 

@@ -1,4 +1,5 @@
 (setq package-enable-at-startup nil)
+(setq package-archives nil)
 
 ;; Startup speed, annoyance suppression
 ;; (ht: https://git.sr.ht/~ashton314/emacs-bedrock/tree/main/item/early-init.el)
@@ -29,3 +30,5 @@
 
 ;; Make the initial buffer load faster by setting its mode to fundamental-mode
 (setq initial-major-mode 'fundamental-mode)
+
+(setq package-enable-at-startup nil)
