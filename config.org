@@ -50,6 +50,7 @@
      initial-scratch-message                nil       ; Start scratch buffers empty..
      make-backup-files                      nil       ; Stop creating backup~ files
      ring-bell-function                     'ignore
+     scroll-conservatively                  10000
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
      switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
@@ -474,13 +475,14 @@ Interactive font scaling:
  "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
  "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
- "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Wow, used this for almost 2+ months!
+ "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
 
 #+begin_src emacs-lisp
   (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font  "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -1728,17 +1730,6 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
   (setenv "PAGER"  "/bin/cat")
   (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
-** COMMENT [[https://github.com/jdtsmith/ultra-scroll][ultrascroll]]
-<2026-01-21 Wed> Not sure this is working on my build, removing for the time being.
- #+begin_src emacs-lisp
-   (use-package ultra-scroll
-     :straight (ultra-scroll :type git :host github :repo "jdtsmith/ultra-scroll" :files ("*.el"))
-     :init
-     (setopt scroll-conservatively 101 ; important!
-	   scroll-margin 0)
-     :config
-     (ultra-scroll-mode 1))
-#+end_src
 ** vterm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
  #+begin_src emacs-lisp
@@ -2759,6 +2750,17 @@ As of <2024-08-28 Wed> and migration to emacs30, I don't think we need this anym
 	(global-treesit-auto-mode)
 	(setq treesit-auto-install t)
 	)
+#+end_src
+** [[https://github.com/jdtsmith/ultra-scroll][ultrascroll]]
+<2026-01-21 Wed> Not sure this is working on my build, removing for the time being.
+ #+begin_src emacs-lisp
+   (use-package ultra-scroll
+     :straight (ultra-scroll :type git :host github :repo "jdtsmith/ultra-scroll" :files ("*.el"))
+     :init
+     (setopt scroll-conservatively 101 ; important!
+	   scroll-margin 0)
+     :config
+     (ultra-scroll-mode 1))
 #+end_src
 ** ws-butler
 #+begin_src emacs-lisp
