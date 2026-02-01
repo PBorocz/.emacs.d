@@ -5,12 +5,11 @@
 #+property: header-args :tangle config.el
 
 * INBOX
-** TODO Stuff to do:
-- Would love to try out [[https://github.com/honmaple/emacs-maple-modeline][honmaple/emacs-maple-modeline: Beautiful emacs modeline]] but can't get quelpa install to work well.
-- Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
-- Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
-- Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
-- [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
+** TODO Would love to try out [[https://github.com/honmaple/emacs-maple-modeline][honmaple/emacs-maple-modeline: Beautiful emacs modeline]] but can't get quelpa install to work well.
+** TODO Install and test out ClaudeCode in [[https://github.com/mindslost/claude-code-emacs][emacs]].
+** TODO Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
+** TODO Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
+** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
 * Base Editing Environment
 ** tune garbage collection
 #+begin_src emacs-lisp
@@ -27,7 +26,7 @@
     (setq
      ad-redefinition-action                 'accept   ; https://andrewjamesjohnson.com/suppressing-ad-handle-definition-warnings-in-emacs/
      auto-save-default                      nil       ; Stop creating autosaving files (we setup/use bbatsov's auto-save instead)
-     blink-cursor-blinks                    5
+     blink-cursor-blinks                    2
      blink-cursor-delay                     0.0
      blink-cursor-interval                  0.3       ; Default is 0.5
      blink-cursor-mode                      1
@@ -50,7 +49,6 @@
      initial-scratch-message                nil       ; Start scratch buffers empty..
      make-backup-files                      nil       ; Stop creating backup~ files
      ring-bell-function                     'ignore
-     scroll-conservatively                  10000
      search-highlight                       t
      sentence-end-double-space              nil       ; Period single space ends sentence
      switch-to-buffer-obey-display-actions  t         ; https://www.masteringemacs.org/article/demystifying-emacs-window-manager: Switching Buffers
@@ -69,8 +67,12 @@
      yank-excluded-properties              't         ; Clipboard yank is pasting graphics from Microsoft instead of text...strip all properties!
      ))
 
-  ; Buffer local, can't simply use the setq above.
+  ;; Buffer local, can't simply use the setq above.
   (setq-default truncate-lines t)
+
+  ;; Miscellaneous settings..
+  (global-auto-revert-mode  1) ;; refresh a buffer if changed on disk
+  (recentf-mode             1) ;; remember recently edited files (M-x recentf-open-files to show)
 
   ;; In emacs 29+, seems like toggle-debug-on-quit is flipped to T by default,
   ;; causing C-g for minibuffer-quit to start the debugger(!). We don't want that.
@@ -84,16 +86,13 @@
   (unbind-key "C-z")
   (unbind-key "M-z")
 
-  (global-auto-revert-mode 1) ;; refresh a buffer if changed on disk
-  (recentf-mode 1)            ;; remember recently edited files (M-x recentf-open-files to show)
-
   ;; Scrolling HT: http://home.thep.lu.se/~karlf/emacs.html
-  (setopt scroll-step 1)
-  (setopt scroll-conservatively 100000)		;; Marker distance from center (don't jump to center).
+  (setopt scroll-step                     1)
+  (setopt scroll-conservatively           100000)	;; Marker distance from center (don't jump to center).
   (setopt scroll-preserve-screen-position 1)	;; Try to keep screen position when PgDn/PgUp.
-  (setopt scroll-margin 0)				;; Start scrolling when marker at top/bottom.
-  (setopt mouse-wheel-scroll-amount '(1))		;; Mouse scroll moves 1 line at a time, instead of 5 lines.
-  (setopt mouse-wheel-progressive-speed nil)	;; On a long mouse scroll keep scrolling by 1 line.
+  (setopt scroll-margin                   0)	;; Start scrolling when marker at top/bottom.
+  (setopt mouse-wheel-scroll-amount       '(1))	;; Mouse scroll moves 1 line at a time, instead of 5 lines.
+  (setopt mouse-wheel-progressive-speed   nil)	;; On a long mouse scroll keep scrolling by 1 line.
 
   (use-package paren
     :defer 1
@@ -140,7 +139,7 @@
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
-    (setopt buffer-face-mode-face '(:height 200)) ; Was 260 for full 3840x resolution.
+    (setopt buffer-face-mode-face '(:height 220))
     (buffer-face-mode))
 
   (use-package enlight
@@ -154,22 +153,24 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-		("Recipes - Coctione Libri"      (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-		("Sports - Optimus Ludos"        (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-		("Activity Dashboard"            (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		("MQ - Python Code Quality"      (dired "~/Repository/10-19 Development/10 Development/POCs/python-code-quality")          "q")
+		("Recipes - Coctione Libri" (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+		("Sports - Optimus Ludos"   (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+		("Activity Dashboard"       (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+		("MQ - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/POCs/python-code-quality")          "q")
 		;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
 		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
 		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
 		)
 	       ("Org"
-		("Projects"     (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-		("Journal"      (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-		("GTD"          (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+		("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+		("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+		("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
 		)
 	       ("Directories"
-		("-Repository-"       (dired "~/Repository")                                  "r")
-		("-Development Root-" (dired "~/Repository/10-19 Development/10 Development") "d")
+		("-Root-"      (dired "~/Repository")                                  "r")
+		("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
+		("Money"       (dired "~/Repository/20-29 Money")                      "m")
+		("Health"      (dired "~/Repository/30-39 Health")                     "h")
 		)
 	       ("Utilities"
 		("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
@@ -451,6 +452,16 @@ yasnippets for now (but make sure they don't expand within comments!)
     )
 #+end_src
 * Display
+** frame-options
+#+begin_src emacs-lisp
+  (setq default-frame-alist '((background-color        . "#1d2021") ;; Same background color as our theme
+			    (ns-appearance           . dark)
+			    (ns-transparent-titlebar . t)))
+
+  (set-window-scroll-bars (minibuffer-window) nil nil)
+  (set-default-coding-systems 'utf-8)
+
+#+end_src
 ** font(s)
 Interactive font scaling:
   - For all frames     -> M-x increase-font-size/decrease-font-size (C-+ and C-- respectively)
@@ -482,7 +493,7 @@ Interactive font scaling:
   (setopt ns-use-thin-smoothing t)
 
   ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
@@ -501,19 +512,6 @@ Interactive font scaling:
       (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
 	  (pb/set-monitor-font-size)
 	(pb/set-laptop-font-size)))
-#+end_src
-** mode-line
-*** mood-line
-Nice and simple based on: https://github.com/jessiehildebrandt/mood-line
-#+begin_src emacs-lisp
-  (use-package mood-line
-    :init
-    (custom-set-faces
-     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
-     )
-    (mood-line-mode)
-    )
 #+end_src
 ** pulsar
 [[https://protesilaos.com/emacs/pulsar]]
@@ -559,7 +557,7 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 	:hook (prog-mode)
 	)
 #+end_src
-** color theme
+** color-theme
 #+begin_src emacs-lisp
     ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
   (use-package gruvbox-theme
@@ -568,15 +566,15 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
     (load-theme 'gruvbox-dark-medium t)
     (run-with-timer 0.1 nil
       (lambda ()
-	(custom-set-faces
-	 '(org-level-1 ((t (:height 1.15))))
-	 '(org-level-2 ((t (:height 1.10))))
-	 '(org-level-3 ((t (:height 1.05))))
-	 '(org-level-4 ((t (:foreground "#b8bb26"))))
-	 '(org-level-5 ((t (:foreground "#fb4933"))))
-	 '(font-lock-doc-face ((t (:foreground "#666666"))))
-	 '(font-lock-comment-face ((t (:foreground "#666666"))))
-	 '(org-document-title ((t (:height 1.5 :underline nil))))))))
+	  (custom-set-faces
+	   '(org-level-1            ((t (:height 1.15))))
+	   '(org-level-2            ((t (:height 1.10))))
+	   '(org-level-3            ((t (:height 1.05))))
+	   '(org-level-4            ((t (:foreground "#b8bb26"))))
+	   '(org-level-5            ((t (:foreground "#fb4933"))))
+	   '(font-lock-doc-face     ((t (:foreground "#666666"))))
+	   '(font-lock-comment-face ((t (:foreground "#666666"))))
+	   '(org-document-title     ((t (:height 1.5 :underline nil))))))))
 #+end_src
 ** hl-line(+)
 #+begin_src emacs-lisp
@@ -589,30 +587,50 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (use-package hl-line+
     :config
     (hl-line-when-idle-interval 0.5)
-    (toggle-hl-line-when-idle 1))
+    (toggle-hl-line-when-idle   1))
 
+#+end_src
+** mode-line(s)
+*** [[https://github.com/seagle0128/doom-modeline][doom]]
+<2026-02-01 Sun> Resurrected as I wanted something a bit more informative than /mood-line/.
+[[http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline][http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline]]
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :ensure t
+    :init
+    (setq doom-modeline-minor-modes      nil
+	  doom-modeline-time             t
+	  doom-modeline-vcs-max-length   20
+	  inhibit-compacting-font-caches t
+	  nerd-icons-scale-factor        1.0
+	  )
+    :config
+    (doom-modeline-mode 1))
 #+end_src
 ** no-distraction
 [[https://github.com/Artawower/no-distraction.el][GitHub - Artawower/no-distraction.el]]
 #+begin_src emacs-lisp
-  (add-to-list 'load-path "~/.emacs.d/local/no-distraction.el")
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/no-distraction.el")
   (require 'no-distraction)
 
+  ;; (custom-set-faces
+  ;;  '(gray-face ((t (:foreground "#666666" :slant italic)))))
+
   (custom-set-faces
-   '(no-distraction-face ((t (:foreground "#666666" :slant italic)))))
+   '(gray-face ((t (:foreground "#575757")))))
 
   ;; Support for Python
   (defcustom no-distraction--python-rules
     (no-distraction-get-rule 'python
-			     ((function_definition)   "def"    @no-distraction-face)
-			     ((class_definition)      "class"  @no-distraction-face)
-			     ((import_statement)      "import" @no-distraction-face)
-			     ((import_from_statement) "from"   @no-distraction-face))
+			       ((function_definition)   "def"    @gray-face)
+			       ((class_definition)      "class"  @gray-face)
+			       ((import_statement)      "import" @gray-face)
+			       ((import_from_statement) "from"   @gray-face))
     "Tree-sitter rules for no-distraction in Python."
     :group 'no-distraction)
 
   (add-to-list 'no-distraction--modes-settings
-	       '(python-ts-mode . no-distraction--python-rules))
+		 '(python-ts-mode . no-distraction--python-rules))
 
   ;; Enable automatically for specific modes
   (add-hook 'python-ts-mode-hook #'no-distraction-mode)
@@ -898,7 +916,7 @@ When we're ready to use pyright, we can use uvx to do so -> [[https://www.reddit
 
 ** dotenv-mode
 #+begin_src emacs-lisp
-  (load-file "~/.emacs.d/local/emacs-dotenv-mode/dotenv-mode.el")
+  (load-file "~/.emacs.d/site-lisp/emacs-dotenv-mode/dotenv-mode.el")
 #+end_src
 ** format-all
 Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][Ian YE Pan]]
@@ -1099,10 +1117,6 @@ Ooh..like this much better than git-gutter!
 	(add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
 	(add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
   )
-#+end_src
-** dbml
-#+begin_src emacs-lisp
-  (load-file "~/.emacs.d/local/dbd-mode/dbdiagram-mode.el")
 #+end_src
 ** graphviz-dot-mode
 #+begin_src emacs-lisp
@@ -1991,10 +2005,10 @@ first IBM PC's?)...thus, we won't be changing these often.
 #+end_src
 ** set frame size
 #+begin_src emacs-lisp
-  ;; (when window-system
-  ;;   (set-frame-position (selected-frame) 950 0)
-  ;;   (set-frame-size (selected-frame) 1920 2135 t) ;; Note that final 't' is to specify that we're providing pixel-based values..
-  ;;   )
+  (when window-system
+    (set-frame-position (selected-frame) 950 0)
+    (set-frame-size (selected-frame) 1920 2135 t) ;; Note that final 't' is to specify that we're providing pixel-based values..
+    )
 #+end_src
 * COMMENT HISTORY (for sh_ts and giggles)
 |------------+-------------------------------------------------------------------|
@@ -2085,6 +2099,11 @@ https://github.com/copilot-emacs/copilot.el
 					dashboard-insert-items)) ;; Default EXCEPT we don't want the footer.
     (dashboard-setup-startup-hook)
     )
+#+end_src
+** dbml
+<2026-02-01 Sun> Don't use anymore, archive.
+#+begin_src emacs-lisp
+  (load-file "~/.emacs.d/site-lisp/dbd-mode/dbdiagram-mode.el")
 #+end_src
 ** dired-du
 Like the functionality but will NEVER remember C-x M-R to invoke it!
@@ -2191,39 +2210,6 @@ Tried and discarded for one reason or another.
     (sml/setup)
     )
 #+end_src
-*** [[https://github.com/seagle0128/doom-modeline?tab=readme-ov-file#customize][doom]]
-[[https://github.com/seagle0128/doom-modeline][GitHub - seagle0128/doom-modeline: A fancy and fast mode-line inspired by min...]]
-http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own-face-in-modeline
-#+begin_src emacs-lisp
-  (use-package doom-modeline
-	:disabled
-	:init
-	(setq
-	 display-time-string-forms '((propertize (format-time-string "%a %R %F" now)))
-	 doom-modeline-column-zero-based nil
-	 doom-modeline-height 1
-
-	 doom-modeline-position-column-format '("C%c")
-	 doom-modeline-position-column-line-format '("%l - %c")
-	 doom-modeline-position-line-format '("L%l")
-	 doom-modeline-vcs-max-length 20
-
-	 modeline-position-column-format '("C%c")
-	 modeline-position-column-line-format '("%l - %c")
-	 modeline-position-line-format '("L%l")
-
-	 inhibit-compacting-font-caches t
-	 nerd-icons-scale-factor 1.0
-	 )
-	(custom-set-faces
-	 '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
-	 '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.8))))
-	 )
-
-	:hook
-	(after-init . doom-modeline-mode)
-	)
-#+end_src
 *** [[https://emacs.dyerdwelling.family/emacs/20230902114449-emacs--my-evolving-modeline/][My Evolving Modeline (Dywer)]]
 #+begin_src emacs-lisp
   (setq-default mode-line-modified
@@ -2257,6 +2243,40 @@ http://emacs.stackexchange.com/questions/13227/easy-way-to-give-the-time-its-own
 	      )
 
   (setopt mode-line-compact t)
+#+end_src
+*** maple
+Could never get it really installed!
+#+begin_src emacs-lisp
+  (add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-maple-modeline")
+  (require 'maple-modeline)
+  ;; standard, minimal, sidebar, evil
+  (setq maple-modeline-style 'standard)
+  ;; modeline style for side window
+  (setq maple-modeline-side-style 'side)
+  ;; standard or auto or some number
+  (setq maple-modeline-width 'standard)
+  ;; set modeline height
+  (setq maple-modeline-height 20)
+  ;; show icon, require nerd-icons package
+  ;; (setq maple-modeline-icon (and (display-graphic-p) *icon*))
+  ;; the separator of segments
+  (setq maple-modeline-separator (if (display-graphic-p) 'arrow 'default))
+  ;; separator's direction of left-segments and right-segments: auto,right,left
+  (setq maple-modeline-direction '(right . left))
+
+  (maple-modeline-mode)
+#+end_src
+*** mood-line
+Nice and simple based on: https://github.com/jessiehildebrandt/mood-line
+#+begin_src emacs-lisp
+  (use-package mood-line
+    :init
+    (custom-set-faces
+     '(mode-line-active   ((t (:family "SauceCodePro Nerd Font Mono" :height 1.0))))
+     '(mode-line-inactive ((t (:family "SauceCodePro Nerd Font Mono" :height 0.7))))
+     )
+    (mood-line-mode)
+    )
 #+end_src
 ** move-text
 #+begin_src emacs-lisp
@@ -2465,7 +2485,7 @@ https://protesilaos.com/emacs/substitute
 ** theme: hercules
 Like it but couldn't get the code below to work (custom-theme-set-faces not defined? etc.)
 #+begin_src emacs-lisp
-  (add-to-list 'custom-theme-load-path "~/.emacs.d/local/hercules-theme/")
+  (add-to-list 'custom-theme-load-path "~/.emacs.d/site-lisp/hercules-theme/")
   (use-package hercules-theme
     :demand t
     :config

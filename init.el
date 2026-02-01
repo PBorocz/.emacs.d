@@ -6,13 +6,11 @@
 ;; -----------------------------------------------------------------------------
 ;; Use "straight" for package management/installation:
 ;; -----------------------------------------------------------------------------
+;; bootstrap straight
 (defvar bootstrap-version)
 (let ((bootstrap-file
-       (expand-file-name
-	"straight/repos/straight.el/bootstrap.el"
-	(or (bound-and-true-p straight-base-dir)
-	    user-emacs-directory)))
-      (bootstrap-version 7))
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
   (unless (file-exists-p bootstrap-file)
     (with-current-buffer
 	(url-retrieve-synchronously
@@ -22,10 +20,10 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+;; use use-package
 (straight-use-package 'use-package)
-(straight-use-package 'quelpa)
-(straight-use-package 'quelpa-use-package)
 
+;; automatically ensure every package exists (like :ensure or :straight)
 (setq straight-use-package-by-default t)
 
 ;; -----------------------------------------------------------------------------
@@ -45,10 +43,14 @@
 (setq debug-on-error 1)
 (setq debug-on-quit  t)
 
+(setq package-enable-at-startup nil)
+(setq package-archives nil)
+
 ;; -----------------------------------------------------------------------------
 ;; Expand path for cases where author hasn't packaged some functionality.
 ;; -----------------------------------------------------------------------------
-(add-to-list 'load-path "~/.emacs.d/local/")
+;; (add-to-list 'load-path "~/.emacs.d/site-lisp/")
+;; (add-to-list 'load-path "~/.emacs.d/local/")
 
 ;; -----------------------------------------------------------------------------
 ;; Get the rest of our configuration from our tangled config.org file!
