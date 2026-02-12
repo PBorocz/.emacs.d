@@ -1,7 +1,4 @@
-# -*- mode: snippet -*-
 # name: dataclass
-# key: dataclass
-# group: object oriented
 # --
 from dataclasses import dataclass
 

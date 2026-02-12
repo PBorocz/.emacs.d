@@ -153,10 +153,10 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-		("Recipes - Coctione Libri" (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-		("Sports - Optimus Ludos"   (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-		("Activity Dashboard"       (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		("MQ - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/POCs/python-code-quality")          "q")
+		("Recipes - Coctione Libri"  (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+		("Sports - Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+		("Health Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+		("QYX - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
 		;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
 		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
 		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
@@ -359,10 +359,7 @@ Improve quality of most-used C-h methods.
 ** outline-indent
 #+begin_src emacs-lisp
   (use-package outline-indent
-    :straight (outline-indent
-	       :type git
-	       :host github
-	       :repo "jamescherti/outline-indent.el")
+    :straight (outline-indent :type git :host github :repo "jamescherti/outline-indent.el")
     :custom
     (outline-indent-ellipsis " ▼ ")
 
@@ -424,11 +421,11 @@ https://github.com/purcell/unfill
     )
 #+end_src
 ** yasnippet
-While the majority of the time, I don't rely on snippets, there are a
-very select /few/ that I consider worthwhile, thus, keep use of
-yasnippets for now (but make sure they don't expand within comments!)
+While the majority of the time, I don't rely on snippets, there are a very select /few/
+that I consider worthwhile, thus, keep use of yasnippets for now (but make sure they don't
+expand within comments!)
 #+begin_src emacs-lisp
-  ;; Don't do snippet expansion within comments/docstrings for py:
+  ;; Don't do snippet expansion within comments/docstrings.
   ;; (https://stackoverflow.com/questions/25521897/how-to-never-expand-yasnippets-in-comments-and-strings)
   (defun pb/no-expand-in-comment_string ()
     (setopt yas-buffer-local-condition
@@ -443,7 +440,7 @@ yasnippets for now (but make sure they don't expand within comments!)
     ;; Bind `SPC' to `yas-expand' when snippet expansion available (it will still call `self-insert-command' otherwise)
     (define-key yas-minor-mode-map (kbd "SPC") yas-maybe-expand)
 
-    ;; Use the method above to keep snippets only when we're writing actual code.
+    ;; Use the method above to keep snippets only when we're writing code or in
     (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
     (add-hook 'python-base-mode-hook #'yas-minor-mode)
     (add-hook 'prog-mode-hook        #'pb/no-expand-in-comment_string)
@@ -513,28 +510,6 @@ Interactive font scaling:
 	  (pb/set-monitor-font-size)
 	(pb/set-laptop-font-size)))
 #+end_src
-** pulsar
-[[https://protesilaos.com/emacs/pulsar]]
-#+begin_src emacs-lisp
-    (defface pb/pulsar-color
-      '((t :extend t :inverse-video t :background "#ffe7ba"))
-      "My custom color, HT to github: dwang2010/emacs")
-
-    (use-package pulsar
-	:init
-	(pulsar-global-mode 1)
-
-	:config
-	(setopt pulsar-pulse t)
-	(setopt pulsar-delay 0.10)
-	(setopt pulsar-face  'pb/pulsar-color)
-
-	(dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
-	  (add-hook hook #'pulsar-mode))
-
-	(add-hook 'next-error-hook #'pulsar-pulse-line)
-	)
-#+end_src
 ** rainbow-delimiters
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
@@ -559,22 +534,21 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
 #+end_src
 ** color-theme
 #+begin_src emacs-lisp
-    ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
+  ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
   (use-package gruvbox-theme
     :demand t
     :config
     (load-theme 'gruvbox-dark-medium t)
-    (run-with-timer 0.1 nil
-      (lambda ()
-	  (custom-set-faces
-	   '(org-level-1            ((t (:height 1.15))))
-	   '(org-level-2            ((t (:height 1.10))))
-	   '(org-level-3            ((t (:height 1.05))))
-	   '(org-level-4            ((t (:foreground "#b8bb26"))))
-	   '(org-level-5            ((t (:foreground "#fb4933"))))
-	   '(font-lock-doc-face     ((t (:foreground "#666666"))))
-	   '(font-lock-comment-face ((t (:foreground "#666666"))))
-	   '(org-document-title     ((t (:height 1.5 :underline nil))))))))
+    :custom-face
+    (org-level-1            ((t (:height 1.15))))
+    (org-level-2            ((t (:height 1.10))))
+    (org-level-3            ((t (:height 1.05))))
+    (org-level-4            ((t (:foreground "#b8bb26"))))
+    (org-level-5            ((t (:foreground "#fb4933"))))
+    (org-level-6            ((t (:foreground "#666666"))))
+    (font-lock-doc-face     ((t (:foreground "#666666"))))
+    (font-lock-comment-face ((t (:foreground "#666666"))))
+    (org-document-title     ((t (:height 1.5 :underline nil)))))
 #+end_src
 ** hl-line(+)
 #+begin_src emacs-lisp
@@ -646,6 +620,14 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (use-package nerd-icons-ibuffer
     ;; Also display nerd-icons for iBuffer types
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+end_src
+** winpulse
+[[https://github.com/xenodium/winpulse][GitHub - xenodium/winpulse: Temporarily highlight focused Emacs windows]]
+#+begin_src emacs-lisp
+  (use-package winpulse
+    :straight (:host github :repo "xenodium/winpulse" :files ("*.el"))
+    :config
+    (winpulse-mode +1))
 #+end_src
 * Window Management
 ** bindings
@@ -1331,6 +1313,7 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
 	    ("\\[#C\\]" . ((lambda (tag) (svg-tag-make "C" :face 'org-level-3))))
 	    ("\\[#D\\]" . ((lambda (tag) (svg-tag-make "D" :face 'org-level-4))))
 	    ("\\[#E\\]" . ((lambda (tag) (svg-tag-make "E" :face 'org-level-5))))
+	    ("\\[#F\\]" . ((lambda (tag) (svg-tag-make "F" :face 'org-level-6))))
 
 	    ;; -----------------------------------------------------------------------------
 	    ;; Progress
@@ -1483,12 +1466,13 @@ Nice(r) bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   (use-package yaml-pro
     :defer t
+    :mode ("\\.ya?ml\\'" . yaml-mode)  ;; More idiomatic
     :hook
-    (yaml-mode . yaml-pro-ts-mode)
+    (yaml-mode    . yaml-pro-ts-mode)
+    (yaml-mode    . (lambda () (setq indent-tabs-mode nil)));; <2025-10-07 Tue> Something was turning ON tab mode for yaml, explicitly kill it!
+    (yaml-mode    . outline-indent-minor-mode)
+    (yaml-ts-mode . outline-indent-minor-mode)
     )
-  (add-hook 'yaml-mode-hook    (lambda () (setq indent-tabs-mode nil)));; <2025-10-07 Tue> Something was turning ON tab mode for yaml, explicitly kill it!
-  (add-hook 'yaml-mode-hook    #'outline-indent-minor-mode)
-  (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 #+end_src
 ** web-mode
 [[https://web-mode.org][Web-mode documentation]]
@@ -2416,6 +2400,28 @@ Get our docstrings and comments to look a bit more different.
     :custom
     (pyvenv-auto-mode t)
     )
+#+end_src
+** pulsar
+[[https://protesilaos.com/emacs/pulsar]]
+#+begin_src emacs-lisp
+    (defface pb/pulsar-color
+      '((t :extend t :inverse-video t :background "#ffe7ba"))
+      "My custom color, HT to github: dwang2010/emacs")
+
+    (use-package pulsar
+	:init
+	(pulsar-global-mode 1)
+
+	:config
+	(setopt pulsar-pulse t)
+	(setopt pulsar-delay 0.10)
+	(setopt pulsar-face  'pb/pulsar-color)
+
+	(dolist (hook '(org-mode-hook python-ts-mode-hook yaml-mode-hook text-mode-hook emacs-lisp-mode-hook dired-mode-hook web-mode-hook))
+	  (add-hook hook #'pulsar-mode))
+
+	(add-hook 'next-error-hook #'pulsar-pulse-line)
+	)
 #+end_src
 ** smarter open line
 <2025-02-25 Tue> Want M-o to be on behalf of change-outer from above "change-inner" package.

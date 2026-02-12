@@ -1,6 +1,0 @@
-# name : #+begin_ <lang> ...#+end_
-# key: src_
-# --
-#+begin_src $0
-  $1
-#+end_src

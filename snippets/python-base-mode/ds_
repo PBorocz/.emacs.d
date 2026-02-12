@@ -1,5 +1,3 @@
-# -*- mode: snippet -*-
 # name: docstring
-# key: ds_
 # --
 """$0."""

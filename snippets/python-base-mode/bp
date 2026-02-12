@@ -1,5 +1,3 @@
-# -*- mode: snippet -*-
 # name: breakpoint
-# key: bp
 # --
 breakpoint()
