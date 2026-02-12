@@ -356,15 +356,31 @@ Improve quality of most-used C-h methods.
     )
 
 #+end_src
-** outline-indent
+** indentation
+*** outline-indent
 #+begin_src emacs-lisp
   (use-package outline-indent
     :straight (outline-indent :type git :host github :repo "jamescherti/outline-indent.el")
+
     :custom
     (outline-indent-ellipsis " ▼ ")
 
     :config
     (setopt outline-blank-line t)
+    )
+#+end_src
+*** kirigami
+#+begin_src emacs-lisp
+  (use-package kirigami
+    :ensure t
+
+    :config
+    (global-set-key (kbd "C-c k o")	'kirigami-open-fold)     ; Open fold at point
+    (global-set-key (kbd "C-c k O")	'kirigami-open-fold-rec) ; Open fold recursively
+    (global-set-key (kbd "C-c k m")	'kirigami-close-folds)   ; Close all folds
+    (global-set-key (kbd "C-c k c")	'kirigami-close-fold)    ; Close fold at point
+    (global-set-key (kbd "C-c k r")	'kirigami-open-folds)    ; Open all folds
+    (global-set-key (kbd "C-c k TAB")	'kirigami-toggle-fold)   ; Toggle fold at point
     )
 #+end_src
 ** pbcopy (allow interaction with MacOS clipboard and kill/yank ring)
@@ -652,7 +668,7 @@ Toggles between "current" buffer to fullscreen and existing buffer layout (and b
     )
   (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows)
 #+end_src
-* Completion Framework
+* Completion Setup
 ** company
 [[Https://emacs.stackexchange.com/questions/13286/how-can-i-stop-the-enter-key-from-triggering-a-completion-in-company-mode][How can I stop the enter key from triggering a completion in company mode?]]
 #+begin_src emacs-lisp
@@ -1495,10 +1511,13 @@ Nice(r) bullets (replaces org-bullets)
     ;; (add-to-list 'web-mode-engines-alist '(("django" . "\\.htmx$")))
     ;;
     ;; Copy what we did for IRIS at ES, i.e. have HTML indenting match Python:
-    (setopt web-mode-markup-indent-offset 4)
-    (setopt web-mode-css-indent-offset    4)
-    (setopt web-mode-code-indent-offset   4)
-    (setopt web-mode-indent-style         4)
+    (setopt web-mode-markup-indent-offset 2)
+    (setopt web-mode-css-indent-offset    2)
+    (setopt web-mode-code-indent-offset   2)
+    (setopt web-mode-indent-style         2)
+
+    :hook
+    (web-mode . (lambda () (setq indent-tabs-mode nil)))
 
     )
 #+end_src
