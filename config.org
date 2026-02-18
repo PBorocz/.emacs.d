@@ -105,37 +105,7 @@
     :config
     (exec-path-from-shell-initialize))
 #+end_src
-** ctrl-g
-[[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:1e468b2a-9bee-4571-8454-e3f5462d9321][Make ctrl-g a bit more helpful (Thanks Prot!)]]
-#+begin_src emacs-lisp
-  (defun pb/keyboard-quit-dwim ()
-    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
-
-  The generic `keyboard-quit' does not do the expected thing when
-  the minibuffer is open.  Whereas we want it to close the
-  minibuffer, even without explicitly focusing it.
-
-  The DWIM behaviour of this command is as follows:
-
-  - When the region is active, disable it.
-  - When a minibuffer is open, but not focused, close the minibuffer.
-  - When the Completions buffer is selected, close it.
-  - In every other case use the regular `keyboard-quit'."
-    (interactive)
-    (cond
-     ((region-active-p)
-      (keyboard-quit))
-     ((derived-mode-p 'completion-list-mode)
-      (delete-completion-window))
-     ((> (minibuffer-depth) 0)
-      (abort-recursive-edit))
-     (t
-      (keyboard-quit))))
-
-  (global-set-key [remap keyboard-quit] #'pb/keyboard-quit-dwim)
-
-#+end_src
-** enlight (dashboard)
+** enlight (startup dashboard)
 #+begin_src emacs-lisp
   (defun pb/set-enlight-font ()
     (interactive)
@@ -153,32 +123,33 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-		("Recipes - Coctione Libri"  (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-		("Sports - Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-		("Health Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		("QYX - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
-		;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
-		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-		)
-	       ("Org"
-		("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-		("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-		("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-		)
-	       ("Directories"
-		("-Root-"      (dired "~/Repository")                                  "r")
-		("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
-		("Money"       (dired "~/Repository/20-29 Money")                      "m")
-		("Health"      (dired "~/Repository/30-39 Health")                     "h")
-		)
-	       ("Utilities"
-		("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-		("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-		("*Claude*"            (command-execute 'gptel)                                            "a")
-		)
+		  ("QYX - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
+		  ("Sports - Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
 
-	       ))))
+		  ("Recipes - Coctione Libri"  (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+		  ("Health Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+		  ;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
+		  ;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+		  ;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+		  )
+		 ("Org"
+		  ("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+		  ("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+		  ("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+		  )
+		 ("Directories"
+		  ("-Root-"      (dired "~/Repository")                                  "r")
+		  ("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
+		  ("Money"       (dired "~/Repository/20-29 Money")                      "m")
+		  ("Health"      (dired "~/Repository/30-39 Health")                     "h")
+		  )
+		 ("Utilities"
+		  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+		  ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+		  ("*Claude*"            (command-execute 'gptel)                                            "a")
+		  )
+
+		 ))))
 
     :config
     (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
@@ -219,7 +190,7 @@ Highlight global-search-replace strings dynamically.
   (use-package smart-hungry-delete
     :defer 10
     :bind (
-       ([remap delete-char]               . smart-hungry-delete-forward-char)
+       ([remap delete-char]                   . smart-hungry-delete-forward-char)
        ([remap org-delete-char]               . smart-hungry-delete-forward-char)
        ([remap backward-delete-char-untabify] . smart-hungry-delete-backward-char)
        ([remap delete-backward-char]          . smart-hungry-delete-backward-char)
@@ -465,15 +436,33 @@ expand within comments!)
     )
 #+end_src
 * Display
-** frame-options
+** color-theme(s)
+*** Modus Operandi (light)
+Note: ARCHIVE section below includes a LOT of sample configuration tweaks!
 #+begin_src emacs-lisp
-  (setq default-frame-alist '((background-color        . "#1d2021") ;; Same background color as our theme
-			    (ns-appearance           . dark)
-			    (ns-transparent-titlebar . t)))
-
-  (set-window-scroll-bars (minibuffer-window) nil nil)
-  (set-default-coding-systems 'utf-8)
-
+  (use-package modus-themes
+    :demand t
+    (load-theme 'modus-operandi t))
+#+end_src
+*** COMMENT Gruvbox (dark)
+#+begin_src emacs-lisp
+  ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
+  (use-package gruvbox-theme
+    :demand t
+    :config
+    (load-theme 'gruvbox-dark-medium t)
+    (custom-set-faces
+     '(org-level-1            ((t (:height 1.15))))
+     '(org-level-2            ((t (:height 1.10))))
+     '(org-level-3            ((t (:height 1.05))))
+     '(org-level-4            ((t (:foreground "#b8bb26"))))
+     '(org-level-5            ((t (:foreground "#fb4933"))))
+     '(org-level-6            ((t (:foreground "#666666"))))
+     '(font-lock-doc-face     ((t (:foreground "#666666"))))
+     '(font-lock-comment-face ((t (:foreground "#666666"))))
+     '(org-document-title     ((t (:height 1.5 :underline nil))))
+     )
+    )
 #+end_src
 ** font(s)
 Interactive font scaling:
@@ -526,45 +515,15 @@ Interactive font scaling:
 	  (pb/set-monitor-font-size)
 	(pb/set-laptop-font-size)))
 #+end_src
-** rainbow-delimiters
+** frame-options
 #+begin_src emacs-lisp
-  (use-package rainbow-delimiters
-	:defer 1
-	:config
-	(set-face-attribute 'rainbow-delimiters-unmatched-face nil
-	:foreground 'unspecified
-	:inherit 'error)
-	(add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  (setq default-frame-alist '((background-color        . "#1d2021") ;; Same background color as our theme
+			      (ns-appearance           . dark)
+			      (ns-transparent-titlebar . t)))
 
-  (use-package prog-mode
-	:straight (:type built-in)
-	:hook ((prog-mode . rainbow-delimiters-mode)))
- #+end_src
-** rainbow-mode
-Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
-#+begin_src emacs-lisp
-  (use-package rainbow-mode
-	:demand t
-	:hook (prog-mode)
-	)
-#+end_src
-** color-theme
-#+begin_src emacs-lisp
-  ;; HT to https://emacsredux.com/blog/2025/02/13/customizing-color-themes/ obo :custom-face!
-  (use-package gruvbox-theme
-    :demand t
-    :config
-    (load-theme 'gruvbox-dark-medium t)
-    :custom-face
-    (org-level-1            ((t (:height 1.15))))
-    (org-level-2            ((t (:height 1.10))))
-    (org-level-3            ((t (:height 1.05))))
-    (org-level-4            ((t (:foreground "#b8bb26"))))
-    (org-level-5            ((t (:foreground "#fb4933"))))
-    (org-level-6            ((t (:foreground "#666666"))))
-    (font-lock-doc-face     ((t (:foreground "#666666"))))
-    (font-lock-comment-face ((t (:foreground "#666666"))))
-    (org-document-title     ((t (:height 1.5 :underline nil)))))
+  (set-window-scroll-bars (minibuffer-window) nil nil)
+  (set-default-coding-systems 'utf-8)
+
 #+end_src
 ** hl-line(+)
 #+begin_src emacs-lisp
@@ -636,6 +595,28 @@ Display colour codes in the actual colour they represent, e.g. #0000ff (should b
   (use-package nerd-icons-ibuffer
     ;; Also display nerd-icons for iBuffer types
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+#+end_src
+** rainbow-delimiters
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :defer 1
+    :config
+    (set-face-attribute 'rainbow-delimiters-unmatched-face nil
+			:foreground 'unspecified
+			:inherit 'error)
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+  (use-package prog-mode
+    :straight (:type built-in)
+    :hook ((prog-mode . rainbow-delimiters-mode)))
+ #+end_src
+** rainbow-mode
+Display colour codes in the actual colour they represent, e.g. #0000ff (should be white text on a blue background)
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :demand t
+    :hook (prog-mode)
+    )
 #+end_src
 ** winpulse
 [[https://github.com/xenodium/winpulse][GitHub - xenodium/winpulse: Temporarily highlight focused Emacs windows]]
@@ -734,73 +715,73 @@ Resources:
 #+begin_src emacs-lisp
   ;; https://github.com/minad/consult/wiki#minads-orderless-configuration
   (use-package orderless
-	:config
+    :config
 
-	(defun +orderless--consult-suffix ()
-	  "Regexp which matches the end of string with Consult tofu support."
-	  (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
+    (defun +orderless--consult-suffix ()
+      "Regexp which matches the end of string with Consult tofu support."
+      (if (and (boundp 'consult--tofu-char) (boundp 'consult--tofu-range))
 	  (format "[%c-%c]*$"
-	  consult--tofu-char
-	  (+ consult--tofu-char consult--tofu-range -1))
+		  consult--tofu-char
+		  (+ consult--tofu-char consult--tofu-range -1))
 	"$"))
 
-	;; Recognizes the following patterns:
-	;; * .ext (file extension)
-	;; * regexp$ (regexp matching at end)
-	(defun +orderless-consult-dispatch (word _index _total)
-	  (cond
-	   ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
-	   ((string-suffix-p "$" word)
+    ;; Recognizes the following patterns:
+    ;; * .ext (file extension)
+    ;; * regexp$ (regexp matching at end)
+    (defun +orderless-consult-dispatch (word _index _total)
+      (cond
+       ;; Ensure that $ works with Consult commands, which add disambiguation suffixes
+       ((string-suffix-p "$" word)
 	`(orderless-regexp . ,(concat (substring word 0 -1) (+orderless--consult-suffix))))
-	   ;; File extensions
-	   ((and (or minibuffer-completing-file-name
-	 (derived-mode-p 'eshell-mode))
-	 (string-match-p "\\`\\.." word))
+       ;; File extensions
+       ((and (or minibuffer-completing-file-name
+		 (derived-mode-p 'eshell-mode))
+	     (string-match-p "\\`\\.." word))
 	`(orderless-regexp . ,(concat "\\." (substring word 1) (+orderless--consult-suffix))))))
 
-	;; Define orderless style with initialism by default
-	(orderless-define-completion-style +orderless-with-initialism
-	  (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
+    ;; Define orderless style with initialism by default
+    (orderless-define-completion-style +orderless-with-initialism
+      (orderless-matching-styles '(orderless-initialism orderless-literal orderless-regexp)))
 
-	;; You may want to combine the `orderless` style with `substring` and/or `basic`.
-	;; There are many details to consider, but the following configurations all work well.
-	;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
-	;; special styles for special completion categories, e.g., partial-completion for files.
-	;;
-	;; 1. (setq completion-styles '(orderless))
-	;; This configuration results in a very coherent completion experience,
-	;; since orderless is used always and exclusively. But it may not work
-	;; in all scenarios. Prefix expansion with TAB is not possible.
-	;;
-	;; 2. (setq completion-styles '(substring orderless))
-	;; By trying substring before orderless, TAB expansion is possible.
-	;; The downside is that you can observe the switch from substring to orderless
-	;; during completion, less coherent.
-	;;
-	;; 3. (setq completion-styles '(orderless basic))
-	;; Certain dynamic completion tables (completion-table-dynamic)
-	;; do not work properly with orderless. One can add basic as a fallback.
-	;; Basic will only be used when orderless fails, which happens only for
-	;; these special tables.
-	;;
-	;; 4. (setq completion-styles '(substring orderless basic))
-	;; Combine substring, orderless and basic.
-	;;
-	(setopt completion-styles '(substring orderless basic)
-		completion-category-defaults nil
-		;; Enable partial-completion for files.
-		;; Either give orderless precedence or partial-completion.
-		;; Note that completion-category-overrides is not really an override,
-		;; but rather prepended to the default completion-styles.
-		;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
-		completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
-					      ;; enable initialism by default for symbols
-					      (command (styles +orderless-with-initialism))
-					      (variable (styles +orderless-with-initialism))
-					      (symbol (styles +orderless-with-initialism)))
-		orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
-		orderless-style-dispatchers (list #'+orderless-consult-dispatch
-						#'orderless-affix-dispatch)))
+    ;; You may want to combine the `orderless` style with `substring` and/or `basic`.
+    ;; There are many details to consider, but the following configurations all work well.
+    ;; Personally I (@minad) use option 3 currently. Also note that you may want to configure
+    ;; special styles for special completion categories, e.g., partial-completion for files.
+    ;;
+    ;; 1. (setq completion-styles '(orderless))
+    ;; This configuration results in a very coherent completion experience,
+    ;; since orderless is used always and exclusively. But it may not work
+    ;; in all scenarios. Prefix expansion with TAB is not possible.
+    ;;
+    ;; 2. (setq completion-styles '(substring orderless))
+    ;; By trying substring before orderless, TAB expansion is possible.
+    ;; The downside is that you can observe the switch from substring to orderless
+    ;; during completion, less coherent.
+    ;;
+    ;; 3. (setq completion-styles '(orderless basic))
+    ;; Certain dynamic completion tables (completion-table-dynamic)
+    ;; do not work properly with orderless. One can add basic as a fallback.
+    ;; Basic will only be used when orderless fails, which happens only for
+    ;; these special tables.
+    ;;
+    ;; 4. (setq completion-styles '(substring orderless basic))
+    ;; Combine substring, orderless and basic.
+    ;;
+    (setopt completion-styles '(substring orderless basic)
+	    completion-category-defaults nil
+	    ;; Enable partial-completion for files.
+	    ;; Either give orderless precedence or partial-completion.
+	    ;; Note that completion-category-overrides is not really an override,
+	    ;; but rather prepended to the default completion-styles.
+	    ;; completion-category-overrides '((file (styles orderless partial-completion))) ;; orderless is tried first
+	    completion-category-overrides '((file (styles partial-completion)) ;; partial-completion is tried first
+					    ;; enable initialism by default for symbols
+					    (command (styles +orderless-with-initialism))
+					    (variable (styles +orderless-with-initialism))
+					    (symbol (styles +orderless-with-initialism)))
+	    orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
+	    orderless-style-dispatchers (list #'+orderless-consult-dispatch
+					      #'orderless-affix-dispatch)))
 #+end_src
 ** vertico
 Resources:
@@ -1177,16 +1158,16 @@ https://github.com/rnkn/olivetti
     :demand t
     :straight (:type built-in)
     :bind (:map org-mode-map
-		("C-M-<return>" . org-insert-subheading)
-		("C-c l"        . org-store-link)
-		("C-c L"        . org-cliplink) ;; Defined below...
-		("C-c a"        . org-agenda)
-		("C-c |"        . org-table-create-or-convert-from-region)
-		("C-c C-<"      . org-promote-subtree)
-		("C-c C->"      . org-demote-subtree)
-		("C-<right>"    . org-metaright)
-		("C-<left>"     . org-metaleft)
-		)
+		    ("C-M-<return>" . org-insert-subheading)
+		    ("C-c l"        . org-store-link)
+		    ("C-c L"        . org-cliplink) ;; Defined below...
+		    ("C-c a"        . org-agenda)
+		    ("C-c |"        . org-table-create-or-convert-from-region)
+		    ("C-c C-<"      . org-promote-subtree)
+		    ("C-c C->"      . org-demote-subtree)
+		    ("C-<right>"    . org-metaright)
+		    ("C-<left>"     . org-metaleft)
+		    )
 
     :config
     ;; https://sachachua.com/blog/2024/01/org-mode-custom-link-copy-to-clipboard/
@@ -1196,13 +1177,14 @@ https://github.com/rnkn/olivetti
      :export (lambda (_ desc &rest _) desc))
 
     :init
-    (setq fill-column                       96  ;; Org won't use the global fill-column, set here explicitly?
+    (setq fill-column               96  ;; Org won't use the global fill-column, set here explicitly?
 	  org-catch-invisible-edits 'show-and-error
 	  org-ellipsis              "…" ;; Other options: ▼ …, ↴ ⤵, ▼, ↴, ⬎, ⤷, ⋱
 	  org-hide-leading-stars    t
+	  org-indent-mode           nil
 	  org-return-follows-link   t
 	  org-startup-folded        t
-	  org-startup-indented      nil	;; Goes hand-in-hand with turning off org-indent-mode above in :config.
+	  org-startup-indented      nil ;; Goes hand-in-hand with turning off org-indent-mode above in :config.
 	  org-src-tab-acts-natively t
 	  org-link-frame-setup      '((file . find-file))) ;; Don't want the default of find-file-other-window
     )
@@ -1218,25 +1200,25 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   ;; Keywords: For regular TO-DO items in my GTD world -> C-c C-t to select.
   (setopt org-todo-keywords
-	  '((sequence
-	     "IDEA(i)"
-	     "SMDY(o)"
-	     "TODO(t)"
-	     "WAIT(a)"
-	     "WORK(w)"
-	     "DONE(x)"
-	     "|"
-	     )))
+	      '((sequence
+		 "IDEA(i)"
+		 "SMDY(o)"
+		 "TODO(t)"
+		 "WAIT(a)"
+		 "WORK(w)"
+		 "DONE(x)"
+		 "|"
+		 )))
 
   (setopt org-todo-keyword-faces
-	  '(
-	    ("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
-	    ("WORK" . "light green")
-	    ("DONE" . (:foreground "gray30" :strike-through t))
-	    ("WAIT" . "systemBrownColor")
-	    ("IDEA" . "gray80")
-	    ("SMDY" . "systemBrownColor")
-	    ))
+	      '(
+		("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
+		("WORK" . "light green")
+		("DONE" . (:foreground "gray30" :strike-through t))
+		("WAIT" . "systemBrownColor")
+		("IDEA" . "gray80")
+		("SMDY" . "systemBrownColor")
+		))
 
   ;; Format of TODO items (defined like this so the entire headline is NOT colored across, just the TODO keyword.)
   ;; (setq org-fontify-todo-headline nil)
@@ -1251,11 +1233,11 @@ https://github.com/rnkn/olivetti
   ;; ---------------------------------------------------------------------------
   (define-key global-map (kbd "C-c c") 'org-capture)
   (setopt org-capture-templates
-	  '(
-	    ("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
-	    ("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
-	    ("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
-	    ))
+	      '(
+		("t" "GTD"      entry (file+headline "/Users/peter/Repository/00-09 System/01 Org/gtd.org" "INBOX") "** TODO %?\n\n")
+		("p" "Projects" entry (file          "/Users/peter/Repository/00-09 System/01 Org/projects.org"   ) "* TODO %?\n\n" :prepend t)
+		("j" "Journal"  entry (file+datetree "/Users/peter/Repository/00-09 System/01 Org/journal.org"    ) "*** %?")
+		))
 
   ;; Insert date-time stamp like org but everywhere.
   (global-set-key (kbd "C-c .") 'org-time-stamp)
@@ -1297,7 +1279,6 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
     "My local custom face for use on SVG rendered org-dates.")
 
   (use-package svg-tag-mode
-
     :config
     (defconst date-re "[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}")
     (defconst time-re "[0-9]\\{2\\}:[0-9]\\{2\\}")
@@ -1306,98 +1287,96 @@ Inspired by [[https://sophiebos.io/posts/prettifying-emacs-org-mode/#svg-element
 
     (defun svg-progress-percent (value)
       (svg-image (svg-lib-concat
-		  (svg-lib-progress-bar (/ (string-to-number value) 100.0) nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-		  (svg-lib-tag (concat value "%") nil :stroke 0 :margin 0)) :ascent 'center))
+		    (svg-lib-progress-bar (/ (string-to-number value) 100.0) nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+		    (svg-lib-tag (concat value "%") nil :stroke 0 :margin 0)) :ascent 'center))
 
     (defun svg-progress-count (value)
       (let* ((seq (mapcar #'string-to-number (split-string value "/")))
-	     (count (float (car seq)))
-	     (total (float (cadr seq))))
-	(svg-image (svg-lib-concat
-		    (svg-lib-progress-bar (/ count total) nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
-		    (svg-lib-tag value nil :stroke 0 :margin 0)) :ascent 'center)))
+	       (count (float (car seq)))
+	       (total (float (cadr seq))))
+	  (svg-image (svg-lib-concat
+		      (svg-lib-progress-bar (/ count total) nil :margin 0 :stroke 2 :radius 3 :padding 2 :width 11)
+		      (svg-lib-tag value nil :stroke 0 :margin 0)) :ascent 'center)))
 
     (setopt svg-tag-tags
-	`(
-	    ;; -----------------------------------------------------------------------------
-	    ;; Task priority
-	    ;; -----------------------------------------------------------------------------
-	    ;; ("\\[#[A-Z]\\]" .
-	    ;;  ((lambda (tag) (svg-tag-make tag :face 'org-priority :beg 2 :end -1 :margin 0))))
-	    ("\\[#A\\]" . ((lambda (tag) (svg-tag-make "A" :face 'org-priority))))
-	    ("\\[#B\\]" . ((lambda (tag) (svg-tag-make "B" :face 'org-level-2))))
-	    ("\\[#C\\]" . ((lambda (tag) (svg-tag-make "C" :face 'org-level-3))))
-	    ("\\[#D\\]" . ((lambda (tag) (svg-tag-make "D" :face 'org-level-4))))
-	    ("\\[#E\\]" . ((lambda (tag) (svg-tag-make "E" :face 'org-level-5))))
-	    ("\\[#F\\]" . ((lambda (tag) (svg-tag-make "F" :face 'org-level-6))))
+	  `(
+	      ;; -----------------------------------------------------------------------------
+	      ;; Task priority
+	      ;; -----------------------------------------------------------------------------
+	      ;; ("\\[#[A-Z]\\]" .
+	      ;;  ((lambda (tag) (svg-tag-make tag :face 'org-priority :beg 2 :end -1 :margin 0))))
+	      ("\\[#A\\]" . ((lambda (tag) (svg-tag-make "A" :face 'org-priority))))
+	      ("\\[#B\\]" . ((lambda (tag) (svg-tag-make "B" :face 'org-level-2))))
+	      ("\\[#C\\]" . ((lambda (tag) (svg-tag-make "C" :face 'org-level-3))))
+	      ("\\[#D\\]" . ((lambda (tag) (svg-tag-make "D" :face 'org-level-4))))
+	      ("\\[#E\\]" . ((lambda (tag) (svg-tag-make "E" :face 'org-level-5))))
+	      ("\\[#F\\]" . ((lambda (tag) (svg-tag-make "F" :face 'org-level-6))))
 
-	    ;; -----------------------------------------------------------------------------
-	    ;; Progress
-	    ;; -----------------------------------------------------------------------------
-	    ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" .
-	     ((lambda (tag) (svg-progress-percent (substring tag 1 -2)))))
+	      ;; -----------------------------------------------------------------------------
+	      ;; Progress
+	      ;; -----------------------------------------------------------------------------
+	      ("\\(\\[[0-9]\\{1,3\\}%\\]\\)" .
+	       ((lambda (tag) (svg-progress-percent (substring tag 1 -2)))))
 
-	    ("\\(\\[[0-9]+/[0-9]+\\]\\)" .
-	     ((lambda (tag) (svg-progress-count (substring tag 1 -1)))))
+	      ("\\(\\[[0-9]+/[0-9]+\\]\\)" .
+	       ((lambda (tag) (svg-progress-count (substring tag 1 -1)))))
 
-	    ;; -----------------------------------------------------------------------------
-	    ;; Citation of the form [cite:@Knuth:1984]
-	    ;; -----------------------------------------------------------------------------
-	    ("\\(\\[cite:@[A-Za-z]+:\\)" .
-	     ((lambda (tag) (svg-tag-make tag :inverse t :beg 7 :end -1 :crop-right t))))
+	      ;; -----------------------------------------------------------------------------
+	      ;; Citation of the form [cite:@Knuth:1984]
+	      ;; -----------------------------------------------------------------------------
+	      ("\\(\\[cite:@[A-Za-z]+:\\)" .
+	       ((lambda (tag) (svg-tag-make tag :inverse t :beg 7 :end -1 :crop-right t))))
 
-	    ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" .
-	     ((lambda (tag) (svg-tag-make tag :end -1 :crop-left t))))
+	      ("\\[cite:@[A-Za-z]+:\\([0-9]+\\]\\)" .
+	       ((lambda (tag) (svg-tag-make tag :end -1 :crop-left t))))
 
-	    ;; -----------------------------------------------------------------------------
-	    ;; Active date (with or without day name, with or without time)
-	    ;; -----------------------------------------------------------------------------
-	    (,(format "\\(<%s>\\)" date-re) .
-	     ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
+	      ;; -----------------------------------------------------------------------------
+	      ;; Active date (with or without day name, with or without time)
+	      ;; -----------------------------------------------------------------------------
+	      (,(format "\\(<%s>\\)" date-re) .
+	       ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
 
-	    (,(format "\\(<%s \\)%s>" date-re day-time-re) .
-	     ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
+	      (,(format "\\(<%s \\)%s>" date-re day-time-re) .
+	       ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
 
-	    (,(format "<%s \\(%s>\\)" date-re day-time-re) .
-	     ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
+	      (,(format "<%s \\(%s>\\)" date-re day-time-re) .
+	       ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
 
-	    ;; -----------------------------------------------------------------------------
-	    ;; Inactive date  (with or without day name, with or without time)
-	    ;; -----------------------------------------------------------------------------
-	    (,(format "\\(\\[%s\\]\\)" date-re) .
-	     ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
+	      ;; -----------------------------------------------------------------------------
+	      ;; Inactive date  (with or without day name, with or without time)
+	      ;; -----------------------------------------------------------------------------
+	      (,(format "\\(\\[%s\\]\\)" date-re) .
+	       ((lambda (tag) (svg-tag-make tag :beg 1 :end -1 :margin 0 :face 'pb/svg-org-date))))
 
-	    (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
-	     ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
+	      (,(format "\\(\\[%s \\)%s\\]" date-re day-time-re) .
+	       ((lambda (tag) (svg-tag-make tag :beg 1 :inverse nil :crop-right t :margin 0 :face 'pb/svg-org-date))))
 
-	    (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
-	     ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
+	      (,(format "\\[%s \\(%s\\]\\)" date-re day-time-re) .
+	       ((lambda (tag) (svg-tag-make tag :end -1 :inverse t :crop-left t :margin 0 :face 'pb/svg-org-date))))
 
-	    ;; -----------------------------------------------------------------------------
-	    ;; My development GTD item types (hard to keep from picking up arbitrary "[foo]" entries)
-	    ;; -----------------------------------------------------------------------------
-	    ("\\[BUG\\]" . ((lambda (tag) (svg-tag-make "BUG" :face 'font-lock-comment-face)))) ;; Bug (duh..)
-	    ("\\[ENH\\]" . ((lambda (tag) (svg-tag-make "ENH" :face 'font-lock-comment-face)))) ;; Enhancement
-	    ("\\[FIX\\]" . ((lambda (tag) (svg-tag-make "FIX" :face 'font-lock-comment-face)))) ;; FixMe
-	    ("\\[HOW\\]" . ((lambda (tag) (svg-tag-make "HOW" :face 'font-lock-comment-face)))) ;; How To
-	    ("\\[INF\\]" . ((lambda (tag) (svg-tag-make "INF" :face 'font-lock-comment-face)))) ;; Information
-	    ("\\[REF\\]" . ((lambda (tag) (svg-tag-make "REF" :face 'font-lock-comment-face)))) ;; Reference
-	    ("\\[SEC\\]" . ((lambda (tag) (svg-tag-make "SEC" :face 'font-lock-comment-face)))) ;; Security
-	    ("\\[TST\\]" . ((lambda (tag) (svg-tag-make "TST" :face 'font-lock-comment-face)))) ;; Bug (duh..)
-	    )
-	)
+	      ;; -----------------------------------------------------------------------------
+	      ;; My development GTD item types (hard to keep from picking up arbitrary "[foo]" entries)
+	      ;; -----------------------------------------------------------------------------
+	      ("\\[BUG\\]" . ((lambda (tag) (svg-tag-make "BUG" :face 'font-lock-comment-face)))) ;; Bug (duh..)
+	      ("\\[ENH\\]" . ((lambda (tag) (svg-tag-make "ENH" :face 'font-lock-comment-face)))) ;; Enhancement
+	      ("\\[FIX\\]" . ((lambda (tag) (svg-tag-make "FIX" :face 'font-lock-comment-face)))) ;; FixMe
+	      ("\\[HOW\\]" . ((lambda (tag) (svg-tag-make "HOW" :face 'font-lock-comment-face)))) ;; How To
+	      ("\\[INF\\]" . ((lambda (tag) (svg-tag-make "INF" :face 'font-lock-comment-face)))) ;; Information
+	      ("\\[REF\\]" . ((lambda (tag) (svg-tag-make "REF" :face 'font-lock-comment-face)))) ;; Reference
+	      ("\\[SEC\\]" . ((lambda (tag) (svg-tag-make "SEC" :face 'font-lock-comment-face)))) ;; Security
+	      ("\\[TST\\]" . ((lambda (tag) (svg-tag-make "TST" :face 'font-lock-comment-face)))) ;; Bug (duh..)
+	      )
+	  )
+    :hook (org-mode-hook . svg-tag-mode)
     )
-
-  (add-hook 'org-mode-hook 'svg-tag-mode)
 #+end_src
 *** org-appear
 Enables /automatic/ visibility toggling depending on cursor position
  #+begin_src emacs-lisp
    (use-package org-appear
      :defer 1
-     :hook
-     (org-mode . org-appear-mode)
-     )
+     :after 'org
+     :hook (org-mode . org-appear-mode))
  #+end_src
 *** [[https://github.com/jcguu95/org-linker.el/tree/master?tab=readme-ov-file#customizable-variables][org-linker]]
  #+begin_src emacs-lisp
@@ -1435,15 +1414,12 @@ Create an org-link from a URL in the clipboard with the actual title of the URL 
      )
  #+end_src
 *** org-superstar
-Nice(r) bullets (replaces org-bullets)
+Nicer bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   (use-package org-superstar
-    :after 'org
     :config
     (setopt org-superstar-item-bullet-alist '((?* . ?•) (?+ . ?➤) (?- . ?•)))
-    :hook
-    (org-mode . org-superstar-mode)
-    )
+    (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
 #+end_src
 ** pdf
 #+begin_src emacs-lisp
@@ -1838,6 +1814,36 @@ Ctrl-a goes to *logical beginning* of line first before a second invocation take
 	(if (= (point) (progn (back-to-indentation) (point)))
 	(beginning-of-line)))
   (global-set-key (kbd "C-a") 'pb/key-back-to-indentation-or-beginning)
+#+end_src
+** ctrl-g a bit more helpful
+[[https://protesilaos.com/codelog/2024-11-28-basic-emacs-configuration/#h:1e468b2a-9bee-4571-8454-e3f5462d9321][Make ctrl-g a bit more helpful]] (Thanks Prot!)
+#+begin_src emacs-lisp
+  (defun pb/keyboard-quit-dwim ()
+    "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+  The generic `keyboard-quit' does not do the expected thing when
+  the minibuffer is open.  Whereas we want it to close the
+  minibuffer, even without explicitly focusing it.
+
+  The DWIM behaviour of this command is as follows:
+
+  - When the region is active, disable it.
+  - When a minibuffer is open, but not focused, close the minibuffer.
+  - When the Completions buffer is selected, close it.
+  - In every other case use the regular `keyboard-quit'."
+    (interactive)
+    (cond
+     ((region-active-p)
+      (keyboard-quit))
+     ((derived-mode-p 'completion-list-mode)
+      (delete-completion-window))
+     ((> (minibuffer-depth) 0)
+      (abort-recursive-edit))
+     (t
+      (keyboard-quit))))
+
+  (global-set-key [remap keyboard-quit] #'pb/keyboard-quit-dwim)
+
 #+end_src
 ** smarter C-w (backward word kill)
 [[https://github.com/magnars/.emacs.d/blob/master/defuns/editing-defuns.el]]
@@ -2602,8 +2608,7 @@ Like it but couldn't get the code below to work (custom-theme-set-faces not defi
     (bg-mode-line-inactive     bg-dim)
     (border-mode-line-inactive bg-inactive)
 
-    ;; Make the prompts a shade o
-    f magenta, to fit in nicely withthe overall blue-cyan-purple style of the other overrides.
+    ;; Make the prompts a shade of magenta, to fit in nicely with the overall blue-cyan-purple style of the other overrides.
     ;; Add a nuanced background as well.
     (bg-prompt bg-magenta-nuanced)
     (fg-prompt magenta-cooler)
