@@ -1,5 +1,0 @@
-# name Org mode source block for any language
-# --
-#+begin_src $0
-  $1
-#+end_src
