@@ -168,8 +168,9 @@ Highlight global-search-replace strings dynamically.
     (global-anzu-mode)
     )
 #+end_src
-** buffer-terminator
+** COMMENT buffer-terminator
 [[https://github.com/jamescherti/buffer-terminator.el][GitHub - jamescherti/buffer-terminator.el: buffer-terminator - Safely Termina...]]
+<2026-04-30 Thu> Turning this off, seems to be have gotten very aggressive recently!
 #+begin_src emacs-lisp
   (use-package buffer-terminator
     :ensure t
@@ -181,7 +182,7 @@ Highlight global-search-replace strings dynamically.
 		(keep-buffer-property . process)
 		(keep-buffer-property . visible)
 		(kill-buffer-property . inactive)
-		(keep-buffer-name . ("*Claude*"))
+		(keep-buffer-name     . ("*Claude*"))
 		))
     (buffer-terminator-mode 1))
 #+end_src
@@ -209,7 +210,7 @@ Highlight global-search-replace strings dynamically.
     ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
     (interactive)
     (let ((search-term
-	   (read-from-minibuffer "Create empty directory : ")))
+	     (read-from-minibuffer "Create empty directory : ")))
       (dired-create-directory search-term)))
 
   ;; https://lmno.lol/alvaro/hide-another-detail
@@ -217,27 +218,26 @@ Highlight global-search-replace strings dynamically.
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward dired-subdir-regexp nil t)
-	(let* ((match-bounds (cons (match-beginning 1) (match-end 1)))
-	       (path (file-name-directory (buffer-substring (car match-bounds)
-							    (cdr match-bounds))))
-	       (path-start (car match-bounds))
-	       (path-end (+ (car match-bounds) (length path)))
-	       (inhibit-read-only t))
-	  (put-text-property path-start path-end
-			     'invisible 'dired-hide-details-information)))))
+	  (let* ((match-bounds (cons (match-beginning 1) (match-end 1)))
+		 (path (file-name-directory (buffer-substring (car match-bounds)
+							      (cdr match-bounds))))
+		 (path-start (car match-bounds))
+		 (path-end (+ (car match-bounds) (length path)))
+		 (inhibit-read-only t))
+	    (put-text-property path-start path-end
+			       'invisible 'dired-hide-details-information)))))
 
   (use-package dired
     :straight (:type built-in)
 
     :bind (:map dired-mode-map
-	("C-x C-d" . dired-jump)
-	("C-x j"   . dired-jump-other-window)
-	("e"       . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
-	("q"       . kill-current-buffer)    ; Instead of simply closing the buffer
-	("."       . dired-up-directory)
-	("F"       . dired-create-empty-file)
-	("D"       . pb/dired-create-empty-directory)
-	)
+	  ("C-x j" . dired-jump-other-window)
+	  ("e"     . dired-toggle-read-only) ; Inline filename editing (C-c C-c when done)
+	  ("q"     . kill-current-buffer)    ; Instead of simply closing the buffer
+	  ("."     . dired-up-directory)
+	  ("F"     . dired-create-empty-file)
+	  ("D"     . pb/dired-create-empty-directory)
+	  )
 
     :config
     (setopt auto-revert-verbose                        nil ;; Auto refresh Dired, but be quiet about it
@@ -257,9 +257,9 @@ Highlight global-search-replace strings dynamically.
       )
 
     :hook (
-	 (dired-mode         . dired-hide-details-mode)
-	 (dired-after-readin . pb/hide-dired-details-include-all-subdir-paths)
-	 )
+	   (dired-mode         . dired-hide-details-mode)
+	   (dired-after-readin . pb/hide-dired-details-include-all-subdir-paths)
+	   )
     )
 
   (when (string= system-type "darwin")
@@ -341,18 +341,19 @@ Improve quality of most-used C-h methods.
     (setopt outline-blank-line t)
     )
 #+end_src
-*** kirigami
+*** COMMENT kirigami
+<2026-04-30 Thu> After getting used to Ctrl-Tab, too much mental-cost learning these new mappings.
 #+begin_src emacs-lisp
   (use-package kirigami
     :ensure t
 
     :config
-    (global-set-key (kbd "C-c k o")	'kirigami-open-fold)     ; Open fold at point
-    (global-set-key (kbd "C-c k O")	'kirigami-open-fold-rec) ; Open fold recursively
-    (global-set-key (kbd "C-c k m")	'kirigami-close-folds)   ; Close all folds
-    (global-set-key (kbd "C-c k c")	'kirigami-close-fold)    ; Close fold at point
-    (global-set-key (kbd "C-c k r")	'kirigami-open-folds)    ; Open all folds
-    (global-set-key (kbd "C-c k TAB")	'kirigami-toggle-fold)   ; Toggle fold at point
+    (global-set-key (kbd "C-c k o")   'kirigami-open-fold)     ; Open fold at point
+    (global-set-key (kbd "C-c k O")   'kirigami-open-fold-rec) ; Open fold recursively
+    (global-set-key (kbd "C-c k m")   'kirigami-close-folds)   ; Close all folds
+    (global-set-key (kbd "C-c k c")   'kirigami-close-fold)    ; Close fold at point
+    (global-set-key (kbd "C-c k r")   'kirigami-open-folds)    ; Open all folds
+    (global-set-key (kbd "C-c k TAB") 'kirigami-toggle-fold)   ; Toggle fold at point
     )
 #+end_src
 ** pbcopy (allow interaction with MacOS clipboard and kill/yank ring)
@@ -916,6 +917,8 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 #+begin_src emacs-lisp
   (use-package treesit-fold
     :straight (treesit-fold :type git :host github :repo "emacs-tree-sitter/treesit-fold")
+    :init
+    (setq treesit-fold-line-count-show t)  ; Show line count in folded regions
     :bind
     ("C-<tab>" . treesit-fold-toggle)
     )
@@ -967,6 +970,11 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
     )
 
   (setopt magit-format-file-function #'magit-format-file-nerd-icons)
+#+end_src
+*** git-config-modes
+#+begin_src emacs-lisp
+(use-package git-modes
+  :ensure t)
 #+end_src
 *** magit-todos
 #+begin_src emacs-lisp
@@ -1091,6 +1099,28 @@ Ooh..like this much better than git-gutter!
      :custom
      (transient-compile-interactive t)
      )
+
+#+end_src
+** COMMENT dumb-jump
+<2026-04-30 Thu> Tried to make this work today and gave it, never was able to "override" eglot.
+#+begin_src emacs-lisp
+  (use-package dumb-jump
+    :ensure t
+    :custom
+    (dumb-jump-prefer-searcher 'rg)
+    (dumb-jump-selector        'completing-read) ;; or 'ivy, 'helm, etc.
+    :config
+    (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+  (defun my-prefer-dumb-jump ()
+    "Prefer dumb-jump over eglot for xref."
+    (setq-local xref-backend-functions
+		    (cons #'dumb-jump-xref-activate
+			  (remove #'dumb-jump-xref-activate xref-backend-functions))))
+
+  (add-hook 'python-mode-hook #'my-prefer-dumb-jump)
+
+  (setq xref-show-definitions-function #'consult-xref)
 
 #+end_src
 * FileTypes & Modes
