@@ -121,39 +121,40 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-			("QYX - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
-			("Sports - Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+	    ("Investment Reporting"      (dired "~/Repository/10-19 Development/10 Development/10.28 investing")                   "t")
+	    ("QYX - Python Code Quality" (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
+	    ("Sports - Optimus Ludos"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
 
-			("Recipes - Coctione Libri"  (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-			("Health Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-			;; ("Restaurants - Optimus Popinae" (dired "~/Repository/10-19 Development/10 Development/10.24 optimus_popinae")             "t")
-			;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-			;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-			)
-		       ("Org"
-			("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-			("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-			("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-			)
-		       ("Directories"
-			("-Root-"      (dired "~/Repository")                                  "r")
-			("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
-			("Money"       (dired "~/Repository/20-29 Money")                      "m")
-			("Health"      (dired "~/Repository/30-39 Health")                     "h")
-			)
-		       ("Utilities"
-			("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-			("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-			("*Claude*"            (command-execute 'gptel)                                            "a")
-			)
+	    ("Recipes - Coctione Libri"  (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+	    ("Health Activity Dashboard" (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+	    ;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+	    ;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+	    )
+	   ("Org"
+	    ("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+	    ("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+	    ("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+	    )
+	   ("Directories"
+	    ("-Root-"      (dired "~/Repository")                                  "r")
+	    ("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
+	    ("Money"       (dired "~/Repository/20-29 Money")                      "m")
+	    ("Health"      (dired "~/Repository/30-39 Health")                     "h")
+	    )
+	   ("Utilities"
+	    ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+	    ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+	    ("*Claude*"            (command-execute 'gptel)                                            "a")
+	    )
 
-		       ))))
+	   ))))
 
     :config
     (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
 
     ;; <2026-02-18 Wed> Don't need to do this, standard font size is *fine*.
     ;;(add-hook 'enlight-mode-hook 'pb/set-enlight-font)
+
     (enlight-open)
     )
 #+end_src
@@ -203,7 +204,7 @@ Highlight global-search-replace strings dynamically.
 [[https://www.emacswiki.org/emacs/DiredSortDirectoriesFirst][Sort dired listings with directories first]]
 *** dired
 #+begin_src emacs-lisp
-  (defun pb/dired-create-directory ()
+  (defun pb/dired-create-empty-directory ()
     "Wrapper to dired-create-directory to avoid minibuffer completion."
     ;; https://emacs.dyerdwelling.family/emacs/20240922201246-emacs--efficient-directory-and-file-management-with-dired-in-emacs/
     (interactive)
@@ -235,7 +236,7 @@ Highlight global-search-replace strings dynamically.
 	("q"       . kill-current-buffer)    ; Instead of simply closing the buffer
 	("."       . dired-up-directory)
 	("F"       . dired-create-empty-file)
-	("D"       . pb/dired-create-directory)
+	("D"       . pb/dired-create-empty-directory)
 	)
 
     :config
@@ -244,6 +245,7 @@ Highlight global-search-replace strings dynamically.
       dired-dwim-target                                t
       dired-create-destination-dirs                    'ask
       dired-hide-details-mode                          nil
+      dired-kill-when-opening-new-dired-buffer         t
       dired-listing-switches                           "-Al"
       dired-recursive-copies                           'always
       dired-recursive-deletes                          'always
@@ -255,7 +257,6 @@ Highlight global-search-replace strings dynamically.
       )
 
     :hook (
-	 ;; (dired-mode         . diredfl-mode) ;; Color our dired display by type of file/directory (https://github.com/purcell/diredfl)
 	 (dired-mode         . dired-hide-details-mode)
 	 (dired-after-readin . pb/hide-dired-details-include-all-subdir-paths)
 	 )
@@ -430,6 +431,7 @@ expand within comments!)
     ;; Use the method above to keep snippets only when we're writing code or in
     (add-hook 'python-ts-mode-hook   #'yas-minor-mode)
     (add-hook 'python-base-mode-hook #'yas-minor-mode)
+    (add-hook 'text-mode-hook        #'yas-minor-mode)
     (add-hook 'prog-mode-hook        #'pb/no-expand-in-comment_string)
     (yas-global-mode 1)
     (yas-reload-all)
@@ -437,7 +439,11 @@ expand within comments!)
 #+end_src
 * Display
 ** color-theme(s)
-*** Modus Operandi (light)
+*** Leuven (light)
+#+begin_src emacs-lisp
+  (load-theme 'leuven t)
+#+end_src
+*** COMMENT Modus Operandi (light)
 Note: ARCHIVE section below includes a LOT of sample configuration tweaks!
 #+begin_src emacs-lisp
   (load-theme 'modus-operandi t)
@@ -498,7 +504,7 @@ Interactive font scaling:
   (defun pb/set-monitor-font-size ()
     "Set font for 4K monitor."
     (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 20))
+    (set-frame-font (format pb/var-fixedwidth-font 18))
     )
 
   (defun pb/set-laptop-font-size ()
@@ -1001,10 +1007,19 @@ Ooh..like this much better than git-gutter!
 	)
 #+end_src
 ** jujutsu
+*** COMMENT majutsu-mode
+<2026-04-30 Thu> Tried but it couldn't use internal emacs buffer, wanting to use emacsclient
+#+begin_src emacs-lisp
+  (use-package majutsu
+    :straight (:host github :repo "0WD0/majutsu")
+    :bind
+    ("C-x C-j" . majutsu-log)
+    )
+#+end_src
+***  jj-mode (bolivier)
 #+begin_src emacs-lisp
   (use-package jj-mode
     :straight (:host github :repo "bolivier/jj-mode.el")
-    ;; :rebuild t
     :bind
     ("C-x C-j" . jj-log)
     )
@@ -1089,10 +1104,10 @@ Ooh..like this much better than git-gutter!
 ** csv
 #+begin_src emacs-lisp
   (use-package csv-mode
-	:defer t
-	:init
-	(add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
-	(add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
+    :defer t
+    :init
+    (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
+    (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
   )
 #+end_src
 ** graphviz-dot-mode
@@ -1105,10 +1120,10 @@ Ooh..like this much better than git-gutter!
 ** justfile
 #+begin_src emacs-lisp
   (use-package just-mode
-	:defer t
-	:config
-	(add-to-list 'auto-mode-alist '("\\justfile?\\'" . just-mode))
-	)
+    :defer t
+    :config
+    (add-to-list 'auto-mode-alist '("\\just$'" . just-mode))
+    )
 #+end_src
 ** markdown
 *** markdown
@@ -1202,6 +1217,7 @@ https://github.com/rnkn/olivetti
 		 "IDEA(i)"
 		 "SMDY(o)"
 		 "TODO(t)"
+		 "SCHD(s)"
 		 "WAIT(a)"
 		 "WORK(w)"
 		 "DONE(x)"
@@ -1213,6 +1229,7 @@ https://github.com/rnkn/olivetti
 		("TODO" . org-priority) ;; used to be org-warning aka "#fb4933".
 		("WORK" . "light green")
 		("DONE" . (:foreground "gray30" :strike-through t))
+		("SCHD" . "systemBrownColor")
 		("WAIT" . "systemBrownColor")
 		("IDEA" . "gray80")
 		("SMDY" . "systemBrownColor")
@@ -1730,7 +1747,7 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
-  (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
+  ;; (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
 ** vterm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
@@ -1914,8 +1931,8 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+end_src
 ** use project-file-find instead of file-find:
 #+begin_src emacs-lisp
-  (global-set-key (kbd "C-x C-f")   (lambda () (interactive) (project-find-file)))
-  (global-set-key (kbd "C-x C-S-f") (lambda () (interactive) (find-file)))
+  (global-set-key (kbd "C-c C-f") #'find-file)
+  (global-set-key (kbd "C-x C-f") #'project-find-file)
 #+end_src
 ** scroll page without moving cursor
 #+begin_src emacs-lisp

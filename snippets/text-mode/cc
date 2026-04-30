@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: Conventional Commit
+# key: cc
+# --
+${1:(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)}${2: (scope)}: ${3:description}
+
+${4:Detailed body explaining why the change was made...}
+
+${5:Footer (e.g., BREAKING CHANGE, Closes #123)}
