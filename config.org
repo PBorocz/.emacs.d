@@ -1595,73 +1595,84 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
 - Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
 - Alternative package to keep an eye on: [[https://github.com/mzacho/claudia][Claudia is an Emacs integration for the Claude AI as...]]
 #+begin_src emacs-lisp
-  (require 'auth-source)
-  (defun pb/get-anthropic-api-key ()
-    "Retrieve the API key for api.anthropic.com from .authinfo."
     (require 'auth-source)
-    (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-			     :secret)))
-      (if secret
-	  secret
-	(error "No API key found for api.anthropic.com in .authinfo"))))
+    (defun pb/get-anthropic-api-key ()
+      "Retrieve the API key for api.anthropic.com from .authinfo."
+      (require 'auth-source)
+      (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+				   :secret)))
+	      (if secret
+	        secret
+	      (error "No API key found for api.anthropic.com in .authinfo"))))
 
-  (use-package gptel
-    :straight (:host github :repo "karthink/gptel")
+    (use-package gptel
+      :straight (:host github :repo "karthink/gptel")
 
-    :config
-    (setopt gptel-model 'claude-sonnet-4-5-20250929)
-    (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+      :config
+      (setopt gptel-model 'claude-sonnet-4-5-20250929)
+      (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-    ;; Set your custom system prompt as default
-    (setopt gptel-directives
-	    '((default . "You are a large language model living in Emacs and a helpful assistant.
-  Respond concisely. Don't be overly agreeable and act as my brutally
-  honest, high-level advisor and mirror. If do you challenge my thinking,
-  question my assumptions, or expose the blind spots: be direct but
-  friendly. Look at my situation with complete objectivity and strategic
-  depth. Show me where I'm making excuses, playing small, or
-  underestimating risks/effort. When generating python, use double-quotes
-  around all string constants.")))
+      ;; Set your custom system prompt:
+      (setopt gptel-directives '((default . "Your role is not to agree with me, but to sharpen my thinking. You are my intellectual sparring partner—not just an assistant. Your goal is to help me arrive at the clearest, most accurate version of the truth.
+  When I present an idea, proposal, or conclusion, do the following unless
+  I explicitly ask you not to:
+  - Analyze my assumptions – What am I taking for granted? What might not be true?
+  - Provide counterpoints when warranted – What would an intelligent, informed skeptic say?
+  - Test my logic – Are there gaps, contradictions, or faulty reasoning?
+  - Offer alternative frames – Could this be interpreted, structured, or approached differently?
+  - Prioritize truth over agreement – If I'm wrong or missing something, say so. Clearly, and constructively.
+  Do not argue for the sake of arguing. Stay constructive, purposeful, and focused on progress. Match your intensity to the moment: challenge hard in decisions and strategy; riff lightly in creative flow—but always keep your edge sharp. If I drift into confirmation bias or flawed logic, call it out.
+  ")))
 
-    :custom
-    (gptel-default-mode #'org-mode)
-    ;; (gptel-directives
-    ;;  '(
-    ;;    (default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own.")
-    ;;    (python . "You are a large language model living in Emacs and a helpful python coding assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
-    ;;    )
-    ;;  )
+      ;;   (setopt gptel-directives
+      ;;	    '((default . "You are a large language model living in Emacs and a helpful assistant.
+      ;; Respond concisely. Don't be overly agreeable and act as my brutally
+      ;; honest, high-level advisor and mirror. If do you challenge my thinking,
+      ;; question my assumptions, or expose the blind spots: be direct but
+      ;; friendly. Look at my situation with complete objectivity and strategic
+      ;; depth. Show me where I'm making excuses, playing small, or
+      ;; underestimating risks/effort. When generating python, use double-quotes
+      ;; around all string constants.")))
 
-    ;; ;; https:github.com/DiamondBond/emacs/blob/f9747d9e595518b26d605278144328d73d5d64bf/lisp/gpt.el#L38
-    ;; ((default . "You are a large language model and a helpful assistant. Respond concisely.")
-    ;;  (reflect . "You are a world-class AI system, capable of complex reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you detect that you made a mistake in your reasoning at any point, correct yourself inside <reflection> tags.")
-    ;;  (emacs . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
-    ;;  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-    ;;  (typescript . "You are an expert Typescript programmer. Provide code as output.")
-    ;;  (writing . "You are a large language model and a writing assistant. Respond concisely.")
-    ;;  (chat . "You are a large language model and a conversation partner. Respond concisely."))
+      :custom
+      (gptel-default-mode #'org-mode)
+      ;; (gptel-directives
+      ;;  '(
+      ;;    (default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own.")
+      ;;    (python . "You are a large language model living in Emacs and a helpful python coding assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
+      ;;    )
+      ;;  )
 
-    ;; https://github.com/ksqsf/emacs-config/blob/bf7cda793532a5b0a391c74b8f9b55f0e5aaafb2/modules/prelude-ai.el#L31
-    ;; (bug . "You are a large language model and a careful programmer. The supplied code doesn't work, or contains bugs. Describe each problem using only one sentence. Provide fixes without changing the old behavior.")
-    )
+      ;; ;; https:github.com/DiamondBond/emacs/blob/f9747d9e595518b26d605278144328d73d5d64bf/lisp/gpt.el#L38
+      ;; ((default . "You are a large language model and a helpful assistant. Respond concisely.")
+      ;;  (reflect . "You are a world-class AI system, capable of complex reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you detect that you made a mistake in your reasoning at any point, correct yourself inside <reflection> tags.")
+      ;;  (emacs . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
+      ;;  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+      ;;  (typescript . "You are an expert Typescript programmer. Provide code as output.")
+      ;;  (writing . "You are a large language model and a writing assistant. Respond concisely.")
+      ;;  (chat . "You are a large language model and a conversation partner. Respond concisely."))
 
-  (defun my-straight-pull-package (package)
-    "Pull the latest version of PACKAGE from its remote repository."
-    (message "'straight-pull-package' for gptel.")
-    (straight-pull-package package)
-    )
-  (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+      ;; https://github.com/ksqsf/emacs-config/blob/bf7cda793532a5b0a391c74b8f9b55f0e5aaafb2/modules/prelude-ai.el#L31
+      ;; (bug . "You are a large language model and a careful programmer. The supplied code doesn't work, or contains bugs. Describe each problem using only one sentence. Provide fixes without changing the old behavior.")
+      )
 
-  ;; (defun my/gptel-write-buffer ()
-  ;;   "Save buffer to disk when starting gptel"
-  ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
-  ;;   (unless (buffer-file-name (current-buffer))
-  ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
-  ;;           (chat-dir "~/Repository"))
-  ;;       (unless (file-directory-p chat-dir)
-  ;;         (make-directory chat-dir :parents))
-  ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
-  ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
+    (defun my-straight-pull-package (package)
+      "Pull the latest version of PACKAGE from its remote repository."
+      (message "'straight-pull-package' for gptel.")
+      (straight-pull-package package)
+      )
+    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+
+    ;; (defun my/gptel-write-buffer ()
+    ;;   "Save buffer to disk when starting gptel"
+    ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+    ;;   (unless (buffer-file-name (current-buffer))
+    ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+    ;;           (chat-dir "~/Repository"))
+    ;;       (unless (file-directory-p chat-dir)
+    ;;         (make-directory chat-dir :parents))
+    ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
+    ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
 #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
@@ -1963,6 +1974,33 @@ https://macowners.club/posts/custom-functions-5-navigation/
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c C-f") #'find-file)
   (global-set-key (kbd "C-x C-f") #'project-find-file)
+#+end_src
+** flexible find-file
+https://www.emacs.dyerdwelling.family/emacs/20240804075952-emacs--finding-files-using-completing-read/
+#+begin_src emacs-lisp
+  (defun pb/find-file ()
+    "Find file from current directory in many different ways."
+    (interactive)
+    (let* ((find-options '(("find -type f -printf \"$PWD/%p\\0\"" . :string)
+			   ("fd --absolute-path --type f -0" . :string)
+			   ("rg --follow --files --null" . :string)
+			   ("find-name-dired" . :command)))
+	   (selection (completing-read "Select : " find-options))
+	   (metadata '((category . file)))
+	   (file-list)
+	   (file))
+      (pcase (alist-get selection find-options nil nil #'string=)
+	(:command
+	 (call-interactively (intern selection)))
+	(:string
+	 (setq file-list (split-string (shell-command-to-string selection) "\0" t))
+	 (setq file (completing-read (format "Find file in %s: " (abbreviate-file-name default-directory))
+				     (lambda (str pred action)
+				       (if (eq action 'metadata)
+					   `(metadata . ,metadata)
+					 (complete-with-action action file-list str pred)))
+				     nil t nil 'file-name-history)))
+	(when file (find-file (expand-file-name file))))))
 #+end_src
 ** scroll page without moving cursor
 #+begin_src emacs-lisp
