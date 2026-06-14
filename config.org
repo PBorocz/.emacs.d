@@ -1007,8 +1007,28 @@ Ooh..like this much better than git-gutter!
 
     :config
     (setq-default jj--log-revset "..@-5 | @")  ; Last 5 commits plus current
-    )
 
+    :config
+    (defcustom jj-log-limit 5
+      "Number of log entries to display (nil for unlimited)."
+      :type '(choice (const :tag "Unlimited" nil)
+		     (integer :tag "Limit"))
+      :group 'jj)
+
+    (defun my/jj-parse-log-entries-with-limit (orig-fun &rest args)
+      "Add --limit to jj log command in jj-parse-log-entries."
+      (cl-letf (((symbol-function 'jj--run-command-color)
+	         (lambda (&rest cmd-args)
+		   (let ((modified-args
+			  (if (and jj-log-limit (equal (car cmd-args) "log"))
+			      (append cmd-args (list "--limit" (number-to-string jj-log-limit)))
+			    cmd-args)))
+		     (apply orig-jj-run-command-color modified-args))))
+	        (orig-jj-run-command-color (symbol-function 'jj--run-command-color)))
+	(apply orig-fun args)))
+
+    (advice-add 'jj-parse-log-entries :around #'my/jj-parse-log-entries-with-limit)
+    )
 #+end_src
 ** [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
 #+begin_src emacs-lisp
@@ -1751,7 +1771,6 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 
   ;; Make git work within shell
   (setenv "PAGER"  "/bin/cat")
-  ;; (setenv "EDITOR" "/Applications/Emacs.app/Contents/MacOS/bin/emacsclient")
 #+end_src
 ** vterm
 Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste operations.
@@ -2218,6 +2237,76 @@ https://github.com/jcollard/elm-mode
 	:init
 	(add-hook 'elm-mode-hook 'elm-format-on-save-mode)
 	)
+#+end_src
+** ghostel
+<2026-06-09 Tue> Tried and seems actually slower interactively than vterm (also, doesn't handle
+		  my fish prompt nicely.
+
+Mode-switch keybindings (available from every mode except char mode)
+|--------------------------+-------------------------------------------|
+| Key                      | Action                                    |
+|--------------------------+-------------------------------------------|
+| C-c C-j                  | Switch to semi-char mode (universal exit) |
+| C-c M-d                  | Switch to char mode                       |
+| C-c C-e                  | Switch to Emacs mode                      |
+| C-c C-t                  | Toggle copy mode                          |
+| C-c C-l                  | Switch to line mode                       |
+| M-RET                    | Char mode only: return to semi-char       |
+| Semi-char mode (default) |                                           |
+|--------------------------+-------------------------------------------|
+
+Most keys are sent to the terminal. Keys in ghostel-keymap-exceptions
+(default: C-c, C-x, C-u, C-h, M-x, M-:, C-\) pass through to Emacs.
+
+|-------------+----------------------------------------------|
+| Key         | Action                                       |
+|-------------+----------------------------------------------|
+| Most keys   | Sent directly to the terminal                |
+| C-c C-c     | Send interrupt (C-c)                         |
+| C-c C-z     | Send suspend (C-z)                           |
+| C-c C-d     | Send EOF (C-d)                               |
+| C-c C-\     | Send quit (C-)                               |
+| C-c M-w     | Copy entire scrollback to kill ring          |
+| C-y         | Yank from kill ring (bracketed paste)        |
+| M-y         | Yank-pop (cycle through kill ring)           |
+| C-c C-y     | Paste from kill ring                         |
+| C-c M-l     | Clear scrollback                             |
+| C-c C-n     | Jump to next hyperlink                       |
+| C-c C-p     | Jump to previous hyperlink                   |
+| C-c M-n     | Enter Emacs mode and jump to next prompt     |
+| C-c M-p     | Enter Emacs mode and jump to previous prompt |
+| C-c C-q     | Send next key literally (escape hatch)       |
+| Mouse wheel | Scroll through scrollback                    |
+|-------------+----------------------------------------------|
+
+ #+begin_src emacs-lisp
+   (use-package ghostel
+     :ensure t)
+
+   (defun pb-hook/vterm-text-scale()
+		  "Sue me...I like to see more text in my terminal windows."
+		  (text-scale-set -1))
+
+   (defun pb-hook/vterm-custom-font-size()
+		  "Sue me...I like to see more text in my terminal windows."
+		  (setopt buffer-face-mode-face '(:weight light :height 220))
+		  (buffer-face-mode))
+
+   (defun pb/vterm-current-directory ()
+		  "Create a terminal buffer from the current directory."
+		  (interactive)
+		  (let ((shell-name (car (last (butlast (split-string default-directory "/"))))))
+		    (ghostel (concat "@" shell-name))
+		    )
+		  )
+
+   (defun pb/vterm-by-name ()
+		  "Create a terminal buffer based on name provided."
+		  (interactive)
+		  (let ((shell-name (read-string "Shell name: ")))
+		    (ghostel (concat "@" shell-name))
+		    )
+		  )
 #+end_src
 ** git-gutter
 Stopped usage on 2024-07-10 after replacing with diff-hl.
