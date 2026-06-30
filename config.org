@@ -10,7 +10,7 @@
 ** TODO Review: [[https://batsov.com/articles/2025/04/17/using-use-package-the-right-way/][Using use-package the right way - (think)]] and update vv :init, :config etc.
 ** TODO Install and integrate [[https://languagetool.org/][LanguageTool (grammar checker)]] into [[https://github.com/PillFall/languagetool.el][emacs]].
 ** TODO [[https://github.com/pizzatorque/uv-menu/blob/master/uv.el][uv-menu/uv.el at master · pizzatorque/uv-menu · GitHub]]
-* Base Editing Environment
+* Base Environment
 ** tune garbage collection
 #+begin_src emacs-lisp
   (use-package gcmh
@@ -121,33 +121,33 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-		("Investment Dashboard"           (dired "~/Repository/10-19 Development/10 Development/10.28 investing/")                  "$")
-		("Spending Dashboard"             (dired "~/Repository/10-19 Development/10 Development/10.29 spending/")                   "s")
-		("Python Code Quality (QYX)"      (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
-		("optimal-sports.peterborocz.dev" (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-		("recipe-manager.peterborocz.dev" (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-		("Health/Activity Dashboard"      (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-		;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-		)
-	       ("Org"
-		("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-		("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-		("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-		)
-	       ("Directories"
-		("-Root-"      (dired "~/Repository")                                  "r")
-		("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
-		("Money"       (dired "~/Repository/20-29 Money")                      "m")
-		("Health"      (dired "~/Repository/30-39 Health")                     "h")
-		)
-	       ("Utilities"
-		("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-		("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-		("*Claude*"            (command-execute 'gptel)                                            "a")
-		)
+		  ("Investment Dashboard (& Pipeline)" (dired "~/Repository/10-19 Development/10 Development/10.28 investing/")                  "$")
+		  ("Spending Dashboard (& Pipeline)"   (dired "~/Repository/10-19 Development/10 Development/10.29 spending/")                   "s")
+		  ("Python Code Quality (QYX)"         (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
+		  ("optimal-sports.peterborocz.dev"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
+		  ("recipe-manager.peterborocz.dev"    (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
+		  ("Health/Activity Dashboard"         (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
+		  ;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
+		  ;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
+		  )
+		 ("Org"
+		  ("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+		  ("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+		  ("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+		  )
+		 ("Directories"
+		  ("-Root-"      (dired "~/Repository")                                  "r")
+		  ("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
+		  ("Money"       (dired "~/Repository/20-29 Money")                      "m")
+		  ("Health"      (dired "~/Repository/30-39 Health")                     "h")
+		  )
+		 ("Utilities"
+		  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+		  ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+		  ("*Claude*"            (command-execute 'gptel)                                            "a")
+		  )
 
-	       ))))
+		 ))))
 
     :config
     (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
@@ -356,6 +356,12 @@ Improve quality of most-used C-h methods.
     (save-place-mode 1)
     )
 #+end_src
+** straight-overview
+#+begin_src emacs-lisp
+  (use-package straight-overview
+    :straight (:host github :repo "alberti42/straight-overview")
+    :commands (straight-overview))
+#+end_src
 ** super-save (save on buffer switch)
 [[https://github.com/bbatsov/super-save][GitHub - bbatsov/super-save: Save Emacs buffers when they lose focus]]:
 Best description is from package site itself: "super-save auto-saves
@@ -462,7 +468,7 @@ Interactive font scaling:
  Set a new font interactively:
    - M-x set-frame-font (Pick from list!)
 
- History of fonts actually tried for more than one day:
+ History of fonts actually tried for more than >= a few hours:
 
  "-*-DM Mono-normal-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Astigmata-medium-normal-normal-*-%d-*-*-*-p-0-iso10646-1"
@@ -478,29 +484,34 @@ Interactive font scaling:
  "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Wow, used this for almost 2+ months!
  "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
 
+<2026-06-30 Tue> Install of sarasa with patched nerd fonts:
+> brew install font-sarasa-mono-tc-nerd-font
+> brew trust jonz94/sarasa-nerd-fonts
+> brew tap jonz94/sarasa-nerd-fonts
+
  #+begin_src emacs-lisp
-  (setopt ns-use-thin-smoothing t)
+   (setopt ns-use-thin-smoothing t)
 
-  ;; Set my default font (always mono, even for org writing)
-  (defvar pb/var-fixedwidth-font "-*-SauceCodePro Nerd Font Mono-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+   ;; Set my default font (always mono, even for org writing)
+    (defvar pb/var-fixedwidth-font "-*-Sarasa Mono TC Nerd Font-regular-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
 
-  (defun pb/set-monitor-font-size ()
-    "Set font for 4K monitor."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 18))
-    )
+   (defun pb/set-monitor-font-size ()
+     "Set font for 4K monitor."
+     (interactive)
+     (set-frame-font (format pb/var-fixedwidth-font 18))
+     )
 
-  (defun pb/set-laptop-font-size ()
-    "Set font for laptop display."
-    (interactive)
-    (set-frame-font (format pb/var-fixedwidth-font 14))
-    )
+   (defun pb/set-laptop-font-size ()
+     "Set font for laptop display."
+     (interactive)
+     (set-frame-font (format pb/var-fixedwidth-font 14))
+     )
 
-  ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
-  (if (display-graphic-p)
-      (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
-	  (pb/set-monitor-font-size)
-	(pb/set-laptop-font-size)))
+   ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
+   (if (display-graphic-p)
+       (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
+		(pb/set-monitor-font-size)
+	      (pb/set-laptop-font-size)))
 #+end_src
 ** frame-options
 #+begin_src emacs-lisp
@@ -525,6 +536,22 @@ Interactive font scaling:
     (hl-line-when-idle-interval 0.5)
     (toggle-hl-line-when-idle   1))
 
+#+end_src
+** ligature(s)
+#+begin_src emacs-lisp
+  (use-package ligature
+    :config
+    (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\" "{-" "::"
+					 ":::" ":=" "!!" "!=" "!==" "-}" "----" "---" "-->" "->" "->>"
+					 "-<" "-<<" "-~" "#{" "#[" "##" "###" "####" "#(" "#?" "#_"
+					 "#_(" ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*" "/**"
+					 "/=" "/==" "/>" "//" "///" "&&" "||" "||=" "|=" "|>" "^=" "$>"
+					 "++" "+++" "+>" "=:=" "==" "===" "==>" "=>" "=>>" "<="
+					 "=<<" "=/=" ">-" ">=" ">=>" ">>" ">>-" ">>=" ">>>" "<*"
+					 "<*>" "<|" "<|>" "<$" "<$>" "<!--" "<-" "<--" "<->" "<+"
+					 "<+>" "<=" "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<"
+					 "<~" "<~~" "</" "</>" "~@" "~-" "~>" "~~" "~~>" "%%"))
+    (global-ligature-mode t))
 #+end_src
 ** mode-line(s)
 *** [[https://github.com/seagle0128/doom-modeline][doom]]
@@ -1018,13 +1045,13 @@ Ooh..like this much better than git-gutter!
     (defun my/jj-parse-log-entries-with-limit (orig-fun &rest args)
       "Add --limit to jj log command in jj-parse-log-entries."
       (cl-letf (((symbol-function 'jj--run-command-color)
-	         (lambda (&rest cmd-args)
+		 (lambda (&rest cmd-args)
 		   (let ((modified-args
 			  (if (and jj-log-limit (equal (car cmd-args) "log"))
 			      (append cmd-args (list "--limit" (number-to-string jj-log-limit)))
 			    cmd-args)))
 		     (apply orig-jj-run-command-color modified-args))))
-	        (orig-jj-run-command-color (symbol-function 'jj--run-command-color)))
+		(orig-jj-run-command-color (symbol-function 'jj--run-command-color)))
 	(apply orig-fun args)))
 
     (advice-add 'jj-parse-log-entries :around #'my/jj-parse-log-entries-with-limit)
