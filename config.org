@@ -479,10 +479,11 @@ Interactive font scaling:
  "-*-Monaspace Argon-ultralight-normal-normal-*-%d-*-*-*-p-0-iso10646-1" ; Tried for a few days, like the idea of having different font-face to comments that are still mono but couldn't make it work.
  "-*-Red Hat Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Roboto Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
- "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
  "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
+ "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
  "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Wow, used this for almost 2+ months!
  "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
+ "-*-Sarasa Mono TC Nerd Font-regular-normal-normal-*-%d-*-*-*-p-0-iso10646-1"
 
 <2026-06-30 Tue> Install of sarasa with patched nerd fonts:
 > brew install font-sarasa-mono-tc-nerd-font
@@ -493,7 +494,7 @@ Interactive font scaling:
    (setopt ns-use-thin-smoothing t)
 
    ;; Set my default font (always mono, even for org writing)
-    (defvar pb/var-fixedwidth-font "-*-Sarasa Mono TC Nerd Font-regular-normal-normal-*-%d-*-*-*-p-0-iso10646-1")
+   (defvar pb/var-fixedwidth-font "-*-Atkinson Hyperlegible Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
    (defun pb/set-monitor-font-size ()
      "Set font for 4K monitor."
@@ -510,8 +511,8 @@ Interactive font scaling:
    ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
    (if (display-graphic-p)
        (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
-		(pb/set-monitor-font-size)
-	      (pb/set-laptop-font-size)))
+		   (pb/set-monitor-font-size)
+		 (pb/set-laptop-font-size)))
 #+end_src
 ** frame-options
 #+begin_src emacs-lisp
