@@ -829,7 +829,7 @@ Resources:
 - [[https://github.com/joaotavora/eglot][GitHub - joaotavora/eglot: A client for Language Server Protocol servers]]
 - [[https://ddavis.io/posts/emacs-python-lsp/][Python with Emacs: py(v)env and lsp-mode]]
 - [[https://whatacold.io/blog/2022-01-22-emacs-eglot-lsp/][Eglot for better programming experience in Emacs - whatacold's space]]
-*** eglot
+*** COMMENT eglot (base)
 https://docs.astral.sh/ruff/editors/setup/#via-external-tool
 https://grtcdr.tn/dotfiles/emacs/emacs.html#orgdb7d3a6
 https://www.reddit.com/r/emacs/comments/190g713/ruff_issues_with_flymake_eglot_and_pythonlspruff/ (problem solving)
@@ -882,6 +882,15 @@ When we're ready to use pyright, we can use uvx to do so -> [[https://www.reddit
   ;;   ("C-c x a" . xref-find-apropos)
   ;;   ("C-c x f" . xref-find-definitions)
   ;;   ("C-c x r" . xref-find-references))
+#+end_src
+*** eglot-python-preset
+[[https://mwolson.org/blog/2026-04-02-eglot-python-preset-and-eglot-typescript-preset-now-on-melpa/][Mike Olson - eglot-python-preset and eglot-typescript-preset: Now on MELPA]]
+#+begin_src emacs-lisp
+  (use-package eglot-python-preset
+    :ensure t
+    :custom
+    (eglot-python-preset-lsp-server 'rass)
+    (eglot-python-preset-rass-tools '(ty ruff)))
 #+end_src
 *** indent-bars
 [[https://github.com/jdtsmith/indent-bars][GitHub - jdtsmith/indent-bars]]
@@ -1058,7 +1067,8 @@ Ooh..like this much better than git-gutter!
     (advice-add 'jj-parse-log-entries :around #'my/jj-parse-log-entries-with-limit)
     )
 #+end_src
-** [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
+** COMMENT [[https://github.com/gavv/transient-compile?tab=readme-ov-file#installation][transient-compile]]
+<2026-07-09 Thu> Don't have enough use cases for this (part. since most of my just commands don't fit the 'fire & forget' model)
 #+begin_src emacs-lisp
    (straight-use-package 'f)
    (straight-use-package 's)
@@ -1080,33 +1090,33 @@ Ooh..like this much better than git-gutter!
    (defun transient-compile-poe-targets (directory)
      "Get list of targets from a pyproject.toml using poe."
      (when-let* ((executable (transient-compile--tool-property 'poe :exe))
-			(command (transient-compile--shell-join
-				  executable
-				  `("--directory" , directory)
-				  )
-				 )
-			(output (transient-compile--shell-run command))
-			(lines (s-lines output)))
+			  (command (transient-compile--shell-join
+				    executable
+				    `("--directory" , directory)
+				    )
+				   )
+			  (output (transient-compile--shell-run command))
+			  (lines (s-lines output)))
        (let (tasks)
-		(with-temp-buffer
-		  (insert output)
-		  (goto-char (point-min))
-		  (when (re-search-forward "^CONFIGURED TASKS$" nil t)
-		    (forward-line 1)
-		    (while (not (eobp))
-		      (let ((line (buffer-substring-no-properties
-				   (line-beginning-position)
-				   (line-end-position))))
-			(when (string-match
-			       (rx bol (* whitespace)
-				   (group (+ (not whitespace)))
-				   (+ whitespace))
-			       line)
-			  (let ((task (match-string 1 line)))
-			    (push task tasks)
-			    )))
-		      (forward-line 1))))
-		(nreverse tasks))))
+		  (with-temp-buffer
+		    (insert output)
+		    (goto-char (point-min))
+		    (when (re-search-forward "^CONFIGURED TASKS$" nil t)
+		      (forward-line 1)
+		      (while (not (eobp))
+			(let ((line (buffer-substring-no-properties
+				     (line-beginning-position)
+				     (line-end-position))))
+			  (when (string-match
+				 (rx bol (* whitespace)
+				     (group (+ (not whitespace)))
+				     (+ whitespace))
+				 line)
+			    (let ((task (match-string 1 line)))
+			      (push task tasks)
+			      )))
+			(forward-line 1))))
+		  (nreverse tasks))))
 
    ;; My feeble (and unsuccessful) attempt at this..
    (defun transient-compile-poe-command (directory target)
@@ -1114,17 +1124,18 @@ Ooh..like this much better than git-gutter!
      (when-let* ((executable (transient-compile--tool-property 'poe :exe)))
        (transient-compile--shell-join executable target)))
 
-   (use-package transient-compile
-     :config
-     (add-to-list 'transient-compile-tool-alist
-		       '(poe :match ("pyproject.toml")
-			     :exe "poe"
-			     :chdir t
-			     :targets transient-compile-poe-targets
-			     :command transient-compile-poe-command))
-     :custom
-     (transient-compile-interactive t)
-     )
+     ;; (use-package transient-compile
+     ;; :config
+     ;; (add-to-list 'transient-compile-tool-alist
+     ;;			       '(poe :match ("pyproject.toml")
+     ;;				     :exe "poe"
+     ;;				     :chdir t
+     ;;				     :targets transient-compile-poe-targets
+     ;;				     :command transient-compile-poe-command))
+     ;;
+     ;;:custom
+     ;; (transient-compile-interactive t)
+     ;; )
 
 #+end_src
 * FileTypes & Modes
@@ -1136,6 +1147,7 @@ Ooh..like this much better than git-gutter!
 	(css-indent-offset 2))
 #+end_src
 ** csv
+*** csv-mode
 #+begin_src emacs-lisp
   (use-package csv-mode
     :defer t
@@ -1143,6 +1155,11 @@ Ooh..like this much better than git-gutter!
     (add-to-list 'auto-mode-alist '("\\*.csv$" . csv-mode))
     (add-to-list 'auto-mode-alist '("\\*.tsv$" . csv-mode))
   )
+#+end_src
+*** rainbow-csv
+#+begin_src emacs-lisp
+  (load-file "~/.emacs.d/site-lisp/rainbow-csv/rainbow-csv.el")
+  (add-hook 'csv-mode-hook #'rainbow-csv-mode)
 #+end_src
 ** graphviz-dot-mode
 #+begin_src emacs-lisp
