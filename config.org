@@ -121,40 +121,37 @@
       "\n\n"
       (enlight-menu
        '(("Active Projects"
-		  ("Investment Dashboard (& Pipeline)" (dired "~/Repository/10-19 Development/10 Development/10.28 investing/")                  "$")
-		  ("Spending Dashboard (& Pipeline)"   (dired "~/Repository/10-19 Development/10 Development/10.29 spending/")                   "s")
-		  ("Python Code Quality (QYX)"         (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")         "q")
-		  ("optimal-sports.peterborocz.dev"    (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")               "o")
-		  ("recipe-manager.peterborocz.dev"    (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri")              "c")
-		  ("Health/Activity Dashboard"         (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")   "a")
-		  ;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum") "i")
-		  ;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")            "u")
-		  )
-		 ("Org"
-		  ("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
-		  ("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
-		  ("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
-		  )
-		 ("Directories"
-		  ("-Root-"      (dired "~/Repository")                                  "r")
-		  ("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
-		  ("Money"       (dired "~/Repository/20-29 Money")                      "m")
-		  ("Health"      (dired "~/Repository/30-39 Health")                     "h")
-		  )
-		 ("Utilities"
-		  ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
-		  ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
-		  ("*Claude*"            (command-execute 'gptel)                                            "a")
-		  )
+		    ("Money Dashboard (& Pipelines)"     (dired "~/Repository/10-19 Development/10 Development/10.28 money_state_flow/")            "$")
+		    ("Investment Dashboard (& Pipeline)" (dired "~/Repository/10-19 Development/10 Development/10.28 investing/")                      )
+		    ("Spending Dashboard (& Pipeline)"   (dired "~/Repository/10-19 Development/10 Development/10.29 spending/")                    "s")
+		    ("Health/Activity Dashboard"         (dired "~/Repository/10-19 Development/10 Development/10.06 health-activity-dashboard")    "a")
+		    ("optimal-sports.peterborocz.dev (optimus_ludos)"  (dired "~/Repository/10-19 Development/10 Development/10.01 optimus_ludos")  "o")
+		    ("recipe-manager.peterborocz.dev (coctione_libri)" (dired "~/Repository/10-19 Development/10 Development/10.23 coctione_libri") "c")
+		    ("Python Code Quality (QYX)"         (dired "~/Repository/10-19 Development/10 Development/10.27 python-code-quality")          "q")
+		    ;; ("Information Mapping (Typst)"   (dired "~/Repository/10-19 Development/10 Development/10.25 compositionem_informationum")  "i")
+		    ;; ("Pecunia Exemplar"              (dired "~/Repository/10-19 Development/10 Development/10.21 pecunia_exemplar")             "u")
+		    )
+		   ("Org"
+		    ("Projects" (find-file "~/Repository/00-09 System/01 Org/projects.org")    "p")
+		    ("Journal"  (find-file "~/Repository/00-09 System/01 Org/journal.org")     "j")
+		    ("GTD"      (find-file "~/Repository/00-09 System/01 Org/gtd.org")         "g")
+		    )
+		   ("Directories"
+		    ("-Root-"      (dired "~/Repository")                                  "r")
+		    ("Development" (dired "~/Repository/10-19 Development/10 Development") "d")
+		    ("Money"       (dired "~/Repository/20-29 Money")                      "m")
+		    ("Health"      (dired "~/Repository/30-39 Health")                     "h")
+		    )
+		   ("Utilities"
+		    ("Emacs Configuration" (find-file "~/.emacs.d/config.org")                                 "e")
+		    ("Python Reference"    (find-file "~/Repository/00-09 System/01 Org/reference/python.org") "y")
+		    ("*Claude*"            (command-execute 'gptel)                                            "a")
+		    )
 
-		 ))))
+		   ))))
 
     :config
-    (setopt enlight-buffer-name "HOME") ;; Defaults to *light-dashboard* but I want something a bit more ?personal?
-
-    ;; <2026-02-18 Wed> Don't need to do this, standard font size is *fine*.
-    ;;(add-hook 'enlight-mode-hook 'pb/set-enlight-font)
-
+    (setopt enlight-buffer-name "*HOME*")
     (enlight-open)
     )
 #+end_src
@@ -234,7 +231,7 @@ Highlight global-search-replace strings dynamically.
       dired-use-ls-dired                               t
       dired-vc-rename-file                             t ;; https://xenodium.com/emacs-git-rename-courtesy-of-dired/
       global-auto-revert-non-file-buffers              t
-      insert-directory-program                         "/usr/local/bin/gls"
+      insert-directory-program                         "/opt/homebrew/bin/gls"
       wdired-allow-to-change-permissions               t
       )
 
@@ -491,28 +488,30 @@ Interactive font scaling:
 > brew tap jonz94/sarasa-nerd-fonts
 
  #+begin_src emacs-lisp
-   (setopt ns-use-thin-smoothing t)
+      (setopt ns-use-thin-smoothing t)
 
-   ;; Set my default font (always mono, even for org writing)
-   (defvar pb/var-fixedwidth-font "-*-Atkinson Hyperlegible Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+      ;; Set my default font (always mono, even for org writing)
+      ;; (defvar pb/var-fixedwidth-font "-*-Atkinson HyperlegibleMono-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+      ;; (defvar pb/var-fixedwidth-font "-*-AtkinsonHyperlegibleMono Nerd Font-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
+      (defvar pb/var-fixedwidth-font "-*-AtkynsonMono Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
 
-   (defun pb/set-monitor-font-size ()
-     "Set font for 4K monitor."
-     (interactive)
-     (set-frame-font (format pb/var-fixedwidth-font 18))
-     )
+      (defun pb/set-monitor-font-size ()
+	"Set font for 4K monitor."
+	(interactive)
+	(set-frame-font (format pb/var-fixedwidth-font 18))
+	)
 
-   (defun pb/set-laptop-font-size ()
-     "Set font for laptop display."
-     (interactive)
-     (set-frame-font (format pb/var-fixedwidth-font 14))
-     )
+      (defun pb/set-laptop-font-size ()
+	"Set font for laptop display."
+	(interactive)
+	(set-frame-font (format pb/var-fixedwidth-font 14))
+	)
 
-   ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
-   (if (display-graphic-p)
-       (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
-		   (pb/set-monitor-font-size)
-		 (pb/set-laptop-font-size)))
+      ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
+      (if (display-graphic-p)
+	  (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
+		      (pb/set-monitor-font-size)
+		    (pb/set-laptop-font-size)))
 #+end_src
 ** frame-options
 #+begin_src emacs-lisp
@@ -995,7 +994,7 @@ Auto-format whole buffer, h/t: [[https://ianyepan.github.io/posts/format-all/][I
 (use-package git-modes
   :ensure t)
 #+end_src
-*** magit-todos
+*** COMMENT magit-todos
 #+begin_src emacs-lisp
   (use-package magit-todos
 	:after magit
@@ -1176,28 +1175,28 @@ Ooh..like this much better than git-gutter!
     (add-to-list 'auto-mode-alist '("\\just$'" . just-mode))
     )
 #+end_src
-** markdown
+** COMMENT markdown
 *** markdown
 Specifically, GithubFlavoredMarkdown-mode
 #+begin_src emacs-lisp
-  (use-package markdown-mode
-	:defer t
+    (use-package markdown-mode
+      :defer t
 
-	:mode ("*\\.md\\'" . gfm-mode)
+      :mode ("*\\.md\\'" . gfm-mode)
 
-	:init
-	(setq
-	 markdown-command      "multimarkdown"
-	 markdown-open-command "/usr/local/bin/mark") ;; Opens application -> Marked2
+      :init
+      (setq
+       markdown-command      "multimarkdown"
+       markdown-open-command "/usr/local/bin/mark" ;; Opens application -> Marked2
+       )
+      :config
+      (add-hook 'markdown-mode-hook 'visual-line-mode)
+      (add-hook 'markdown-mode-hook 'pb/markdown-config)
+      ;;(add-hook 'markdown-mode-hook 'pb/variable-width-face-mode)
+      )
 
-	:config
-	(add-hook 'markdown-mode-hook 'visual-line-mode)
-	(add-hook 'markdown-mode-hook 'pb/markdown-config)
-	;;(add-hook 'markdown-mode-hook 'pb/variable-width-face-mode)
-	)
-
-  (defun pb/markdown-config ()
-	(local-set-key (kbd "M-q") 'ignore))
+    (defun pb/markdown-config ()
+      (local-set-key (kbd "M-q") 'ignore))
 #+end_src
 *** olivetti
 https://github.com/rnkn/olivetti
@@ -1502,9 +1501,9 @@ Nicer bullets (replaces org-bullets)
 #+begin_src emacs-lisp
   (use-package pdf-tools
     :defer 5
-    :config
-    (setopt pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
-    )
+    ;; :config
+    ;; (setopt pdf-info-epdfinfo-program "/usr/local/bin/epdfinfo")
+  )
   (pdf-tools-install)
 #+end_src
 ** sql
@@ -1622,7 +1621,7 @@ Nicer bullets (replaces org-bullets)
 Live spell checking.
 NOTE!: This requires a local/manual installation (ie. outside emacs)!
 #+begin_src emacs-lisp
-  (setopt ispell-program-name "/usr/local/bin/aspell")
+  (setopt ispell-program-name "/opt/homebrew/bin/aspell")
   (add-to-list 'ispell-skip-region-alist '("^#+BEGIN_SRC" . "^#+END_SRC"))
 #+end_src
 ** [[https://github.com/karthink/gptel][gptel]]
@@ -1816,7 +1815,7 @@ Usage reminder: Use ~wgrep-save-all-buffers~ to save once changes have been comm
 #+end_src
 ** shell
 #+begin_src emacs-lisp
-  (setopt explicit-shell-file-name "/usr/local/bin/fish")
+  (setopt explicit-shell-file-name "/opt/homebrew/bin/fish")
   (setopt shell-pushd-regexp "push[d]*")
   (setopt shell-popd-regexp   "pop[d]*")
 
@@ -1830,7 +1829,7 @@ Usage reminder: ~C-c C-t~ to place terminal into "buffer" mode obo copy/paste op
      :defer t
      :config
      (setopt vterm-timer-delay 0.01)
-     (setopt vterm-shell "/usr/local/bin/fish")
+     (setopt vterm-shell "/opt/homebrew/bin/fish")
      :hook
      ((vterm-mode . (lambda () (setq-local show-trailing-whitespace nil)))
       (vterm-mode . pb-hook/vterm-text-scale)
