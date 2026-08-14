@@ -479,39 +479,12 @@ Interactive font scaling:
  "-*-Maple Mono NF-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Keeper so far, one of the only other font families I've found that include light and ultra-light versions!
  "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-fontset-auto5" ; Trying out 2025-11-10
  "-*-Geist Mono-ultralight-normal-normal-*-%d-*-*-*-m-0-iso10646-1" ; Wow, used this for almost 2+ months!
- "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
  "-*-Sarasa Mono TC Nerd Font-regular-normal-normal-*-%d-*-*-*-p-0-iso10646-1"
-
-<2026-06-30 Tue> Install of sarasa with patched nerd fonts:
-> brew install font-sarasa-mono-tc-nerd-font
-> brew trust jonz94/sarasa-nerd-fonts
-> brew tap jonz94/sarasa-nerd-fonts
+ "-*-SauceCodePro Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1"
 
  #+begin_src emacs-lisp
-      (setopt ns-use-thin-smoothing t)
-
-      ;; Set my default font (always mono, even for org writing)
-      ;; (defvar pb/var-fixedwidth-font "-*-Atkinson HyperlegibleMono-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-      ;; (defvar pb/var-fixedwidth-font "-*-AtkinsonHyperlegibleMono Nerd Font-regular-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-      (defvar pb/var-fixedwidth-font "-*-AtkynsonMono Nerd Font Mono-light-normal-normal-*-%d-*-*-*-m-0-iso10646-1")
-
-      (defun pb/set-monitor-font-size ()
-	"Set font for 4K monitor."
-	(interactive)
-	(set-frame-font (format pb/var-fixedwidth-font 18))
-	)
-
-      (defun pb/set-laptop-font-size ()
-	"Set font for laptop display."
-	(interactive)
-	(set-frame-font (format pb/var-fixedwidth-font 14))
-	)
-
-      ;; Given the 2 methods above, set the font size based on where our Emacs is running at the moment:
-      (if (display-graphic-p)
-	  (if (>= (x-display-pixel-width) 2000) ; Allow for somewhat lower resolutions than full 3840.
-		      (pb/set-monitor-font-size)
-		    (pb/set-laptop-font-size)))
+   (setopt ns-use-thin-smoothing t)
+   (set-frame-font "-*-Atkinson Hyperlegible Mono-light-normal-normal-*-16-*-*-*-p-0-iso10646-1")
 #+end_src
 ** frame-options
 #+begin_src emacs-lisp
@@ -1167,13 +1140,22 @@ Ooh..like this much better than git-gutter!
 	:config
 	(setopt graphviz-dot-indent-width 4))
 #+end_src
-** justfile
+** just
+*** just-mode
 #+begin_src emacs-lisp
   (use-package just-mode
     :defer t
     :config
     (add-to-list 'auto-mode-alist '("\\just$'" . just-mode))
     )
+#+end_src
+*** justl
+  [[https://github.com/psibi/justl.el]]
+#+begin_src emacs-lisp
+  (use-package justl
+    :ensure t
+    :custom
+    (justl-executable "/opt/homebrew/bin/just"))
 #+end_src
 ** COMMENT markdown
 *** markdown
@@ -1628,28 +1610,31 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
 - Another source with great customisation: https://github.com/certainty/madmacs/blob/main/modules/tools/madmacs-tools-ai.el
 - Alternative package to keep an eye on: [[https://github.com/mzacho/claudia][Claudia is an Emacs integration for the Claude AI as...]]
 #+begin_src emacs-lisp
+  (require 'auth-source)
+  (defun pb/get-anthropic-api-key ()
+    "Retrieve the API key for api.anthropic.com from .authinfo."
     (require 'auth-source)
-    (defun pb/get-anthropic-api-key ()
-      "Retrieve the API key for api.anthropic.com from .authinfo."
-      (require 'auth-source)
-      (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
-				   :secret)))
-	      (if secret
-		secret
-	      (error "No API key found for api.anthropic.com in .authinfo"))))
+    (let ((secret (plist-get (nth 0 (auth-source-search :host "api.anthropic.com"))
+			       :secret)))
+      (if secret
+	    secret
+	  (error "No API key found for api.anthropic.com in .authinfo"))))
 
-    (use-package gptel
-      :straight (:host github :repo "karthink/gptel")
+  (use-package gptel
+    :straight (:host github :repo "karthink/gptel")
 
-      :config
-      (setopt gptel-model 'claude-sonnet-4-5-20250929)
-      (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
+    :config
+    (setopt gptel-include-reasoning nil)
+    ;; As of 2026-08-14, sonnet-5 is noticeably significantly slower in response, staying with 4.5.
+    ;; (setopt gptel-model 'claude-sonnet-5)
+    (setopt gptel-model 'claude-sonnet-4-5-20250929)
+    (setopt gptel-backend (gptel-make-anthropic "Claude" :stream t :key (pb/get-anthropic-api-key)))
 
-      ;; Set your custom system prompt:
-      (setopt gptel-directives '((default . "Your role is not to agree with me, but to sharpen my thinking. You are my intellectual sparring partner—not just an assistant. Your goal is to help me arrive at the clearest, most accurate version of the truth.
+    ;; Set your custom system prompt:
+    (setopt gptel-directives '((default . "Your role is not to agree with me, but to sharpen my thinking. You are my intellectual sparring partner—not just an assistant. Your goal is to help me arrive at the clearest, most accurate version of the truth.
   When I present an idea, proposal, or conclusion, do the following unless
   I explicitly ask you not to:
-  - Analyze my assumptions – What am I taking for granted? What might not be true?
+  - Analyze my assumptions – Am I taking anything for granted? What might not be true?
   - Provide counterpoints when warranted – What would an intelligent, informed skeptic say?
   - Test my logic – Are there gaps, contradictions, or faulty reasoning?
   - Offer alternative frames – Could this be interpreted, structured, or approached differently?
@@ -1657,56 +1642,57 @@ NOTE!: This requires a local/manual installation (ie. outside emacs)!
   Do not argue for the sake of arguing. Stay constructive, purposeful, and focused on progress. Match your intensity to the moment: challenge hard in decisions and strategy; riff lightly in creative flow—but always keep your edge sharp. If I drift into confirmation bias or flawed logic, call it out.
   ")))
 
-      ;;   (setopt gptel-directives
-      ;;	    '((default . "You are a large language model living in Emacs and a helpful assistant.
-      ;; Respond concisely. Don't be overly agreeable and act as my brutally
-      ;; honest, high-level advisor and mirror. If do you challenge my thinking,
-      ;; question my assumptions, or expose the blind spots: be direct but
-      ;; friendly. Look at my situation with complete objectivity and strategic
-      ;; depth. Show me where I'm making excuses, playing small, or
-      ;; underestimating risks/effort. When generating python, use double-quotes
-      ;; around all string constants.")))
+    ;;   (setopt gptel-directives
+    ;;	    '((default . "You are a large language model living in Emacs and a helpful assistant.
+    ;; Respond concisely. Don't be overly agreeable and act as my brutally
+    ;; honest, high-level advisor and mirror. If do you challenge my thinking,
+    ;; question my assumptions, or expose the blind spots: be direct but
+    ;; friendly. Look at my situation with complete objectivity and strategic
+    ;; depth. Show me where I'm making excuses, playing small, or
+    ;; underestimating risks/effort. When generating python, use double-quotes
+    ;; around all string constants.")))
 
-      :custom
-      (gptel-default-mode #'org-mode)
-      ;; (gptel-directives
-      ;;  '(
-      ;;    (default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own.")
-      ;;    (python . "You are a large language model living in Emacs and a helpful python coding assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
-      ;;    )
-      ;;  )
+    :custom
+    (gptel-default-mode #'org-mode)
+    ;; (gptel-directives
+    ;;  '(
+    ;;    (default . "You are a large language model living in Emacs and a helpful assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own.")
+    ;;    (python . "You are a large language model living in Emacs and a helpful python coding assistant. Respond concisely. Paragraph lines should be no longer than 120 chars, hard wrap them on your own. Python code should use double-quotes for strings.")
+    ;;    )
+    ;;  )
 
-      ;; ;; https:github.com/DiamondBond/emacs/blob/f9747d9e595518b26d605278144328d73d5d64bf/lisp/gpt.el#L38
-      ;; ((default . "You are a large language model and a helpful assistant. Respond concisely.")
-      ;;  (reflect . "You are a world-class AI system, capable of complex reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you detect that you made a mistake in your reasoning at any point, correct yourself inside <reflection> tags.")
-      ;;  (emacs . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
-      ;;  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
-      ;;  (typescript . "You are an expert Typescript programmer. Provide code as output.")
-      ;;  (writing . "You are a large language model and a writing assistant. Respond concisely.")
-      ;;  (chat . "You are a large language model and a conversation partner. Respond concisely."))
+    ;; ;; https:github.com/DiamondBond/emacs/blob/f9747d9e595518b26d605278144328d73d5d64bf/lisp/gpt.el#L38
+    ;; ((default . "You are a large language model and a helpful assistant. Respond concisely.")
+    ;;  (reflect . "You are a world-class AI system, capable of complex reasoning and reflection. Reason through the query inside <thinking> tags, and then provide your final response inside <output> tags. If you detect that you made a mistake in your reasoning at any point, correct yourself inside <reflection> tags.")
+    ;;  (emacs . "You are a large language model living in Emacs and a helpful assistant. Respond concisely.")
+    ;;  (programming . "You are a large language model and a careful programmer. Provide code and only code as output without any additional text, prompt or note.")
+    ;;  (typescript . "You are an expert Typescript programmer. Provide code as output.")
+    ;;  (writing . "You are a large language model and a writing assistant. Respond concisely.")
+    ;;  (chat . "You are a large language model and a conversation partner. Respond concisely."))
 
-      ;; https://github.com/ksqsf/emacs-config/blob/bf7cda793532a5b0a391c74b8f9b55f0e5aaafb2/modules/prelude-ai.el#L31
-      ;; (bug . "You are a large language model and a careful programmer. The supplied code doesn't work, or contains bugs. Describe each problem using only one sentence. Provide fixes without changing the old behavior.")
-      )
+    ;; https://github.com/ksqsf/emacs-config/blob/bf7cda793532a5b0a391c74b8f9b55f0e5aaafb2/modules/prelude-ai.el#L31
+    ;; (bug . "You are a large language model and a careful programmer. The supplied code doesn't work, or contains bugs. Describe each problem using only one sentence. Provide fixes without changing the old behavior.")
+    )
 
-    (defun my-straight-pull-package (package)
-      "Pull the latest version of PACKAGE from its remote repository."
-      (message "'straight-pull-package' for gptel.")
-      (straight-pull-package package)
-      )
-    (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
+  (defun my-straight-pull-package (package)
+    "Pull the latest version of PACKAGE from its remote repository."
+    (message "'straight-pull-package' for gptel.")
+    (straight-pull-package package)
+    )
+  (add-hook 'emacs-startup-hook (lambda () (my-straight-pull-package 'gptel)))
 
-    ;; (defun my/gptel-write-buffer ()
-    ;;   "Save buffer to disk when starting gptel"
-    ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
-    ;;   (unless (buffer-file-name (current-buffer))
-    ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
-    ;;           (chat-dir "~/Repository"))
-    ;;       (unless (file-directory-p chat-dir)
-    ;;         (make-directory chat-dir :parents))
-    ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
-    ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
+  ;; (defun my/gptel-write-buffer ()
+  ;;   "Save buffer to disk when starting gptel"
+  ;;   ;; Based on discussion with karthink: https://github.com/karthink/gptel/discussions/129
+  ;;   (unless (buffer-file-name (current-buffer))
+  ;;     (let ((suffix (format-time-string "%Y%m%dT%H%M" (current-time)))
+  ;;           (chat-dir "~/Repository"))
+  ;;       (unless (file-directory-p chat-dir)
+  ;;         (make-directory chat-dir :parents))
+  ;;       (write-file (expand-file-name (concat "gptel-" suffix ".org") chat-dir)))))
+  ;; (add-hook 'gptel-mode-hook #'my/gptel-write-buffer)
 
+  (setq gptel--system-message (alist-get 'default gptel-directives))
 #+end_src
 *** Magnus has a cleaner example of using auth-source [potentially rework the code above with this?]
 <2024-09-03 Tue> [[https://magnus.therning.org/2024-09-01-improving-how-i-handle-secrets-in-my-work-notes.html][Improving how I handle secrets in my work notes]]:
