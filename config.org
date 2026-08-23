@@ -484,7 +484,11 @@ Interactive font scaling:
 
  #+begin_src emacs-lisp
    (setopt ns-use-thin-smoothing t)
-   (set-frame-font "-*-Atkinson Hyperlegible Mono-light-normal-normal-*-16-*-*-*-p-0-iso10646-1")
+   (set-face-attribute 'default nil
+		       :family "Atkinson Hyperlegible Mono"
+		       :height 180  ; in 1/10 pt, so 180 = 18pt
+		       :weight 'ultra-light)  ; note the dash
+   ;; (set-frame-font "-*-Atkinson Hyperlegible Mono-ultralight-normal-normal-*-18-*-*-*-p-0-iso10646-1")
 #+end_src
 ** frame-options
 #+begin_src emacs-lisp
